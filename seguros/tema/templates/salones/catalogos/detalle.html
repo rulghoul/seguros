@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-lg">
+    <h3 class="card-title">{{ titulo }}</h3>
+    <div class="card-body">
+        <p><strong>Clave:</strong> {{ object.clave }}</p>
+        <p><strong>Descripcion:</strong>{{ object.descripcion }}</p>
+        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+    </div>
+</div>
+</div>
+{% endblock %}

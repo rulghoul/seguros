@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-lg">
+  <h3 class="card-title">{{ titulo }}</h3>
+  <div class="card-body">
+    <form action="" method="POST">
+      {% csrf_token %}  {{ form }}
+        <p>¿Estás segura de que quieres eliminar {{ object }}?</p>
+        <div class="col text-center">        
+          <input type="submit" name="submit" value="Borrar" class="btn btn-danger" id="submit-save">
+          <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

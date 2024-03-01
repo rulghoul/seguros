@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-lg">
+    <h3 class="card-title">{{ titulo }}</h3>
+    <div class="card-body">
+        <p><strong>Nombre:</strong> {{ object.nombre }}</p>
+        <p><strong>Tipo de evento:</strong> {{ object.cvetipoevento }}</p>
+        <p><strong>Numero de personas:</strong> {{ object.numeropersonas }}</p>
+        <p><strong>Opcion:</strong> {{ object.opcion }}</p>
+        <p><strong>Cliente:</strong> {{ object.cvepersona }}</p>
+        <p><strong>Telefono primario:</strong> {{ object.cvepersona.telefono1 }}</p>
+        <p><strong>Telefono alternativo:</strong> {{ object.cvepersona.telefono2 }}</p>
+        <p><strong>Correo:</strong> {{ object.cvepersona.correo }}</p>
+        
+        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+    </div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block content %}
+{{ form.media }} 
+<div class="card shadow-lg">  
+  <h3 class="card-title">{{ titulo }}</h3>
+  <div class="card-body">
+    <form id="detalle_evento_form" action="" method="POST" 
+    data-clase-servicio="{% url 'ajax_load_clases_servicio' %}">
+      {% csrf_token %} {{ form|crispy }}
+
+      <div class="col text-center">        
+        <input type="submit" name="submit" value="Agregar" class="btn btn-primary" id="submit-save">
+        <a class="btn btn-danger" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  $("#id_cvetiposervicio").change(function () {
+    var url = $("#detalle_evento_form").attr("data-clase-servicio");  // get the url of the `load_cities` view
+    var servicioId = $(this).val();  // get the selected country ID from the HTML input
+
+    $.ajax({                       // initialize an AJAX request
+      url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+      data: {
+        'clasificacion': servicioId       // add the country id to the GET parameters
+      },
+      success: function (data) {   // `data` is the return of the `load_cities` view function
+        $("#id_cveclasifservicio").html(data);  // replace the contents of the city input with the data that came from the server
+      }
+    });
+
+  });
+
+  $("#id_cveclasifservicio").change(function () {
+    var url = "{% url 'ajax_load_desglose_servicio' %}"  // get the url of the `load_cities` view
+    var clasificacionId = $(this).val();  // get the selected country ID from the HTML input
+
+    $.ajax({                       // initialize an AJAX request
+      url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+      data: {
+        'desglose': clasificacionId       // add the country id to the GET parameters
+      },
+      success: function (data) {   // `data` is the return of the `load_cities` view function
+        $("#id_cvedesgloseservicio").html(data);  // replace the contents of the city input with the data that came from the server
+      }
+    });
+
+  });
+</script>
+
+{% endblock %}

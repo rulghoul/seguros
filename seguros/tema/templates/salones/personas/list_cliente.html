@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+
+<div class="row" style="margin-bottom: 1em; margin-top: 1em;">
+    <h3 class="col-5">{{ titulo }}</h3>
+    <a id="crear" class="btn btn-primary col-2" href="{{ add }}">{{ add_label }}</a>
+    <input class="form-control col-4 ml-auto" id="myInput" type="text" placeholder="Buscar..">
+</div>
+<table class="table table-striped table-sm">
+    <thead class="thead-dark">
+    <tr>
+        <th>{{ encabezados.nombre }} </th>
+        <th>{{ encabezados.primer_apellido }} </th>
+        <th>{{ encabezados.segundo_apellido }} </th>
+        <th>{{ encabezados.cvetipopersona }} </th>
+        <th>{{ encabezados.correo }} </th>
+        <th></th>
+    </tr>
+</thead>
+<tbody id="CuerpoCatalogo">
+{% for elemento in object_list %}
+<tr>
+    <td>{{ elemento.nombre }}</td>
+    <td>{{ elemento.primer_apellido }}</td>
+    <td>{{ elemento.segundo_apellido }}</td>
+    <td>{{ elemento.cvetipopersona }}</td>
+    <td>{{ elemento.correo }}</td>
+    <td class="text-center">
+      <!-- Read book buttons -->
+      <a type="button" class="read-book btn btn-sm btn-primary" href="{% url detalle elemento.idpersonaprincipal %}">
+        <span class="fa fa-eye"></span>
+      </a>
+      <!-- Update book buttons -->
+      <a type="button" class="update-book btn btn-sm btn-primary" href="{% url update elemento.idpersonaprincipal %}">
+        <span class="fa fa-pencil"></span>
+      </a>
+      <!-- Delete book buttons -->
+      <a type="button" class="delete-book btn btn-sm btn-danger" href="{% url borra elemento.idpersonaprincipal %}">
+        <span class="fa fa-trash"></span>
+      </a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<script>
+    $(document).ready(function(){
+      $("#myInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#CuerpoCatalogo tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    </script>
+{% endblock %}

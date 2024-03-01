@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+
+<div class="row" style="margin-bottom: 1em; margin-top: 1em;">
+    <h3 class="col-5">{{ titulo }}</h3>
+    <a class="btn btn-primary col-2" href="{{ add }}">{{ add_label }}</a>
+    <input class="form-control col-4 ml-auto" id="myInput" type="text" placeholder="Buscar..">
+</div>
+<table class="table table-striped table-sm">
+    <thead class="thead-dark">
+    <tr>
+        <th>{{ encabezados.cvetiposervicio }} </th>
+        <th>{{ encabezados.cveclasifservicio }}</th>
+        <th>{{ encabezados.descripcion }} </th>
+        <th>{{ encabezados.activo }} </th>
+        <th></th>
+    </tr>
+</thead>
+<tbody id="CuerpoCatalogo">
+{% for elemento in object_list  %}
+<tr>
+    <td>{{ elemento.cvetiposervicio }}</td>
+    <td>{{ elemento.cveclasifservicio }}</td>
+    <td>{{ elemento.descripcion }}</td>
+    <td>{{ elemento.bandactivo|yesno:"Activo,Inactivo,Indefinido" }}</td>
+    <td class="text-center">
+      <!-- Update book buttons -->
+      <a type="button" class="update-book btn btn-sm btn-info" href="{% url update elemento.pk %}" >
+        <span class="fa fa-pencil"></span>
+      </a>
+      <!-- Delete book buttons -->
+      <a type="button" class="delete-book btn btn-sm btn-danger" href="{% url borra elemento.pk %}">
+        <span class="fa fa-trash"></span>
+      </a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

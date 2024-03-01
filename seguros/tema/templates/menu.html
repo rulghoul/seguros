@@ -1,0 +1,55 @@
+
+{% load colores_del_sitio %}
+
+<ul class="nav nav-tabs">
+
+  <li>
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" 
+    role="button" aria-haspopup="true" aria-expanded="false">
+    <span class="fas fa-book-medical"></span>
+    Acupuntura
+  </a>
+    <div class="dropdown-menu"  style="margin-left: 20px;">     
+      <a class="dropdown-item" href="{% url 'lista_puntos' %}">Puntos</a>
+      <a class="dropdown-item" href="{% url 'lista_canales' %}">Canales</a>
+      <div class="dropdown-divider"></div> 
+      <a class="dropdown-item" href="{% url 'lista_enfermedades' %}">Enfermedades</a>
+      <a class="dropdown-item" href="{% url 'lista_sintomas' %}">Sintomas</a>
+      <div class="dropdown-divider"></div>       
+      <a class="dropdown-item" href="{% url 'lista_emociones' %}">Emociones</a>      
+      <a class="dropdown-item" href="{% url 'lista_elementos' %}">Tipo Elementos</a>
+      <a class="dropdown-item" href="{% url 'lista_cat_elementos' %}">Categoria Elementos</a>
+      <a class="dropdown-item" href="{% url 'lista_val_elementos' %}">Valor Elementos</a>
+      <a class="dropdown-item" href="{% url 'lista_tab_elementos' %}">Tabla Elementos</a>
+    </div>
+  </li>
+
+
+  <li>
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" 
+    role="button" aria-haspopup="true" aria-expanded="false">
+    <span class="fas fa-user"></span>
+    Usuarios
+  </a>
+    <div class="dropdown-menu"  style="margin-left: 20px;">      
+       <a class="dropdown-item" href="{% url 'password_change' %}">
+      <span class="fas fa-key"></span>
+      Contraseña
+    </a>
+    </div>
+  </li>
+
+
+  <li class="nav-item dropdown" >
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" 
+    role="button" aria-haspopup="true" aria-expanded="false">
+    <span class="fa-solid fa-gear"></span>
+    Catalogos</a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" href="{% url 'list_color' %}">Colores</a>
+      <a class="dropdown-item" href="{% url 'list_imagen' %}">Imagenes</a>
+      <a class="dropdown-item" href="{% url 'carga_automatica' %}">Carga de Catalogos<br>Acupuntura</a>
+    </div>
+  </li>
+ 
+</ul>

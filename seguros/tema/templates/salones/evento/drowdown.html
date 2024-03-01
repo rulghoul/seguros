@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for elemento in lista %}
+<option value="{{ elemento.pk }}">{{ elemento.descripcion }}</option>
+{% endfor %}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="card shadow-lg">
+    <h3 class="card-title">{{ titulo }}</h3>
+    <div class="card-body container">
+        <form action="" method="POST" class="form-group">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="row">
+                <div class="col">
+                        {{ form.cvetipoevento.label_tag }} {{ form.cvetipoevento }}
+                        {{ form.nombre.label_tag }} {{ form.nombre }}
+                        {{ form.numeropersonas.label_tag }} {{ form.numeropersonas }}
+                        {{ form.opcion.label_tag }} {{ form.opcion }}
+                        <div class="form-group">
+                            <strong><label>Total:</label><label>$ {{ total }}</label></strong>
+                        </div>
+                            
+                </div>
+                <div class="col">
+                    {{ form.cvepersona.label_tag }} {{ form.cvepersona }}
+                    <div class="form-group">
+                        <label>Correo:</label> <label>{{ object.cvepersona.correo }}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono 1:</label> <label>{{ object.cvepersona.telefono1 }}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefono 2:</label> <label>{{ object.cvepersona.telefono2 }}</label>
+                    </div>
+                    {{ form.banaprovada.label_tag }} {{ form.banaprovada }}
+                </div>
+            </div>
+            
+
+
+
+
+            <div class="col text-center">
+                <input type="submit" name="submit" value="Guardar Cambios" class="btn btn-primary" id="submit-save" />
+                <a class="btn btn-danger" href="{% url regresa %}">Regresar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-lg">
+    <h3 class="card-title col text-center">Detalles</h3>
+    <div class="card-body">
+        <a class="btn btn-success" href="{% url 'add_evento_detalle' object.pk %}">Agregar</a>
+        <a class="btn btn-success" href="{% url 'generate_pdf' object.pk %}">Reporte</a>
+        <table class="table table-striped table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Actividad</th>
+                    <th>Servicio</th>
+                    <th>Clasificacion</th>
+                    <th>Desglose</th>
+                    <th>Tiempo</th>
+                    <th>Costo</th>
+                    <th>Precio</th>
+                    <th>Estatus</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="CuerpoCatalogo">
+                {% for detalle in detalles %}
+                <tr>
+                    <td>{{ detalle.fecha|date:"d/m/Y" }}</td>
+                    <td>{{ detalle.cvetipoactividad }}</td>
+                    <td>{{ detalle.cvetiposervicio }}</td>
+                    <td>{{ detalle.cveclasifservicio }}</td>
+                    <td>{{ detalle.cvedesgloseservicio }}</td>
+                    <td>{{ detalle.tiempo }}</td>
+                    <td>${{ detalle.costo }}</td>
+                    <td>${{ detalle.precio }}</td>
+                    <td>{{ detalle.estatus }}</td>
+                    <td class="text-center">
+                        <!-- Read book buttons -->
+                        <a type="button" class="read-book btn btn-sm btn-primary" href="{% url 'detail_evento_detalle' detalle.pk %}">
+                          <span class="fa fa-eye"></span>
+                        </a>
+                        <!-- Update book buttons -->
+                        <a type="button" class="update-book btn btn-sm btn-info" href="{% url 'update_evento_detalle' detalle.pk %}" >
+                          <span class="fa fa-pencil"></span>
+                        </a>
+                        <!-- Delete book buttons -->
+                        <a type="button" class="delete-book btn btn-sm btn-danger" href="{% url 'borra_evento_detalle' detalle.pk %}">
+                          <span class="fa fa-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

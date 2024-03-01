@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ evento }}</title>
+    {# Load the tag library #}
+    {% load colores_del_sitio %}
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{ evento.nombre }} para el cliente {{ evento.cvepersona}}</h1>
+    <table>
+        <tr>
+            <td colspan="4">
+                <p><strong>Nombre:</strong> {{ evento.nombre }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <p><strong>Cliente:</strong> {{ evento.cvepersona }}</p>
+            </td>
+            <td>
+                <p><strong>Tipo de evento:</strong> {{ evento.cvetipoevento }}</p>
+            </td>
+            <td>
+                <p><strong>Numero de personas:</strong> {{ evento.numeropersonas }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><strong>Opcion:</strong> {{ evento.opcion }}</p>
+            </td>
+            <td>
+                <p><strong>Correo:</strong> {{ evento.cvepersona.correo }}</p>
+            </td>
+            <td>
+                <p><strong>Telefono primario:</strong> {{ evento.cvepersona.telefono1 }}</p>
+            </td>
+            <td>
+                <p><strong>Telefono alternativo:</strong> {{ evento.cvepersona.telefono2|default_if_none:"NA" }}</p>
+            </td>
+        </tr>
+    </table>
+    </br>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Actividad</th>
+                <th>Servicio</th>
+                <th>Clasificacion</th>
+                <th>Desglose</th>
+                <th>tiempo</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fila in detalle %}     
+            <tr>
+                <td>{{ fila.fecha|date:"d/m/Y"  }}</td>
+                <td>{{ fila.cvetipoactividad }}</td>
+                <td>{{ fila.cvetiposervicio }}</td>
+                <td>{{ fila.cveclasifservicio }}</td>
+                <td>{{ fila.cvedesgloseservicio|default_if_none:"NA" }}</td>
+                <td>{{ fila.tiempo }}</td>
+                <td>${{ fila.precio }}</td>
+            </tr>
+            {% if fila.nota %}
+            <tr>
+                <td colspan="7">{{ fila.nota }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            <tr>
+                <td colspan="5"></td>
+                <td colspan="1">Total:</td>
+                <td colspan="1">${{ total }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

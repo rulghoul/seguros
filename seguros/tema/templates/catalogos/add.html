@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% extends 'base.html' %} {% load crispy_forms_tags %} {% block content %}
+
+ 
+  <h3 class="card-title">{{ titulo }}</h3>
+
+    <form action="" method="POST">
+      {% csrf_token %} {{ form|crispy }}
+
+      <div class="col text-center">        
+        <input type="submit" name="submit" value="Agregar" class="btn btn-primary" id="submit-save">
+        <a class="btn btn-danger" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+      </div>
+    </form>
+
+{% endblock %}
