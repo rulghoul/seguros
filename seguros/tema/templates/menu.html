@@ -1,0 +1,45 @@
+{% load colores_del_sitio %}
+
+<ul class="nav">
+
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="fas fa-book-medical"></span>
+      Seguros
+    </a>
+    <div class="dropdown-menu" style="margin-left: 20px;">
+      <div class="dropdown-divider"></div>
+      <div class="dropdown-divider"></div>
+    </div>
+  </li>
+
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="fas fa-user"></span>
+      Usuarios
+    </a>
+    <ul class="dropdown-menu" style="margin-left: 20px;">
+      <li>
+        <a class="dropdown-item" href="{% url 'password_change' %}">
+          <span class="fas fa-key"></span>
+          Contraseña
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="fa-solid fa-gear"></span>
+      Catalogos
+    </a>
+    <ul class="dropdown-menu">
+      <li>
+        <a class="dropdown-item" href="{% url 'tema:list_color' %}">Colores</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'tema:list_imagen' %}">Imagenes</a>
+      </li>
+    </ul>
+  </li>
+</ul>

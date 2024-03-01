@@ -1,0 +1,80 @@
+
+{% load colores_del_sitio %}
+
+<style>
+    body {
+        position: relative;
+    }
+    
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: url("{% get_imagen 'fondo' %}");
+        background-repeat: repeat;
+        opacity: 0.2; /* Ajusta este valor para cambiar la opacidad */
+        z-index: -1;
+    }      
+
+
+    /* Estilo del Slidebar */
+    .slidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color:  {% get_color 'menu' %};
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 20px;
+        margin-top: 80px;
+    }
+    
+    .slidebar .enlace-inferior {
+        position: absolute; 
+        bottom: 0; 
+        width: 100%;
+        font-size: 36px;
+        margin-bottom: 80px;
+    }    
+    
+    /* Redondear imputs */
+    .select{
+      border-radius: 3rem;
+      }
+    .textinput   {
+      border-radius: 3rem;
+      }
+    .input   {
+      border-radius: 3rem;
+      }
+    .passwordinput {
+        border-radius: 3rem;
+    }
+    .urlinput {
+        border-radius: 3rem;
+    }
+    .emailinput {
+        border-radius: 3rem;
+    }
+
+</style>
+
+
+<script type="text/javascript">
+    function toggleSlidebar() {
+        var slidebar = document.getElementById("slidebar");
+        if (slidebar.style.width === "10em") {
+            slidebar.style.width = "0em";
+        } else {
+            slidebar.style.width = "10em";
+        }
+    }
+</script>
+
+

@@ -15,8 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from tema import views as tema_views
+from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-]
+    path('tema', include('tema.urls')),
+    path('', tema_views.home_view, name='home'),    
+    path('accounts/profile/', tema_views.home_view, name='profile'),
+    path('login/', tema_views.CustomLoginView.as_view(), name='login'),
+    path('logout/', tema_views.CustomLogoutView.as_view(), name='logout'),
+    path('change-password/', auth_views.PasswordChangeView.as_view(), name="password_change"),    
+    path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

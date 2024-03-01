@@ -5,6 +5,8 @@
 __pycache__
 db.sqlite3
 media
+/seguros/seguros/static
+/seguros/seguros/media
 
 # Backup files # 
 *.bak 
@@ -110,6 +112,8 @@ venv.bak/
 #Archivos de correos
 CPdescarga.xml
 CPdescarga.csv
+
+#Archivos Estaticos
 
 # mkdocs documentation 
 /site 
