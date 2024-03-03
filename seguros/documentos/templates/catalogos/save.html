@@ -1,0 +1,10 @@
+{% load django_bootstrap5 %}
+{% csrf_token %}
+{% for field in form %}
+    <td>{% bootstrap_field field %}</td>
+{% endfor %}
+<td class="text-center">
+    <button class="btn btn-primary" name="save" value="{{ elemento.id }}">    
+        <span class="fa fa-save"></span>
+    </button>
+</td>

@@ -1,0 +1,24 @@
+{
+    "d_codigo": "01220", 
+
+    "d_estado": "Ciudad de México",
+    "c_estado": "09",
+
+    "ID"
+    "d_asenta": "Colonia/Jardines de Morelos/ Montes",    
+    "d_CP": "01401", 
+    "d_tipo_asenta": "Colonia",
+    "c_tipo_asenta": "09",
+
+    "d_asenta": "Colonia/Jardines de Morelos/ Cerros",    
+    "d_CP": "01401", 
+    "d_tipo_asenta": "Colonia",
+    "c_tipo_asenta": "09",
+
+    "D_mnpio": "Álvaro Obregón",
+    "c_mnpio": "010",
+    
+    "d_ciudad": "Ciudad de México",
+    "c_cve_ciudad": "01"
+    
+}

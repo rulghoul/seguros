@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from tema import views as tema_views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+
+from tema import views as tema_views
+from documentos import views as doc_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -30,4 +32,7 @@ urlpatterns = [
     path('logout/', tema_views.CustomLogoutView.as_view(), name='logout'),
     path('change-password/', auth_views.PasswordChangeView.as_view(), name="password_change"),    
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    #Catalogos Documentos
+    path('lista_tipo_conducto_pago/', doc_views.TipoConductoPagoView.as_view(), name='lista_tipo_conducto_pago'),
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 

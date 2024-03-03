@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'simple_history',
     'fontawesomefree',
     'colorfield',
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -44,6 +45,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = "seguros.urls"

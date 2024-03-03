@@ -22,9 +22,8 @@
     {% bootstrap_messages %}
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <script type="text/javascript" src="{% static 'colorfield/colorfield.js' %}"></script>
+    <script src="{% static 'colorfield/jscolor/jscolor.js' %}"></script>
     {% include 'estilo.html' %}
   </head>
   <body>
@@ -40,7 +39,7 @@
     </div>
 
     <div id="slidebar" class="slidebar" >
-      {% if user.is_authenticated %}
+      {% if user.is_authenticated  %}
         {% include 'menu.html' %}
         <a class="btn btn-danger enlace-inferior " href="{% url 'logout' %}">Salir</a>
       {% else %}
