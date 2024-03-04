@@ -31,3 +31,38 @@ class TipoConductoPagoForm(forms.ModelForm):
     class Meta:
         model = modelos.TipoConductoPago
         fields = ('clave', 'descripcion', 'activo' )
+
+class TipoPersonaForm(forms.ModelForm):
+    class Meta:
+        model = modelos.TipoPersona
+        fields = ('clave', 'descripcion', 'activo' )
+
+class FormaPagoForm(forms.ModelForm):
+    class Meta:
+        model = modelos.FormaPago
+        fields = ('clave', 'descripcion', 'activo' )
+
+class DocumentosForm(forms.ModelForm):
+    class Meta:
+        model = modelos.Documentos
+        fields = ('clave', 'descripcion', 'activo' )
+
+class TipoMediocontactoForm(forms.ModelForm):
+    class Meta:
+        model = modelos.TipoMediocontacto
+        fields = ('descripcion', 'activo' )
+
+class ParentescoForm(forms.ModelForm):
+    class Meta:
+        model = modelos.Parentesco
+        fields = ('descripcion', 'activo' )
+
+class EmpresaContratanteForm(forms.ModelForm):
+    class Meta:
+        model = modelos.EmpresaContratante
+        fields = ('clave', 'nombre', 'logo_small', 'pleca', 'activo', )
+
+class PlanesForm(forms.ModelForm):
+    class Meta:
+        model = modelos.Planes
+        fields = ('clave', 'nombre', 'empresa',  'activo',)

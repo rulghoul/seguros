@@ -6,7 +6,7 @@ from django.views import View
 from . import models as mod
 from . import forms as formularios
 
-######################### Catalogos ###########################
+######################### Vista Base ###########################
 
 
 class BaseListView(View):
@@ -64,6 +64,8 @@ class BaseListView(View):
         context['redirige'] = self.redirige
         return context
 
+######################### Catalogos ###########################
+
 class TipoConductoPagoView(BaseListView):
     form_class = formularios.TipoConductoPagoForm
     model = mod.TipoConductoPago
@@ -74,78 +76,79 @@ class TipoConductoPagoView(BaseListView):
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
     campos = ['clave', 'descripcion', 'activo']
 
+class TipoPersonaView(BaseListView):
+    form_class = formularios.TipoPersonaForm
+    model = mod.TipoPersona
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_tipo_persona'
+    context_object_name = 'lista'
+    title = 'Tipo de Persona'
+    encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
+    campos = ['clave', 'descripcion', 'activo']
+
+
+class FormaPagoView(BaseListView):
+    form_class = formularios.FormaPagoForm
+    model = mod.FormaPago
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_forma_pago'
+    context_object_name = 'lista'
+    title = 'Forma de Pago'
+    encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
+    campos = ['clave', 'descripcion', 'activo']
+
+class DocumentosView(BaseListView):
+    form_class = formularios.DocumentosForm
+    model = mod.Documentos
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_documentos'
+    context_object_name = 'lista'
+    title = 'Documentos'
+    encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
+    campos = ['clave', 'descripcion', 'activo']
+
+
+class TipoMediocontactoView(BaseListView):
+    form_class = formularios.TipoMediocontactoForm
+    model = mod.TipoMediocontacto
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_tipo_medio_conctacto'
+    context_object_name = 'lista'
+    title = 'Tipo Medio Contacto'
+    encabezados = ['DESCRIPCION', 'ACTIVO']
+    campos = ['descripcion', 'activo']
 
 
 
+class ParentescoView(BaseListView):
+    form_class = formularios.ParentescoForm
+    model = mod.Parentesco
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_parentesco'
+    context_object_name = 'lista'
+    title = 'Parentesco'
+    encabezados = ['DESCRIPCION', 'ACTIVO']
+    campos = ['descripcion', 'activo']
 
 
-class lista_tipo_conducto_pago(ListView):
-    model = mod.TipoConductoPago
-    template_name  = 'catalogos/list.html'
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        datos = {
-            'titulo': "Tipo Conducto Pago",
-            'add':"add_tipo_conducto",
-            'add_label':'Nuevo Tipo Conducto',
-            'update':'update_tipo_conducto',  
-            'detalle':'detalle_tipo_conducto',
-            'borra':'borra_tipo_conducto',
-            'encabezados': {"clave":"CLAVE","descripcion":"DESCRIPCION", "activo":"ACTIVO"},
-        }
-        context.update(datos)
-        return context    
-    
+######## Tablas Principales ############
 
-class add_tipo_conducto_pago(CreateView):
-    model = mod.TipoConductoPago
-    success_url = reverse_lazy('lista_tipo_conducto_pago')
-    fields = ['clave', 'descripcion', 'activo']
-    template_name = 'catalogos/add.html'
-    
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = "Nuevo Tipo Conducto Pago"
-        context['regresa'] = 'lista_tipo_conducto_pago'
-        return context
+class EmpresaContratanteView(BaseListView):
+    form_class = formularios.EmpresaContratanteForm
+    model = mod.EmpresaContratante
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_empresa'
+    context_object_name = 'lista'
+    title = 'Empresa Contratante'
+    encabezados = ['CLAVE','NOMBRE', 'LOGO', 'PLECA', 'ACTIVO',]
+    campos = ['clave', 'nombre', 'logo_small', 'pleca', 'activo',]
 
-class update_canal(UpdateView):
-    model = mod.TipoConductoPago
-    fields = ['clave', 'descripcion', 'activo']
-    success_url = reverse_lazy('lista_tipo_conducto_pagos')
-    template_name = 'catalogos/update.html'
-    
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = "Actualiza Tipo Conducto Pago"
-        context['regresa'] = 'lista_tipo_conducto_pago'
-        return context
-    
-class detalle_canal(DetailView):
-    model = mod.TipoConductoPago
-    template_name = 'catalogos/detalle.html'
-    success_url = reverse_lazy('lista_tipo_conducto_pago')
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = "Detalle Tipo Conducto Pago"
-        context['regresa'] = 'lista_tipo_conducto_pago'
-        return context   
-
-
-class borra_canal(DeleteView):
-    model = mod.TipoConductoPago
-    template_name = 'catalogos/borrar.html'
-    success_url = reverse_lazy('lista_tipo_conducto_pago')
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = "Borrar Tipo Conducto Pago"
-        context['regresa'] = 'lista_tipo_conducto_pago'
-        return context   
+class PlanesView(BaseListView):
+    form_class = formularios.PlanesForm
+    model = mod.Planes
+    template_name = 'catalogos/list.html'
+    redirige = 'lista_planes'
+    context_object_name = 'lista'
+    title = 'Planes'
+    encabezados = ['CLAVE','NOMBRE', 'EMPRESA',  'ACTIVO',]
+    campos = ['clave', 'nombre', 'empresa',  'activo',]

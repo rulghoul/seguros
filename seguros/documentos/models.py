@@ -51,6 +51,9 @@ class TipoConductoPago(models.Model):
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
+    def __str__(self) -> str:
+        return self.clave
+
 
 class TipoPersona(models.Model):
     clave = ClaveField()
@@ -58,29 +61,44 @@ class TipoPersona(models.Model):
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
+    def __str__(self) -> str:
+        return self.clave
+
 class FormaPago(models.Model): #("CLIENTE", "BENEFICIARIO")
     clave = ClaveField()
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
+    
+    def __str__(self) -> str:
+        return self.clave
 
 class Documentos(models.Model):
     clave = models.CharField(max_length=50, unique=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
+    
+    def __str__(self) -> str:
+        return self.clave
 
 
 class TipoMediocontacto(models.Model):
     descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
+    
+    def __str__(self) -> str:
+        return self.descripcion
 
 
 class Parentesco(models.Model):
     descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
+    
+    def __str__(self) -> str:
+        return self.descripcion
 
 
 ######## Tablas Principales ############
@@ -92,6 +110,9 @@ class EmpresaContratante(models.Model):
     logo_small = models.FileField(blank=True, null=True, default=None)
     pleca = models.FileField(blank=True, null=True, default=None)
     history = HistoricalRecords()
+    
+    def __str__(self) -> str:
+        return self.nombre
 
 class AsesorEmpresa(models.Model):
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
@@ -104,6 +125,9 @@ class Planes(models.Model):
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
+    
+    def __str__(self) -> str:
+        return self.nombre
 
 class PersonaBase(models.Model):
     clave = ClaveField()
