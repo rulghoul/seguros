@@ -26,6 +26,16 @@ STATUS_PERSONA = [("A","ACTIVO"),("I","INACTIVO")]
 
 TIPO_PERSONA = ("CLIENTE", "BENEFICIARIO")
 
+############### Campo personalizado #####################
+
+class ClaveField(models.CharField):
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 20  # Tamaño máximo de 20
+        kwargs['null'] = False  # No permite valores nulos
+        kwargs['blank'] = False  # No permite cadenas vacías
+        kwargs['unique'] = True  # Hace que el campo sea único por defecto
+        super().__init__(*args, **kwargs)
+
 class Asesor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     telefono1 = models.CharField(max_length=20)
@@ -36,39 +46,39 @@ class Asesor(models.Model):
 ######################### Catalogos ###########################
 
 class TipoConductoPago(models.Model):
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 
 class TipoPersona(models.Model):
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     descripcion = models.CharField(max_length=50)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 class FormaPago(models.Model): #("CLIENTE", "BENEFICIARIO")
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 class Documentos(models.Model):
-    clave = models.CharField(max_length=50)
+    clave = models.CharField(max_length=50, unique=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 
 class TipoMediocontacto(models.Model):
-    descripcion = models.CharField(max_length=20)
+    descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 
 class Parentesco(models.Model):
-    descripcion = models.CharField(max_length=20)
+    descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
@@ -76,7 +86,7 @@ class Parentesco(models.Model):
 ######## Tablas Principales ############
 
 class EmpresaContratante(models.Model):
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     activo = models.IntegerField(default = True)
     logo_small = models.FileField(blank=True, null=True, default=None)
@@ -89,21 +99,20 @@ class AsesorEmpresa(models.Model):
     history = HistoricalRecords()
 
 class Planes(models.Model):
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     activo = models.BooleanField(default=True)
     history = HistoricalRecords()
 
 class PersonaBase(models.Model):
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=80)  # Asegúrate de que el max_length sea suficiente para ambos casos
     primer_apellido = models.CharField(max_length=120)
     segundo_apellido = models.CharField(max_length=120, blank=True, null=True)
     genero = models.CharField(max_length=1, choices=OPCIONES_GENERO)
     estatus = models.CharField(max_length=10) ## Hay catalogo de estatus de personas?
-    history = HistoricalRecords()
 
     class Meta:
         abstract = True
@@ -151,7 +160,7 @@ class CheckDocumentos(models.Model):
 
 
 class PlanDocumentos(models.Model):
-    clave = models.CharField(max_length=20)
+    clave = ClaveField()
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     documento = models.ForeignKey(Documentos, on_delete=models.CASCADE)
     history = HistoricalRecords()
