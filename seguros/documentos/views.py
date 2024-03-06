@@ -34,15 +34,17 @@ class BaseListView(View):
                 print(f"Se entro en SAVE")
                 pk = post_data.get('save')
                 if not pk:
-                    #form = self.form_class(post_data)
-                    form = self.form_class()
+                    form = self.form_class(post_data)
+                    if form.is_valid():              
+                        form.save()
+                        form = self.form_class()
+                    #form = self.form_class()
                 else:
                     print(f"Se entro el id = {pk}")
                     objeto = self.model.objects.get(id=pk)
                     form = self.form_class(post_data, instance=objeto)  
                     if form.is_valid():              
                         form.save()
-                        form = self.form_class()
                 
             elif 'delete' in post_data:
                 pk = post_data.get('delete')

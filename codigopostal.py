@@ -1,36 +1,5 @@
 import xml.etree.ElementTree as ET
 
-def procesar_elemento(elem):
-    # Esta función procesa cada elemento. Puedes adaptarla según lo que necesites hacer.
-    # Por ejemplo, imprimir el tag y atributos del elemento
-    print(elem.tag, elem.attrib)
-
-def recorrer_xml_grande(archivo_xml):
-    # Iterar sobre el evento de fin de cada elemento
-    for event, elem in ET.iterparse(archivo_xml, events=("end",)):
-        procesar_elemento(elem)
-        # Es importante limpiar el elemento para no consumir memoria innecesariamente
-        elem.clear()
-
-
-def agregar_estructura(estructuras, ruta):
-    # Convierte la ruta (lista de tags) en una cadena única para almacenamiento
-    ruta_str = " -> ".join(ruta)
-    if ruta_str not in estructuras:
-        estructuras.add(ruta_str)
-        print(ruta_str)
-
-def recorrer_xml_unico(archivo_xml):
-    estructuras = set()
-    ruta_actual = []
-    for event, elem in ET.iterparse(archivo_xml, events=("start", "end")):
-        if event == "start":
-            ruta_actual.append(elem.tag)  # Agrega el tag actual a la ruta
-        elif event == "end":
-            agregar_estructura(estructuras, ruta_actual)
-            ruta_actual.pop()  # Remueve el tag al finalizar el elemento
-            elem.clear()
-
 
 def procesar_tabla(elem):
     # Diccionario para almacenar los datos de los campos de interés

@@ -106,7 +106,7 @@ class Parentesco(models.Model):
 class EmpresaContratante(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
-    activo = models.IntegerField(default = True)
+    activo = models.BooleanField(default=True)
     logo_small = models.FileField(blank=True, null=True, default=None)
     pleca = models.FileField(blank=True, null=True, default=None)
     history = HistoricalRecords()
@@ -142,6 +142,7 @@ class PersonaBase(models.Model):
         abstract = True
 
 class PersonaPrincipal(PersonaBase):  
+    asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
     fecha_nacimiento = models.DateTimeField()   
     history = HistoricalRecords()
@@ -153,7 +154,7 @@ class PersonaRelacionada(PersonaBase):
 
 class Poliza(models.Model):
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
+    asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE) ## usuario
     numero_poliza = models.CharField(max_length=25)  
     persona_principal =  models.ForeignKey(PersonaPrincipal, on_delete=models.CASCADE) 
     forma_pago = models.ForeignKey(FormaPago, on_delete=models.CASCADE)  
