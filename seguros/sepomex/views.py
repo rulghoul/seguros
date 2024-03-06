@@ -21,7 +21,7 @@ def upload_xml(request):
                 try:
                     message = xml.recorrer_xml_datos(sepomex_xml) 
                     messages.success(request, message)
-                    return redirect('carga_automatica') 
+                    return redirect('sepomex:carga_automatica') 
                 except Exception as e:
                     messages.error(request, f"Fallo la carga del archivo por: {e}" )
             else: 
@@ -99,7 +99,7 @@ class EstadoView(BaseListView):
     form_class = formularios.EstadoForm
     model = mod.Estado
     template_name = 'list.html'
-    redirige = 'home'
+    redirige = 'sepomex:estado'
     context_object_name = 'lista'
     title = 'Estado'
     encabezados = ['CLAVE', 'NOMBRE']
@@ -110,7 +110,7 @@ class MunicipioView(BaseListView):
     form_class = formularios.MunicipioForm
     model = mod.Municipio
     template_name = 'list.html'
-    redirige = 'home'
+    redirige = 'sepomex:municipio'
     context_object_name = 'lista'
     title = 'Municipio'
     encabezados = ['ESTADO', 'CLAVE',  'NOMBRE']
@@ -120,7 +120,7 @@ class TipoAsentamientoView(BaseListView):
     form_class = formularios.TipoAsentamientoForm
     model = mod.TipoAsentamiento
     template_name = 'list.html'
-    redirige = 'home'
+    redirige = 'sepomex:tipo_asentamiento'
     context_object_name = 'lista'
     title = 'Tipo Asentamiento'
     encabezados = ['CLAVE', 'NOMBRE']
@@ -130,7 +130,7 @@ class AsentamientoView(BaseListView):
     form_class = formularios.AsentamientoForm
     model = mod.Asentamiento
     template_name = 'list.html'
-    redirige = 'home'
+    redirige = 'sepomex:asentamiento'
     context_object_name = 'lista'
     title = 'Asentamiento'
     encabezados = ['MUNUCIPIO', 'TIPO ASENTAMIENTO', 'CODIGO POSTAL', 'NOMBRE']

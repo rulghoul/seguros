@@ -3,7 +3,7 @@ from django.db import models
 # SEPOMEX
 
 class Estado(models.Model):
-    clave = models.CharField(max_length=2, unique=True) #"c_estado"
+    clave = models.CharField(max_length=20, default=None,null=True) #"c_estado"
     nombre = models.CharField(max_length=250, unique=True) #"d_estado"
 
     def __str__(self) -> str:
@@ -11,14 +11,14 @@ class Estado(models.Model):
 
 class Municipio(models.Model):    
     estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
-    clave = models.CharField(max_length=4) #"D_mnpio"
+    clave = models.CharField(max_length=40,  default=None,null=True) #"D_mnpio"
     nombre = models.CharField(max_length=250) #"c_mnpio"
 
     def __str__(self) -> str:
         return self.nombre
 
 class TipoAsentamiento(models.Model):
-    clave = models.CharField(max_length=2, unique=True) #"d_tipo_asenta"
+    clave = models.CharField(max_length=20,  default=None,null=True) #"d_tipo_asenta"
     nombre = models.CharField(max_length=250, unique=True) #"d_tipo_asenta"
 
     def __str__(self) -> str:
