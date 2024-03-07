@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect 
 from django.views import View
 from django.contrib.admin.views.decorators import staff_member_required
@@ -83,10 +84,20 @@ class BaseListView(View):
                 pk = post_data.get('edit')
                 objeto = self.model.objects.get(pk=pk)
                 form = self.form_class(instance=objeto)
-        else:
+            
+            print(f"Se recupero la pagina 1 {page}")
+            paginas = Paginator(self.model.objects.all().order_by('nombre'), 100)
+            if post_data.get('page'):
+                page = paginas.get_page(post_data.get('page'))
+            else:
+                page = paginas.get_page(1)
+        else:            
             form = self.form_class()
+            paginas = Paginator(self.model.objects.all().order_by('nombre'), 100)
+            page = paginas.get_page(1)
+            print(f"Se recupero la pagina 1 {page}")
 
-        context['lista'] = self.model.objects.all()
+        context['lista'] = page
         context['form'] = form 
         context['titulo'] = self.title
         context['encabezados'] = self.encabezados
@@ -103,7 +114,7 @@ class EstadoView(BaseListView):
     context_object_name = 'lista'
     title = 'Estado'
     encabezados = ['CLAVE', 'NOMBRE']
-    campos = ['clave', 'nombre_estado',]
+    campos = ['clave', 'nombre',]
 
 
 class MunicipioView(BaseListView):
@@ -114,7 +125,7 @@ class MunicipioView(BaseListView):
     context_object_name = 'lista'
     title = 'Municipio'
     encabezados = ['ESTADO', 'CLAVE',  'NOMBRE']
-    campos = ['estado','clave', 'nombre_municipio',]
+    campos = ['estado','clave', 'nombre',]
 
 class TipoAsentamientoView(BaseListView):
     form_class = formularios.TipoAsentamientoForm
@@ -124,7 +135,7 @@ class TipoAsentamientoView(BaseListView):
     context_object_name = 'lista'
     title = 'Tipo Asentamiento'
     encabezados = ['CLAVE', 'NOMBRE']
-    campos = ['clave', 'nombre_tipo_asentamiento',]
+    campos = ['clave', 'nombre',]
 
 class AsentamientoView(BaseListView):
     form_class = formularios.AsentamientoForm
@@ -134,4 +145,4 @@ class AsentamientoView(BaseListView):
     context_object_name = 'lista'
     title = 'Asentamiento'
     encabezados = ['MUNUCIPIO', 'TIPO ASENTAMIENTO', 'CODIGO POSTAL', 'NOMBRE']
-    campos = ['municipio','tipo_asentamiento','codigo_postal', 'nombre_asentamiento',]
+    campos = ['municipio','tipo_asentamiento','codigo_postal', 'nombre',]
