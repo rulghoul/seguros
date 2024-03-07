@@ -3,6 +3,7 @@ from django.db import transaction
 from . import models 
 
 def procesar_tabla(elem):
+    
     datos_tabla = {
         'd_codigo': elem.find('{NewDataSet}d_codigo').text if elem.find('{NewDataSet}d_codigo') is not None else None,
         'd_asenta': elem.find('{NewDataSet}d_asenta').text if elem.find('{NewDataSet}d_asenta') is not None else None,
@@ -20,47 +21,55 @@ def procesar_tabla(elem):
         'd_zona': elem.find('{NewDataSet}d_zona').text if elem.find('{NewDataSet}d_zona') is not None else None,
         'c_cve_ciudad': elem.find('{NewDataSet}c_cve_ciudad').text if elem.find('{NewDataSet}c_cve_ciudad') is not None else None,
     }
+    try:
+        # Intenta obtener o crear el Estado
+        estado, created = models.Estado.objects.get_or_create(
+            nombre_estado = datos_tabla['d_estado'],
+            defaults={'clave':datos_tabla['c_estado']}
+        )
+        
+        # Obtener o crear TipoAsentamiento
+        tipo_asentamiento, created = models.TipoAsentamiento.objects.get_or_create(
+            nombre_tipo_asentamiento= datos_tabla['d_tipo_asenta'],
+            defaults={'clave':datos_tabla['c_tipo_asenta']}
+        )
 
-    # Intenta obtener o crear el Estado
-    estado, created = models.Estado.objects.get_or_create(
-        clave=datos_tabla['c_estado'],
-        defaults={'nombre': datos_tabla['d_estado']}
-    )
-    
-    # Obtener o crear TipoAsentamiento
-    tipo_asentamiento, created = models.TipoAsentamiento.objects.get_or_create(
-        clave=datos_tabla['c_tipo_asenta'], # Asumiendo que esta es la clave correcta
-        defaults={'nombre': datos_tabla['d_tipo_asenta']}
-    )
-
-    # Obtener o crear Municipio (depende del Estado)
-    municipio, created = models.Municipio.objects.get_or_create(
-        clave=datos_tabla['c_mnpio'],
-        estado=estado,
-        defaults={'nombre': datos_tabla['D_mnpio']}
-    )
-    
-    # Finalmente, crear el Asentamiento
-    asentamiento, created = models.Asentamiento.objects.get_or_create(
-        codigo_postal=datos_tabla['d_CP'],
-        municipio=municipio,
-        tipo_asentamiento=tipo_asentamiento,
-        defaults={'nombre': datos_tabla['d_asenta']}
-    )
+        # Obtener o crear Municipio (depende del Estado)
+        municipio, created = models.Municipio.objects.get_or_create(
+            estado=estado,
+            nombre_municipio=datos_tabla['D_mnpio'],
+            defaults={'clave':datos_tabla['c_mnpio']}
+        )
+        
+        # Finalmente, crear el Asentamiento
+        asentamiento, created = models.Asentamiento.objects.get_or_create(
+            codigo_postal=datos_tabla['d_codigo'],
+            municipio=municipio,
+            nombre_asentamiento= datos_tabla['d_asenta'],
+            defaults={'tipo_asentamiento':tipo_asentamiento}
+        )
+    except Exception as e:
+          raise Exception(F"{e}\n{datos_tabla}") 
 
 @transaction.atomic
 def recorrer_xml_datos(archivo_xml):
     try:
-        sepomex = ET.iterparse(archivo_xml, events=("start",))
         models.Estado.objects.all().delete()
+        models.Municipio.objects.all().delete()
+        models.TipoAsentamiento.objects.all().delete()
         models.Asentamiento.objects.all().delete()
-        for event, elem in sepomex:
+        contador = 0
+        fallos = 0
+        for event, elem in ET.iterparse(archivo_xml, events=("start",)):
             if elem.tag == '{NewDataSet}table':
                 try:
                     procesar_tabla(elem)
                 except Exception as e:
-                    print(f"Fallo el elemento por: {e}")
+                    fallos += 1
+                    #print(f"Fallo el elemento por: {e} ")
                 elem.clear()  # Limpiar el elemento para ahorrar memoria
+            contador += 1
+        print(f"Procesados: {contador}\tFallos: {fallos}")
     except Exception as e:
         print(f"Fallo el procesamiento de :{archivo_xml} por {e}" )  
             

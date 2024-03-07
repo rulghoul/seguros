@@ -103,7 +103,7 @@ class EstadoView(BaseListView):
     context_object_name = 'lista'
     title = 'Estado'
     encabezados = ['CLAVE', 'NOMBRE']
-    campos = ['clave', 'nombre',]
+    campos = ['clave', 'nombre_estado',]
 
 
 class MunicipioView(BaseListView):
@@ -114,7 +114,7 @@ class MunicipioView(BaseListView):
     context_object_name = 'lista'
     title = 'Municipio'
     encabezados = ['ESTADO', 'CLAVE',  'NOMBRE']
-    campos = ['estado','clave', 'nombre',]
+    campos = ['estado','clave', 'nombre_municipio',]
 
 class TipoAsentamientoView(BaseListView):
     form_class = formularios.TipoAsentamientoForm
@@ -124,7 +124,7 @@ class TipoAsentamientoView(BaseListView):
     context_object_name = 'lista'
     title = 'Tipo Asentamiento'
     encabezados = ['CLAVE', 'NOMBRE']
-    campos = ['clave', 'nombre',]
+    campos = ['clave', 'nombre_tipo_asentamiento',]
 
 class AsentamientoView(BaseListView):
     form_class = formularios.AsentamientoForm
@@ -134,4 +134,4 @@ class AsentamientoView(BaseListView):
     context_object_name = 'lista'
     title = 'Asentamiento'
     encabezados = ['MUNUCIPIO', 'TIPO ASENTAMIENTO', 'CODIGO POSTAL', 'NOMBRE']
-    campos = ['municipio','tipo_asentamiento','codigo_postal', 'nombre',]
+    campos = ['municipio','tipo_asentamiento','codigo_postal', 'nombre_asentamiento',]

@@ -1,0 +1,56 @@
+Procesados: 2264538     Fallos: 1532
+
+
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': None, 'd_asenta': None, 'd_tipo_asenta': None, 'D_mnpio': None, 
+'d_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 
+'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 
+'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '01620', 'd_asenta': 'Lomas de Tarango', 'd_tipo_asenta': None, 
+'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 
+'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 
+'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '01760', 'd_asenta': 'Atlamaya', 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '02050', 'd_asenta': 'Libertad', 'd_tipo_asenta': 'Colonia', 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '03520', 'd_asenta': 'Iztaccihuatl', 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '04440', 'd_asenta': 'Culhuacán CTM Sección I', 'd_tipo_asenta': 'Colonia', 'D_mnpio': 'Coyoacán', 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': None, 'd_asenta': None, 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '06020', 'd_asenta': 'Centro (Área 3)', 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '06880', 'd_asenta': None, 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '09420', 'd_asenta': None, 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '09630', 'd_asenta': 'San Miguel Teotongo Sección La Cruz', 'd_tipo_asenta': 'Colonia', 'D_mnpio': 'Iztapalapa', 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '09960', 'd_asenta': None, 'd_tipo_asenta': None, 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '11270', 'd_asenta': 'Argentina Antigua', 'd_tipo_asenta': 'Colonia', 'D_mnpio': None, 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '12000', 'd_asenta': 'San Mateo', 'd_tipo_asenta': 'Barrio', 'D_mnpio': 'Milpa Alta', 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+
+Fallo el elemento por: (1048, "Column 'nombre_estado' cannot be null")
+{'d_codigo': '13030', 'd_asenta': 'San Juan', 'd_tipo_asenta': 'Barrio', 'D_mnpio': 'Tláhuac', 'd_estado': None, 'd_ciudad': None, 'd_CP': None, 'c_estado': None, 'c_oficina': None, 'c_CP': None, 
+'c_tipo_asenta': None, 'c_mnpio': None, 'id_asenta_cpcons': None, 'd_zona': None, 'c_cve_ciudad': None} 
+20000
