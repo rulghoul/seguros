@@ -1,0 +1,66 @@
+
+<script>
+    $(document).ready(function () {
+      $('#myInput').on('keyup', function () {
+        var value = $(this).val().toLowerCase()
+        $('#CuerpoCatalogo tr').filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        })
+      })
+    });
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+    function recargaTabla(accion, valor) {
+      var data = {
+        csrfmiddlewaretoken: csrftoken
+      }
+      data[accion] = valor
+      if (/^(edit|save)$/.test(accion.toLowerCase())) {
+        data['move'] = $("#numeroActual").html();
+      }
+
+      if (/^(save)$/.test(accion.toLowerCase())) {
+        {% for campo in campos %}
+            data['{{ campo }}'] =  $('[name="{{ campo }}"]').val();
+        {% endfor %}        
+      }
+      
+      $.ajax({
+        type: 'POST',
+        url: '{% url redirige %}',
+        xhrFields: {
+          withCredentials: true
+        },
+        data: data,
+        success: function (data) {
+          $('#miTabla tbody').html('')
+          $('#barra-navegacion').html('')
+          var $datos = $(data)
+          var $contenidoCuerpo = $datos.find('#CuerpoCatalogo').html()
+          var $navegador = $datos.find('#navegacionContenido')
+          $('#miTabla tbody').html($contenidoCuerpo)
+          $('#barra-navegacion').html($navegador)
+        },
+        error: function (xhr, status, error) {
+          console.error('Error: ', error)
+          $('#CuerpoCatalogo').html('No se pudo recuperar la informacion')
+          $('#barra-navegacion').html('')
+        }
+      })
+    }
+  </script>

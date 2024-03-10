@@ -59,6 +59,16 @@ class BaseListView(View):
     def get_context_data(self, post_data=None):
         context = {}
         if post_data:
+            print(post_data)
+            paginas = Paginator(self.model.objects.all().order_by('nombre'), 10)
+            if 'move' in post_data:
+                print(f"El valor de move es {post_data.get('move',1)}")
+                form = self.form_class()
+                page = paginas.get_page(post_data.get('move',1))
+            else:
+                form = self.form_class()
+                page = paginas.get_page(1)
+
             if 'save' in post_data:   
                 print(f"Se entro en SAVE")
                 pk = post_data.get('save')
@@ -80,20 +90,17 @@ class BaseListView(View):
                 objeto = self.model.objects.get(pk=pk)
                 objeto.delete()
                 form = self.form_class() 
+
             elif 'edit' in post_data:
+                print(f"El pk a editar es {post_data.get('edit')}")
                 pk = post_data.get('edit')
                 objeto = self.model.objects.get(pk=pk)
-                form = self.form_class(instance=objeto)
-            
-            print(f"Se recupero la pagina 1 {page}")
-            paginas = Paginator(self.model.objects.all().order_by('nombre'), 100)
-            if post_data.get('page'):
-                page = paginas.get_page(post_data.get('page'))
-            else:
-                page = paginas.get_page(1)
+                form = self.form_class(instance=objeto)  
+
+
         else:            
             form = self.form_class()
-            paginas = Paginator(self.model.objects.all().order_by('nombre'), 100)
+            paginas = Paginator(self.model.objects.all().order_by('nombre'), 10)
             page = paginas.get_page(1)
             print(f"Se recupero la pagina 1 {page}")
 

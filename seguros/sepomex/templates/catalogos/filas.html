@@ -1,0 +1,20 @@
+{% if not form.instance.id %}
+  <tr>
+    {% include 'catalogos/save.html' %}
+  </tr>
+{% endif %}
+{% for elemento in lista %}
+  <tr>
+    {% if form.instance.id == elemento.id %}
+      {% include 'catalogos/save.html' %}
+    {% else %}
+      {% for campo in campos %}
+        <td>{{ elemento|getattribute:campo }}</td>
+      {% endfor %}
+      <td class="text-center">
+        <!-- Actualizar -->
+        <button class="btn btn-success" onclick="recargaTabla('edit',{{ elemento.pk }})"><span class="fa fa-pencil"></span></button>
+      </td>
+    {% endif %}
+  </tr>
+{% endfor %}
