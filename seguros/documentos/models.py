@@ -4,7 +4,7 @@ from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
 from simple_history.models import HistoricalRecords
 
-
+from sepomex import models as sepomex
 
 ######################### Opciones ###########################
 
@@ -136,7 +136,7 @@ class PersonaBase(models.Model):
     primer_apellido = models.CharField(max_length=120)
     segundo_apellido = models.CharField(max_length=120, blank=True, null=True)
     genero = models.CharField(max_length=1, choices=OPCIONES_GENERO)
-    estatus = models.CharField(max_length=10) ## Hay catalogo de estatus de personas?
+    estatus = models.CharField(max_length=10) ## Hay catalogo de estatus de personas?    
 
     class Meta:
         abstract = True
@@ -145,6 +145,13 @@ class PersonaPrincipal(PersonaBase):
     asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
     fecha_nacimiento = models.DateTimeField()   
+    #direccion
+    estado = models.ForeignKey(sepomex.Estado, on_delete=models.CASCADE)
+    municipio = models.ForeignKey(sepomex.Municipio, on_delete=models.CASCADE)
+    asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE)
+    calle = models.CharField(max_length=100,blank=True, null=True, default=None)
+    numero = models.CharField(max_length=5,blank=True, null=True, default=None)
+    piso = models.CharField(max_length=2,blank=True, null=True, default=None)
     history = HistoricalRecords()
 
 class PersonaRelacionada(PersonaBase):

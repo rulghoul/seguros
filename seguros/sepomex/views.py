@@ -5,6 +5,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.http import JsonResponse
 import logging
 
 from . import forms as formularios
@@ -156,3 +157,13 @@ class AsentamientoView(BaseListView):
     title = 'Asentamiento'
     encabezados = ['MUNUCIPIO', 'TIPO ASENTAMIENTO', 'CODIGO POSTAL', 'NOMBRE']
     campos = ['municipio','tipo_asentamiento','codigo_postal', 'nombre',]
+
+def obtener_municipios(request):
+    estado_id = request.GET.get('estado_id')
+    municipios = mod.Municipio.objects.filter(estado_id=estado_id).values('id', 'nombre')
+    return JsonResponse({'municipios': list(municipios)})
+
+def obtener_asentamientos(request):
+    municipio_id = request.GET.get('municipio_id')
+    asentamientos = mod.Asentamiento.objects.filter(municipio_id=municipio_id).values('id', 'nombre')
+    return JsonResponse({'asentamientos': list(asentamientos)})

@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, HTML, Submit
 
 from . import models as modelos
-
+from sepomex import models as sepomex
 from collections import OrderedDict
 
 
@@ -66,3 +66,14 @@ class PlanesForm(forms.ModelForm):
     class Meta:
         model = modelos.Planes
         fields = ('clave', 'nombre', 'empresa',  'activo',)
+
+
+class PersonaPrincipalForm(forms.ModelForm):
+    estado = forms.ModelChoiceField(queryset=sepomex.Estado.objects.all())
+    municipio = forms.ModelChoiceField(queryset=sepomex.Municipio.objects.none())
+    asentamiento = forms.ModelChoiceField(queryset=sepomex.Asentamiento.objects.none())
+
+    class Meta:
+        model = modelos.PersonaPrincipal
+        fields = '__all__'
+

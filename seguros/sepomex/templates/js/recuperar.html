@@ -1,0 +1,53 @@
+<script>
+    $(document).ready(function() {
+        // Cargar municipios basados en el estado seleccionado
+        $('#id_estado').change(function() {
+            var estadoId = $(this).val();
+            $.ajax({
+                url: '{% url "sepomex:obtener_municipios" %}',
+                data: {'estado_id': estadoId},
+                dataType: 'json',
+                success: function(data) {
+                    var municipios = data.municipios;
+                    var municipioSelect = $('#id_municipio');
+                    municipioSelect.empty();
+                    $.each(municipios, function(id, nombre) {
+                        municipioSelect.append($('<option>', {
+                            value: id,
+                            text: nombre
+                        }));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    var municipioSelect = $('#id_municipio');
+                    municipioSelect.empty();
+                }
+            });
+        });
+    
+        // Cargar asentamientos basados en el municipio seleccionado
+        $('#id_municipio').change(function() {
+            var municipioId = $(this).val();
+            $.ajax({
+                url: '{% url "sepomex:obtener_asentamientos" %}',
+                data: {'municipio_id': municipioId},
+                dataType: 'json',
+                success: function(data) {
+                    var asentamientos = data.asentamientos;
+                    var asentamientoSelect = $('#id_asentamiento');
+                    asentamientoSelect.empty();
+                    $.each(asentamientos, function(id, nombre) {
+                        asentamientoSelect.append($('<option>', {
+                            value: id,
+                            text: nombre
+                        }));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    var asentamientoSelect = $('#id_asentamiento');
+                    asentamientoSelect.empty();
+                }
+            });
+        });
+    });
+</script>

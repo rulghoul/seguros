@@ -149,8 +149,14 @@ class PlanesView(BaseListView):
     form_class = formularios.PlanesForm
     model = mod.Planes
     template_name = 'catalogos/list.html'
-    redirige = 'lista_planes'
+    redirige = 'ducumentos:lista_planes'
     context_object_name = 'lista'
     title = 'Planes'
     encabezados = ['CLAVE','NOMBRE', 'EMPRESA',  'ACTIVO',]
     campos = ['clave', 'nombre', 'empresa',  'activo',]
+
+
+class PersonaPrincipalAdd(CreateView):
+    template_name = "catalogoscontact.html"
+    form_class = formularios.PersonaPrincipalForm
+    success_url = "/thanks/"
