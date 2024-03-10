@@ -8,8 +8,7 @@
 <td class="text-center">
   <button class="btn btn-primary" onclick="recargaTabla('save',{{ elemento.pk }})"><span class="fa fa-save"></span></button>
   {% if  elemento.id != None %}
-  <button class="btn btn-primary" onclick="recargaTabla('move',{{ lista.number }})"><span class="fa fa-times"></span></button>
-    <a class="btn btn-secondary" href="{{request.META.HTTP_REFERER|escape}}"><span class="fa fa-times"></span></a>
+  <button class="btn btn-secondary" onclick="recargaTabla('move',{{ lista.number }})"><span class="fa fa-times"></span></button>    
   {% endif %}
 </td>
 </form>

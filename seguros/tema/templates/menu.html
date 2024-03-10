@@ -50,4 +50,25 @@
       </li>
     </ul>
   </li>
+
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <span class="fa-solid fa-gear"></span>
+      Sepomex
+    </a>
+    <ul class="dropdown-menu">
+      <li>
+        <a class="dropdown-item" href="{% url 'sepomex:carga_sepomex' %}">Cargar Sepomex</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'sepomex:estado' %}">Estados</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'sepomex:municipio' %}">Municipios</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="{% url 'sepomex:asentamiento' %}">Asentamientos</a>
+      </li>
+    </ul>
+  </li>
 </ul>

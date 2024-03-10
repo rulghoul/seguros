@@ -2,6 +2,8 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect 
 from django.views import View
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 import logging
 
@@ -37,7 +39,7 @@ def upload_xml(request):
 
     return render(request, 'upload_xml.html', {'form': form})
 
-
+@method_decorator(login_required, name="dispatch")
 class BaseListView(View):
     form_class = None
     model = None
@@ -59,10 +61,10 @@ class BaseListView(View):
     def get_context_data(self, post_data=None):
         context = {}
         if post_data:
-            print(post_data)
+            #print(post_data)
             paginas = Paginator(self.model.objects.all().order_by('nombre'), 10)
             if 'move' in post_data:
-                print(f"El valor de move es {post_data.get('move',1)}")
+                #print(f"El valor de move es {post_data.get('move',1)}")
                 form = self.form_class()
                 page = paginas.get_page(post_data.get('move',1))
             else:
@@ -70,7 +72,7 @@ class BaseListView(View):
                 page = paginas.get_page(1)
 
             if 'save' in post_data:   
-                print(f"Se entro en SAVE")
+                #print(f"Se entro en SAVE")
                 pk = post_data.get('save')
                 if not pk:
                     form = self.form_class(post_data)
@@ -79,11 +81,12 @@ class BaseListView(View):
                         form = self.form_class()
                     #form = self.form_class()
                 else:
-                    print(f"Se entro el id = {pk}")
+                    #print(f"Se entro el id = {pk}")
                     objeto = self.model.objects.get(id=pk)
                     form = self.form_class(post_data, instance=objeto)  
                     if form.is_valid():              
                         form.save()
+                        form = self.form_class()
                 
             elif 'delete' in post_data:
                 pk = post_data.get('delete')

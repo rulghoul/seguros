@@ -5,7 +5,7 @@ app_name = 'sepomex'
 
 
 urlpatterns = [
-    path('carga_automatica', views.upload_xml, name='carga_automatica'),
+    path('carga_sepomex', views.upload_xml, name='carga_sepomex'),
     ##Listados    
     path('estado', views.EstadoView.as_view(), name='estado'),
     path('municipio', views.MunicipioView.as_view(), name='municipio'),
