@@ -146,9 +146,9 @@ class PersonaPrincipal(PersonaBase):
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
     fecha_nacimiento = models.DateTimeField()   
     #direccion
-    estado = models.ForeignKey(sepomex.Estado, on_delete=models.CASCADE)
-    municipio = models.ForeignKey(sepomex.Municipio, on_delete=models.CASCADE)
-    asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE)
+    estado = models.ForeignKey(sepomex.Estado, on_delete=models.CASCADE, null=True, default=None)
+    municipio = models.ForeignKey(sepomex.Municipio, on_delete=models.CASCADE, null=True, default=None)
+    asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE, null=True, default=None)
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     piso = models.CharField(max_length=2,blank=True, null=True, default=None)

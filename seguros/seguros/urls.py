@@ -24,22 +24,12 @@ from tema import views as tema_views
 from documentos import views as doc_views
 from sepomex import views as sepomex_views
 
-#Catalogos Documentos
-catalogos_documentos = [
-    path('lista_tipo_conducto_pago/', doc_views.TipoConductoPagoView.as_view(), name='lista_tipo_conducto_pago'),
-    path('lista_tipo_persona/', doc_views.TipoPersonaView.as_view(), name='lista_tipo_persona'),
-    path('lista_forma_pago/', doc_views.FormaPagoView.as_view(), name='lista_forma_pago'),
-    path('lista_documentos/', doc_views.DocumentosView.as_view(), name='lista_documentos'),
-    path('lista_tipo_medio_conctacto/', doc_views.TipoMediocontactoView.as_view(), name='lista_tipo_medio_conctacto'),
-    path('lista_parentesco/', doc_views.ParentescoView.as_view(), name='lista_parentesco'),
-    path('lista_empresa/', doc_views.EmpresaContratanteView.as_view(), name='lista_empresa'),
-    path('lista_planes/', doc_views.PlanesView.as_view(), name='lista_planes'),
-]
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('tema', include('tema.urls')),
     path('sepomex/', include('sepomex.urls')),
+    path('documentos/', include('documentos.urls')),
     path('', tema_views.home_view, name='home'),    
     path('accounts/profile/', tema_views.home_view, name='profile'),
     path('login/', tema_views.CustomLoginView.as_view(), name='login'),
@@ -47,5 +37,4 @@ urlpatterns = [
     path('change-password/', auth_views.PasswordChangeView.as_view(), name="password_change"),    
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
-+ catalogos_documentos
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) #\

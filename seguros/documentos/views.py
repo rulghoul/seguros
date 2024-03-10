@@ -72,7 +72,7 @@ class TipoConductoPagoView(BaseListView):
     form_class = formularios.TipoConductoPagoForm
     model = mod.TipoConductoPago
     template_name = 'catalogos/list.html'
-    redirige = 'lista_tipo_conducto_pago'
+    redirige = 'documentos:lista_tipo_conducto_pago'
     context_object_name = 'lista'
     title = ' Tipo De Conducto Pago'
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
@@ -82,7 +82,7 @@ class TipoPersonaView(BaseListView):
     form_class = formularios.TipoPersonaForm
     model = mod.TipoPersona
     template_name = 'catalogos/list.html'
-    redirige = 'lista_tipo_persona'
+    redirige = 'documentos:lista_tipo_persona'
     context_object_name = 'lista'
     title = 'Tipo de Persona'
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
@@ -93,7 +93,7 @@ class FormaPagoView(BaseListView):
     form_class = formularios.FormaPagoForm
     model = mod.FormaPago
     template_name = 'catalogos/list.html'
-    redirige = 'lista_forma_pago'
+    redirige = 'documentos:lista_forma_pago'
     context_object_name = 'lista'
     title = 'Forma de Pago'
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
@@ -103,7 +103,7 @@ class DocumentosView(BaseListView):
     form_class = formularios.DocumentosForm
     model = mod.Documentos
     template_name = 'catalogos/list.html'
-    redirige = 'lista_documentos'
+    redirige = 'documentos:lista_documentos'
     context_object_name = 'lista'
     title = 'Documentos'
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
@@ -114,7 +114,7 @@ class TipoMediocontactoView(BaseListView):
     form_class = formularios.TipoMediocontactoForm
     model = mod.TipoMediocontacto
     template_name = 'catalogos/list.html'
-    redirige = 'lista_tipo_medio_conctacto'
+    redirige = 'documentos:lista_tipo_medio_conctacto'
     context_object_name = 'lista'
     title = 'Tipo Medio Contacto'
     encabezados = ['DESCRIPCION', 'ACTIVO']
@@ -126,7 +126,7 @@ class ParentescoView(BaseListView):
     form_class = formularios.ParentescoForm
     model = mod.Parentesco
     template_name = 'catalogos/list.html'
-    redirige = 'lista_parentesco'
+    redirige = 'documentos:lista_parentesco'
     context_object_name = 'lista'
     title = 'Parentesco'
     encabezados = ['DESCRIPCION', 'ACTIVO']
@@ -139,7 +139,7 @@ class EmpresaContratanteView(BaseListView):
     form_class = formularios.EmpresaContratanteForm
     model = mod.EmpresaContratante
     template_name = 'catalogos/list.html'
-    redirige = 'lista_empresa'
+    redirige = 'documentos:lista_empresa'
     context_object_name = 'lista'
     title = 'Empresa Contratante'
     encabezados = ['CLAVE','NOMBRE', 'LOGO', 'PLECA', 'ACTIVO',]
@@ -149,7 +149,7 @@ class PlanesView(BaseListView):
     form_class = formularios.PlanesForm
     model = mod.Planes
     template_name = 'catalogos/list.html'
-    redirige = 'ducumentos:lista_planes'
+    redirige = 'documentos:lista_planes'
     context_object_name = 'lista'
     title = 'Planes'
     encabezados = ['CLAVE','NOMBRE', 'EMPRESA',  'ACTIVO',]
@@ -157,6 +157,6 @@ class PlanesView(BaseListView):
 
 
 class PersonaPrincipalAdd(CreateView):
-    template_name = "catalogoscontact.html"
+    template_name = "catalogos/add.html"
     form_class = formularios.PersonaPrincipalForm
     success_url = "/thanks/"
