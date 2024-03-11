@@ -1,4 +1,5 @@
 from django import forms
+from django_select2 import forms as s2forms
 from django.forms import inlineformset_factory, BaseFormSet, formset_factory
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, HTML, Submit
@@ -68,10 +69,40 @@ class PlanesForm(forms.ModelForm):
         fields = ('clave', 'nombre', 'empresa',  'activo',)
 
 
+class MunicipioWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AsentamientoWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
 class PersonaPrincipalForm(forms.ModelForm):
-    estado = forms.ModelChoiceField(queryset=sepomex.Estado.objects.all())
-    municipio = forms.ModelChoiceField(queryset=sepomex.Municipio.objects.none())
-    asentamiento = forms.ModelChoiceField(queryset=sepomex.Asentamiento.objects.none())
+    estado = forms.ModelChoiceField(queryset=sepomex.Estado.objects.all(),                                    
+        widget=s2forms.ModelSelect2Widget(
+            model=sepomex.Estado,
+            search_fields=['nombre__icontains'],
+        ))
+    municipio = forms.ModelChoiceField(queryset=sepomex.Municipio.objects.all(),                                    
+        widget=s2forms.ModelSelect2Widget(
+            model=sepomex.Municipio,
+            search_fields=['nombre__icontains'],
+            dependent_fields={'estado': 'estado'},
+            max_results=500,
+        ))
+    asentamiento = forms.ModelChoiceField(queryset=sepomex.Asentamiento.objects.all(),                                    
+        widget=s2forms.ModelSelect2Widget(
+            model=sepomex.Asentamiento,
+            search_fields=['nombre__icontains'],
+            dependent_fields={'municipio': 'municipio'},
+            max_results=500,
+        ))
 
     class Meta:
         model = modelos.PersonaPrincipal

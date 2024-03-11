@@ -159,4 +159,4 @@ class PlanesView(BaseListView):
 class PersonaPrincipalAdd(CreateView):
     template_name = "catalogos/add.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = "/thanks/"
+    success_url = "home"

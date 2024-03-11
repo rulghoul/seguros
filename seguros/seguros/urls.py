@@ -30,6 +30,7 @@ urlpatterns = [
     path('tema', include('tema.urls')),
     path('sepomex/', include('sepomex.urls')),
     path('documentos/', include('documentos.urls')),
+    path("select2/", include("django_select2.urls")),
     path('', tema_views.home_view, name='home'),    
     path('accounts/profile/', tema_views.home_view, name='profile'),
     path('login/', tema_views.CustomLoginView.as_view(), name='login'),
