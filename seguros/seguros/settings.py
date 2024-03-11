@@ -70,6 +70,7 @@ TEMPLATES = [
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+SELECT2_BOOTSTRAP = True
 
 WSGI_APPLICATION = "seguros.wsgi.application"
 

@@ -160,3 +160,8 @@ class PersonaPrincipalAdd(CreateView):
     template_name = "catalogos/add.html"
     form_class = formularios.PersonaPrincipalForm
     success_url = "home"
+    
+    def form_valid(self, form):
+        if mod.Asesor.objects.filter(usuario = self.request.user).exists():
+            form.instance.asesor = mod.Asesor.objects.filter(usuario = self.request.user)  
+        return super().form_valid(form)

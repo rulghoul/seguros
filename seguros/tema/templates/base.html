@@ -17,11 +17,11 @@
 
     {# Load CSS and JavaScript #}
     {% bootstrap_css %}
-    
+
     {# Display django.contrib.messages as Bootstrap alerts #}
     {% bootstrap_messages %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'colorfield/colorfield.js' %}"></script>
     <script src="{% static 'colorfield/jscolor/jscolor.js' %}"></script>
@@ -30,26 +30,26 @@
   <body>
     <div class="fixed-top d-flex align-items-center" style="background-color: {% get_color 'pleca' %};">
       <!-- Accionador del Slidebar -->
-      <a class="dropdown-item" href="#" onclick="toggleSlidebar()" 
-      style=" font-size: 32px; width: 2em; background-color: {% get_color 'pleca' %};">
-      <span class="fa-solid fa-bars" style="background-color: {% get_color 'pleca' %};"></span>
-    </a>
+      <a class="dropdown-item" href="#" onclick="toggleSlidebar()" style=" font-size: 32px; width: 2em; background-color: {% get_color 'pleca' %};"><span class="fa-solid fa-bars" style="background-color: {% get_color 'pleca' %};"></span></a>
 
       <!-- Logo o Imagen -->
       <a class="nav-brand" href="{% url 'home' %}"><img src="{% get_imagen 'logo' %}" height="80px" /></a>
     </div>
 
-    <div id="slidebar" class="slidebar" >
-      {% if user.is_authenticated  %}
+    <div id="slidebar" class="slidebar" style="background-color: {% get_color 'menu' %};">
+      {% if user.is_authenticated %}
         {% include 'menu.html' %}
-        <a class="btn btn-danger enlace-inferior " href="{% url 'logout' %}">Salir</a>
+        <div class="enlace-inferior">
+          <a class="btn btn-danger" href="{% url 'logout' %}" style="margin-left: 50%; transform: translateX(-50%); font-size: large;">Salir</a>
+        </div>
       {% else %}
-        <a class="btn btn-success enlace-inferior " href="{% url 'login' %}">Ingresar</a>
+        <div class="enlace-inferior">
+          <a class="btn btn-success" href="{% url 'login' %}" style="margin-left: 50%; transform: translateX(-50%); font-size: large;">Ingresar</a>
+        </div>
       {% endif %}
     </div>
 
-    <div class="vh-100 container-fluid align-items-center" 
-    style="background-color: {% get_rgba 'fondo' 0.8 %}; max-width: 90%;margin-top: 90px;">
+    <div class="vh-100 container-fluid align-items-center" style="background-color: {% get_rgba 'fondo' 0.8 %}; max-width: 90%;margin-top: 90px;">
       {% block content %}
 
       {% endblock %}

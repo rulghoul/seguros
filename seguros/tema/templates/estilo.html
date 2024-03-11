@@ -23,24 +23,22 @@
     /* Estilo del Slidebar */
     .slidebar {
         height: 100%;
-        width: 0;
+        width: 9em;
         position: fixed;
-        z-index: 1;
-        top: 0;
-        left: 0;
+        left: -100%;
+        left: 100%;
         background-color:  {% get_color 'menu' %};
-        overflow-x: hidden;
-        transition: 0.5s;
-        padding-top: 20px;
-        margin-top: 80px;
+        transition: 1.0s;
+        padding-top: 80px;
     }
     
-    .slidebar .enlace-inferior {
+    .slidebar .enlace-inferior {       
         position: absolute; 
         bottom: 0; 
         width: 100%;
-        font-size: 36px;
-        margin-bottom: 80px;
+        margin-bottom:3em;
+        align-items: center;
+        font-size: large;
     }    
     
     /* Redondear imputs */
@@ -65,16 +63,21 @@
 
 </style>
 
-
-<script type="text/javascript">
-    function toggleSlidebar() {
-        var slidebar = document.getElementById("slidebar");
-        if (slidebar.style.width === "10em") {
-            slidebar.style.width = "0em";
-        } else {
-            slidebar.style.width = "10em";
-        }
-    }
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slidebar = document.getElementById('slidebar');
+        // Mostrar el menú cuando el mouse se mueva hacia el lado izquierdo de la pantalla
+        document.addEventListener('mousemove', function (e) {
+            if (e.clientX < 100) { // Ajusta este valor según sea necesario
+                slidebar.style.left = '0';
+            }
+        });
+        // Ocultar el menú cuando el mouse se mueva fuera del menú
+        slidebar.addEventListener('mouseleave', function (e) {
+            slidebar.style.left = '-100%'; // Asegúrate de que esto coincida con el ancho de tu slidebar
+        });
+    });
 </script>
+    
 
-
+<div>{% get_color 'menu' %}</div>
