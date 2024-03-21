@@ -14,7 +14,7 @@ SECRET_KEY = "django-insecure-!7)#etk19323^(uade5)dozi+dwl0+^#cpv=vg5*&lttu+tsr1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "89.116.191.94"]
 
 
 # Application definition
@@ -79,16 +79,13 @@ WSGI_APPLICATION = "seguros.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {        
-        "ENGINE": os.environ.get("ACUPUNTURA_SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": "seguros",
-        "USER": "ceneval",
-        "PASSWORD": "ceneval",
-        "HOST": os.environ.get("ACUPUNTURA_SQL_HOST", "localhost"),
-        "PORT": os.environ.get("ACUPUNTURA_SQL_PORT", "5432"),
-        'OPTIONS': {
-            'sql_mode': 'STRICT_TRANS_TABLES',
-        },
+    'default': {
+        "ENGINE": os.environ.get("SEGUROS_SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("SEGUROS_SQL_DATABASE", "seguros"),
+        "USER": os.environ.get("SEGUROS_SQL_USER", "usuario"),
+        "PASSWORD": os.environ.get("SEGUROS_SQL_PASSWORD", "contraseña"),
+        "HOST": os.environ.get("SEGUROS_SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SEGUROS_SQL_PORT", "5432"),
     }
 }
 
@@ -113,14 +110,14 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "5432") + "/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "5432") + "/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -161,3 +158,22 @@ CKEDITOR_BASEPATH =  os.path.join(STATIC_ROOT,"ckeditor/ckeditor/")
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 128 * 1024 * 1024

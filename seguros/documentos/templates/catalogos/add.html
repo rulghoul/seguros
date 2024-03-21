@@ -3,18 +3,12 @@
 {% load crispy_forms_tags %} 
 {% block content %}
 
-{{ form.media.css }}
+
   <h3 class="card-title">{{ titulo }}</h3>
 
     <form action="" method="POST">
-      {% csrf_token %} {% crispy form%}
-
-      <div class="col text-center">        
-        <input type="submit" name="submit" value="Agregar" class="btn btn-info" id="submit-save">
-        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
-      </div>
-      
+       {% crispy form%}
     </form>
 
-    {{ form.media.js }}
+    
 {% endblock %}

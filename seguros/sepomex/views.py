@@ -25,17 +25,18 @@ def upload_xml(request):
                 try:
                     message = xml.recorrer_xml_datos(sepomex_xml) 
                     messages.success(request, message)
-                    return redirect('sepomex:carga_automatica') 
+                    logging.info(message)
+                    return redirect('sepomex:carga_sepomex') 
                 except Exception as e:
                     messages.error(request, f"Fallo la carga del archivo por: {e}" )
             else: 
-                logging("No se pudo leer el archivo")
+                logging.error("No se pudo leer el archivo")
                 messages.error(request, "No se pudo leer el archivo" )
         else:
             logging.info("No es valido el formulario")
             messages.error(request, "No es valido el formulario" )
     else:
-        logging.info("Se recibio post")
+        logging.info("Se recibio get")
         form = formularios.xml_sepomex_upload_form()
 
     return render(request, 'upload_xml.html', {'form': form})
