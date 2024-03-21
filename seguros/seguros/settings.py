@@ -16,6 +16,9 @@ DEBUG = True
 
 #ALLOWED_HOSTS = ["*", "89.116.191.94", "ifnap8.easypanel.host"]
 ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost').split(',')
+CSRF_TRUSTED_ORIGINS = ['https://seguros.ghoulrul.online']
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # Application definition
 
