@@ -1,6 +1,9 @@
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.views.generic import ListView, DetailView
 from django.views import View
 from . import models as mod
@@ -164,4 +167,29 @@ class PersonaPrincipalAdd(CreateView):
     def form_valid(self, form):
         if mod.Asesor.objects.filter(usuario = self.request.user).exists():
             form.instance.asesor = mod.Asesor.objects.filter(usuario = self.request.user)  
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context["titulo"] = "Agregar Cliente"
+        context["redirige"] = "documentos:principal_add"
+        return context
+    
+#Asesores
+
+#@staff_member_required    
+class AsesorAdd(FormView):
+    template_name = "catalogos/add.html"
+    form_class = formularios.AsesorCustomForm
+    success_url = reverse_lazy('documentos:asesor_add')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Agregar Asesor"
+        context["redirige"] = "documentos:asesor_add"
+        return context
+    
+    def form_valid(self, form):                
+        form.crea_asesor()
         return super().form_valid(form)

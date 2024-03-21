@@ -36,12 +36,6 @@ class ClaveField(models.CharField):
         kwargs['unique'] = True  # Hace que el campo sea único por defecto
         super().__init__(*args, **kwargs)
 
-class Asesor(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    telefono1 = models.CharField(max_length=20)
-    telefono2 = models.CharField(max_length=20)
-    history = HistoricalRecords()
-
 
 ######################### Catalogos ###########################
 
@@ -49,44 +43,42 @@ class TipoConductoPago(models.Model):
     clave = ClaveField()
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
+    
 
     def __str__(self) -> str:
-        return self.clave
+        return self.descripcion
 
 
 class TipoPersona(models.Model):
     clave = ClaveField()
     descripcion = models.CharField(max_length=50)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
+    
 
     def __str__(self) -> str:
-        return self.clave
+        return self.descripcion
 
 class FormaPago(models.Model): #("CLIENTE", "BENEFICIARIO")
     clave = ClaveField()
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
     
     def __str__(self) -> str:
-        return self.clave
+        return self.descripcion
 
 class Documentos(models.Model):
     clave = models.CharField(max_length=50, unique=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
     
     def __str__(self) -> str:
-        return self.clave
+        return self.descripcion
 
 
 class TipoMediocontacto(models.Model):
     descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
+    
     
     def __str__(self) -> str:
         return self.descripcion
@@ -95,7 +87,7 @@ class TipoMediocontacto(models.Model):
 class Parentesco(models.Model):
     descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
+    
     
     def __str__(self) -> str:
         return self.descripcion
@@ -109,22 +101,24 @@ class EmpresaContratante(models.Model):
     activo = models.BooleanField(default=True)
     logo_small = models.FileField(blank=True, null=True, default=None)
     pleca = models.FileField(blank=True, null=True, default=None)
-    history = HistoricalRecords()
+    
     
     def __str__(self) -> str:
         return self.nombre
 
-class AsesorEmpresa(models.Model):
-    empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
-    history = HistoricalRecords()
+class Asesor(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    empresa = models.ManyToManyField(EmpresaContratante)
+    telefono1 = models.CharField(max_length=20)
+    telefono2 = models.CharField(max_length=20)
+    
 
 class Planes(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     activo = models.BooleanField(default=True)
-    history = HistoricalRecords()
+    
     
     def __str__(self) -> str:
         return self.nombre
@@ -152,12 +146,12 @@ class PersonaPrincipal(PersonaBase):
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     piso = models.CharField(max_length=2,blank=True, null=True, default=None)
-    history = HistoricalRecords()
+    
 
 class PersonaRelacionada(PersonaBase):
     parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE)
     persona_principal = models.ForeignKey(PersonaPrincipal, on_delete=models.CASCADE) 
-    history = HistoricalRecords()
+    
 
 class Poliza(models.Model):
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
@@ -169,7 +163,7 @@ class Poliza(models.Model):
     plan = models.ForeignKey(Planes, on_delete=models.CASCADE)    
     fechavigencia = models.DateTimeField()  
     estatus = models.CharField( max_length=10)  ## Hay catalogo de estatus de polizas?
-    history = HistoricalRecords()
+    
 
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
@@ -177,7 +171,7 @@ class Beneficiarios(models.Model):
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
     #persona_principal = models.CharField( max_length=20)  
     porcentaje_participacion = models.PositiveSmallIntegerField( blank=True, null=True)  
-    history = HistoricalRecords()
+    
 
 class CheckDocumentos(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
@@ -188,14 +182,14 @@ class CheckDocumentos(models.Model):
     entregado = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
     archivo = models.FileField()
     fecha_adjuntado = models.DateTimeField()  
-    history = HistoricalRecords()
+    
 
 
 class PlanDocumentos(models.Model):
     clave = ClaveField()
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     documento = models.ForeignKey(Documentos, on_delete=models.CASCADE)
-    history = HistoricalRecords()
+    
 
 class Siniestros(models.Model):
     poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE)
@@ -203,5 +197,5 @@ class Siniestros(models.Model):
     descripcion_siniestro = models.CharField(max_length=500, blank=True, null=True)  
     fecha_evento = models.DateTimeField()  
     estatus = models.CharField(max_length=10)
-    history = HistoricalRecords()
+    
 
