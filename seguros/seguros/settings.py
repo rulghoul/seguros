@@ -14,8 +14,8 @@ SECRET_KEY = "django-insecure-!7)#etk19323^(uade5)dozi+dwl0+^#cpv=vg5*&lttu+tsr1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "89.116.191.94"]
-
+#ALLOWED_HOSTS = ["*", "89.116.191.94", "ifnap8.easypanel.host"]
+ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost').split(',')
 
 # Application definition
 
