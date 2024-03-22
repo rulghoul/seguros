@@ -12,11 +12,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-!7)#etk19323^(uade5)dozi+dwl0+^#cpv=vg5*&lttu+tsr1"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-#ALLOWED_HOSTS = ["*", "89.116.191.94", "ifnap8.easypanel.host"]
+ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost').split(',')
-CSRF_TRUSTED_ORIGINS = ['https://seguros.ghoulrul.online']
+CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_ALLOWED_HOSTS'+',https://seguros.ghoulrul.online', 'https://seguros.ghoulrul.online').split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
