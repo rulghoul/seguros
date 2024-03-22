@@ -38,4 +38,7 @@ urlpatterns = [
     path('change-password/', auth_views.PasswordChangeView.as_view(), name="password_change"),    
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) #\
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+#+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+#if settings.DEBUG:
+#    urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
