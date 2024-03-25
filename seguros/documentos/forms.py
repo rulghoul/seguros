@@ -148,7 +148,7 @@ class PersonaPrincipalForm(forms.ModelForm):
             Div(
                 Div('calle', css_class='col-md-6'),
                 Div('numero', css_class='col-md-3'),
-                Div('piso', css_class='col-md-3'),
+                Div('numero_interior', css_class='col-md-3'),
                 css_class='row'
             ),
             Div(
@@ -167,7 +167,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                   'segundo_apellido', 'genero', 'estatus',
                   'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
                   'estado', 'municipio', 'asentamiento', 
-                  'calle', 'numero', 'piso',
+                  'calle', 'numero', 'numero_interior',
                   ]  
 
     
@@ -248,6 +248,7 @@ class AsesorCustomForm(forms.Form):
             usuario=user,
             telefono1=telefono1,
             telefono2=telefono2
-        )   
+        )
+        #Modificar para agregar telefono, clave y correo por empresa
 
         asesor.empresa.set(empresa)     

@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: seguros
+      POSTGRES_PASSWORD: Kenqsduldc843
+      POSTGRES_DB: seguros
+
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/data
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - static:/seguros/seguros/seguros/static
+      - media:/seguros/seguros/seguros/media
+    environment:
+      DEBUG: 1
+      SECRET_KEY: k$^m!=dp7ah&0_(9&0!b(47thue*@2x)u=883w3)1*pt8ae(i=
+      SEGUROS_ALLOWED_HOSTS: http://localhost:1337,localhost
+      SEGUROS_SQL_ENGINE: django.db.backends.postgresql
+      SEGUROS_SQL_DATABASE: seguros
+      SEGUROS_SQL_USER: seguros
+      SEGUROS_SQL_PASSWORD: Kenqsduldc843
+      SEGUROS_SQL_HOST: db
+      SEGUROS_SQL_PORT: 5432
+      SEGUROS_REDIS: "redis://redis:6379"
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+
+  nginx:    
+    build: ./nginx
+    volumes:
+      - static:/web/static
+      - media:/web/media
+    ports:
+      - "1337:80"
+
+volumes:
+  postgres_data:
+  redis_data:
+  static:
+  media:
+
+networks:
+  default:
+    name: seguros-network
+

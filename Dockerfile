@@ -1,7 +1,8 @@
 FROM python:3.11-slim
 #ENV PYTHONUNBUFFERED 1
-
-WORKDIR /seguros
+ENV APP_HOME=/seguros/seguros
+WORKDIR $APP_HOME
+#WORKDIR /seguros
 
 RUN apt-get update && apt-get install -y \
     libpq-dev \
@@ -20,3 +21,5 @@ RUN chmod +x entrypoint.sh
 
 # Configurar el script de entrada como punto de entrada
 ENTRYPOINT ["./entrypoint.sh"]
+
+

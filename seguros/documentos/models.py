@@ -111,6 +111,19 @@ class Asesor(models.Model):
     empresa = models.ManyToManyField(EmpresaContratante)
     telefono1 = models.CharField(max_length=20)
     telefono2 = models.CharField(max_length=20)
+    #Multiples correos, uno por cada empresa
+    #Telefono por empresa
+    #Clave por Empresa
+
+class AsesorEmpresa(models.Model):
+    asesor = models.ForeignKey('Asesor', on_delete=models.CASCADE)
+    empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
+    correo_empleado = models.EmailField(max_length=254)
+    codigo_empleado = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return f"{self.asesor} - {self.empresa}"
+
     
 
 class Planes(models.Model):
@@ -145,10 +158,11 @@ class PersonaPrincipal(PersonaBase):
     asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE, null=True, default=None)
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
-    piso = models.CharField(max_length=2,blank=True, null=True, default=None)
+    numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
     
 
 class PersonaRelacionada(PersonaBase):
+    #Nombre, parentesco, porcentaje
     parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE)
     persona_principal = models.ForeignKey(PersonaPrincipal, on_delete=models.CASCADE) 
     
