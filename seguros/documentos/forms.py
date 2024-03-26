@@ -176,6 +176,7 @@ class EmpresaWidget(s2forms.ModelSelect2MultipleWidget):
 
 class UserForm(forms.ModelForm):
     helper = FormHelper()
+    helper.form_tag = False
     helper.layout = Layout(
             Div(
                 Div('first_name', css_class='col-md-6'),
@@ -208,6 +209,8 @@ class AsesorEmpresaFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_method = 'post'
+        self.helper = FormHelper()
+        self.helper.form_tag = False
         self.layout = Layout(
                 Div(
                     Div('empresa', css_class='col-md-6'),
@@ -236,70 +239,3 @@ AsesorEmpresaFormset = inlineformset_factory(
     can_delete=True 
 )
 
-
-
-class AsesorCustomForm(forms.Form):
-    usuario = forms.CharField(label='Nombre de usuario')
-    correo = forms.EmailField(label='Correo electrónico')
-    nombre = forms.CharField(label='Nombre')
-    apellidos = forms.CharField(label='Apellidos')
-    empresa = forms.ModelMultipleChoiceField(label='Empresas',
-        queryset=modelos.EmpresaContratante.objects.all(),                                    
-        widget=EmpresaWidget
-        )
-    telefono2 = forms.CharField(label='Telefono 1')
-    telefono1 = forms.CharField(label='Telefono 2')
-    helper = FormHelper()
-    helper.layout = Layout(
-            Div(
-                Div('nombre', css_class='col-md-5'),
-                Div('apellidos', css_class='col-md-5'),
-                Div('usuario', css_class='col-md-2'),
-                css_class='row'
-            ),
-            Div(
-                Div('correo', css_class='col-md-8'),
-                Div('empresa', css_class='col-md-4'),
-                css_class='row'
-            ),
-            Div(
-                Div('telefono1',css_class='col-md-2'),            
-                Div('telefono2',css_class='col-md-4'),
-                css_class='row'
-            ),
-            Div(
-                Submit('submit', 'Agregar', css_class='btn btn-info'),
-                 HTML("""
-                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
-                """),
-                css_class='col text-center'
-            ),
-    )
-
-    @transaction.atomic
-    def crea_asesor(self):
-        username = self.cleaned_data.get('usuario')
-        email = self.cleaned_data.get('correo')
-        first_name = self.cleaned_data.get('nombre')
-        last_name = self.cleaned_data.get('apellidos')
-        empresa = self.cleaned_data.get('empresa')
-        telefono1 = self.cleaned_data.get('telefono1')
-        telefono2 = self.cleaned_data.get('telefono2')
-
-        # Crear el usuario
-        user, created = User.objects.get_or_create(
-            username=username,
-            email=email,
-            first_name=first_name,
-            last_name=last_name
-        )
-
-        # Crear el perfil del asesor
-        asesor = modelos.Asesor.objects.create(
-            usuario=user,
-            telefono1=telefono1,
-            telefono2=telefono2
-        )
-        #Modificar para agregar telefono, clave y correo por empresa
-
-        asesor.empresa.set(empresa)     

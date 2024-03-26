@@ -5,7 +5,7 @@
 
 
   <h3 class="card-title">{{ titulo }}</h3>
-    <form method="post">
+    <form action="{% url 'documentos:asesor_add' %}"  method="post">
         {% crispy  user_form %}
         <hr class="hr" />
         {% crispy formset helper %}        

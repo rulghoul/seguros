@@ -8,9 +8,12 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, DetailView
 from django.views import View
-from . import models as mod
+from django.db import transaction
 from django.contrib.auth.models import User
+
+from . import models as mod
 from . import forms as formularios
+from .utils.send_email_new_asesor import envia_correo_new_asesor as envia 
 
 ######################### Vista Base ###########################
 
@@ -209,23 +212,8 @@ class PersonaPrincipalUpdate(UpdateView):
     
 #Asesores
 
-#@staff_member_required    
-class AsesorAdd(FormView):
-    template_name = "catalogos/add.html"
-    form_class = formularios.AsesorCustomForm
-    success_url = reverse_lazy('documentos:asesor_add')
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["titulo"] = "Agregar Asesor"
-        context["redirige"] = "documentos:asesor_add"
-        return context
-    
-    def form_valid(self, form):                
-        form.crea_asesor()
-        return super().form_valid(form)
-    
-
+@transaction.atomic
 def crear_o_editar_asesor(request, asesor_id=None):
     if asesor_id:
         asesor = mod.Asesor.objects.get(pk=asesor_id)
@@ -233,6 +221,7 @@ def crear_o_editar_asesor(request, asesor_id=None):
     else:
         asesor = mod.Asesor()
         user = User()
+
     helper = formularios.AsesorEmpresaFormSetHelper
     formset = formularios.AsesorEmpresaFormset(request.POST or None, instance=asesor)
     
@@ -241,10 +230,12 @@ def crear_o_editar_asesor(request, asesor_id=None):
         if user_form.is_valid():
             created_user = user_form.save()
             asesor.usuario = created_user
-            asesor.save()            
+            asesor.save()                        
             if formset.is_valid():
                 formset.save()
-                return redirect('donde_quieras_redirigir')  # Ajusta la redirección
+                envia(request, created_user)
+                return redirect('home') 
+                
     else:
         user_form = formularios.UserForm(instance=user)
         formset = formularios.AsesorEmpresaFormset(instance=asesor)
@@ -253,5 +244,5 @@ def crear_o_editar_asesor(request, asesor_id=None):
         'user_form': user_form,
         'formset': formset,
         'helper': helper,
-        'titilo': 'Nuevo Asesor'
+        'titulo': 'Nuevo Asesor'
     })
