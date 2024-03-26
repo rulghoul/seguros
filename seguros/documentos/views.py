@@ -1,5 +1,6 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.utils.safestring import mark_safe
 
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -160,7 +161,7 @@ class PlanesView(BaseListView):
 
 
 class PersonaPrincipalAdd(CreateView):
-    template_name = "catalogos/add.html"
+    template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
     success_url = "home"
     
@@ -174,7 +175,35 @@ class PersonaPrincipalAdd(CreateView):
         user = self.request.user
         context["titulo"] = "Agregar Cliente"
         context["redirige"] = "documentos:principal_add"
+        context["informacion"] = "sepomex:asentamiento_details"
         return context
+    
+class PersonaPrincipalUpdate(UpdateView):
+    template_name = "catalogos/add_cliente.html"
+    form_class = formularios.PersonaPrincipalForm
+    success_url = "home"
+    
+    def form_valid(self, form):
+        if mod.Asesor.objects.filter(usuario = self.request.user).exists():
+            form.instance.asesor = mod.Asesor.objects.filter(usuario = self.request.user)  
+        return super().form_valid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context["titulo"] = "Actualizar Cliente"
+        context["redirige"] = "documentos:principal_update"
+        context["informacion"] = "documentos:asentamiento_details"
+        return context
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        # Asume que tu instancia ya está cargada en self.object gracias a UpdateView
+        asentamiento = self.object.asentamiento
+        initial['codigo_postal'] = asentamiento.codigo_postal
+        initial['municipio'] = asentamiento.municipio.nombre
+        initial['estado'] = asentamiento.municipio.estado.nombre
+        return initial
     
 #Asesores
 

@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY","emqctex@x=j1z&bcdlz67vj3_db($ks9(49c0y=p(#uwllb28l")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
+DEBUG = os.environ.get("DEBUG","1")
 
-ALLOWED_HOSTS = ["*"]
+#ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost').split(',')
 CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_ALLOWED_HOSTS'+',https://seguros.ghoulrul.online'+',http://localhost:1337', 'https://seguros.ghoulrul.online').split(',')
 CSRF_COOKIE_SECURE = True
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -114,14 +113,14 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "5432") + "/1",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://127.0.0.1:6379") + "/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "5432") + "/1",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://127.0.0.1:6379") + "/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

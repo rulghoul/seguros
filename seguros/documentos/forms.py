@@ -88,33 +88,19 @@ class AsentamientoWidget(s2forms.ModelSelect2MultipleWidget):
     ]
 
 
-class PersonaPrincipalForm(forms.ModelForm):  
-    estado = forms.ModelChoiceField(queryset=sepomex.Estado.objects.all(),                                    
-        widget=s2forms.ModelSelect2Widget(
-            model=sepomex.Estado,
-            search_fields=['nombre__icontains'],
-            attrs={
-                "data-minimum-input-length": 4,
-            }
-    ))
-    municipio = forms.ModelChoiceField(queryset=sepomex.Municipio.objects.all(),                                    
-            widget=s2forms.ModelSelect2Widget(
-                model=sepomex.Municipio,
-                search_fields=['nombre__icontains'],
-                dependent_fields={'estado': 'estado'},
-                max_results=50,
-                attrs={
-                    "data-minimum-input-length": 4,
-                }
-    ))
-    asentamiento =  forms.ModelChoiceField(queryset=sepomex.Asentamiento.objects.all(),                                    
+class PersonaPrincipalForm(forms.ModelForm): 
+    codigo_postal = forms.CharField(max_length=5, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    municipio = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    estado = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    asentamiento =  forms.ModelChoiceField(
+        label="Colonia",
+        queryset=sepomex.Asentamiento.objects.all(),                                    
             widget=s2forms.ModelSelect2Widget(
                 model=sepomex.Asentamiento,
-                search_fields=['nombre__icontains'],
-                dependent_fields={'municipio': 'municipio'},
+                search_fields=['codigo_postal__icontains','nombre__icontains'],
                 max_results=50,
                 attrs={
-                    "data-minimum-input-length": 4,
+                    "data-minimum-input-length": 3,
                 }
     ))
 
@@ -140,9 +126,10 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('estado', css_class='col-md-4'),
-                Div('municipio', css_class='col-md-4'),
+                Div('estado', css_class='col-md-3'),
+                Div('municipio', css_class='col-md-3'),
                 Div('asentamiento', css_class='col-md-4'),
+                Div('codigo_postal', css_class='col-md-2'),
                 css_class='row'
             ),
             Div(
@@ -166,7 +153,7 @@ class PersonaPrincipalForm(forms.ModelForm):
         fields = ['tipo_persona', 'nombre', 'primer_apellido',
                   'segundo_apellido', 'genero', 'estatus',
                   'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
-                  'estado', 'municipio', 'asentamiento', 
+                  'asentamiento', 
                   'calle', 'numero', 'numero_interior',
                   ]  
 
@@ -179,6 +166,11 @@ class EmpresaWidget(s2forms.ModelSelect2MultipleWidget):
         "nombre__icontains",
         "clave__icontains",
     ]
+    model=modelos.EmpresaContratante
+    queryset=modelos.EmpresaContratante.objects.all()
+    attrs={
+        "data-minimum-input-length": 3,
+    }
 
 
         
@@ -189,13 +181,8 @@ class AsesorCustomForm(forms.Form):
     apellidos = forms.CharField(label='Apellidos')
     empresa = forms.ModelMultipleChoiceField(label='Empresas',
         queryset=modelos.EmpresaContratante.objects.all(),                                    
-        widget=s2forms.ModelSelect2MultipleWidget(
-            model=modelos.EmpresaContratante,
-            search_fields=['nombre__icontains'],
-            attrs={
-                "data-minimum-input-length": 3,
-            }
-    ))
+        widget=EmpresaWidget
+        )
     telefono2 = forms.CharField(label='Telefono 1')
     telefono1 = forms.CharField(label='Telefono 2')
     helper = FormHelper()

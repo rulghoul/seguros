@@ -7,7 +7,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: seguros
-      POSTGRES_PASSWORD: Kenqsduldc843
+      POSTGRES_PASSWORD: T3tbycCM2Unz
       POSTGRES_DB: seguros
 
   redis:
@@ -16,9 +16,7 @@ services:
       - redis_data:/data
 
   django:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     volumes:
       - static:/seguros/seguros/seguros/static
       - media:/seguros/seguros/seguros/media
@@ -29,7 +27,7 @@ services:
       SEGUROS_SQL_ENGINE: django.db.backends.postgresql
       SEGUROS_SQL_DATABASE: seguros
       SEGUROS_SQL_USER: seguros
-      SEGUROS_SQL_PASSWORD: Kenqsduldc843
+      SEGUROS_SQL_PASSWORD: T3tbycCM2Unz
       SEGUROS_SQL_HOST: db
       SEGUROS_SQL_PORT: 5432
       SEGUROS_REDIS: "redis://redis:6379"
