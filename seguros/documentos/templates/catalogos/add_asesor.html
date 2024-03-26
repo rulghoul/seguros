@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% extends 'base.html' %} 
+{% load crispy_forms_tags %} 
+{% block content %}
+
+
+  <h3 class="card-title">{{ titulo }}</h3>
+    <form method="post">
+        {% crispy  user_form %}
+        <hr class="hr" />
+        {% crispy formset helper %}        
+    </form>
+    
+{% endblock %}

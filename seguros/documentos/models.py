@@ -108,18 +108,14 @@ class EmpresaContratante(models.Model):
 
 class Asesor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    empresa = models.ManyToManyField(EmpresaContratante)
-    telefono1 = models.CharField(max_length=20)
-    telefono2 = models.CharField(max_length=20)
-    #Multiples correos, uno por cada empresa
-    #Telefono por empresa
-    #Clave por Empresa
+    empresa = models.ManyToManyField(EmpresaContratante, through='AsesorEmpresa')
 
 class AsesorEmpresa(models.Model):
     asesor = models.ForeignKey('Asesor', on_delete=models.CASCADE)
     empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
     correo_empleado = models.EmailField(max_length=254)
     codigo_empleado = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=20)
 
     def __str__(self) -> str:
         return f"{self.asesor} - {self.empresa}"

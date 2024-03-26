@@ -2,12 +2,14 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import ListView, DetailView
 from django.views import View
 from . import models as mod
+from django.contrib.auth.models import User
 from . import forms as formularios
 
 ######################### Vista Base ###########################
@@ -222,3 +224,34 @@ class AsesorAdd(FormView):
     def form_valid(self, form):                
         form.crea_asesor()
         return super().form_valid(form)
+    
+
+def crear_o_editar_asesor(request, asesor_id=None):
+    if asesor_id:
+        asesor = mod.Asesor.objects.get(pk=asesor_id)
+        user = asesor.usuario
+    else:
+        asesor = mod.Asesor()
+        user = User()
+    helper = formularios.AsesorEmpresaFormSetHelper
+    formset = formularios.AsesorEmpresaFormset(request.POST or None, instance=asesor)
+    
+    if request.method == 'POST':
+        user_form = formularios.UserForm(request.POST, instance=user)
+        if user_form.is_valid():
+            created_user = user_form.save()
+            asesor.usuario = created_user
+            asesor.save()            
+            if formset.is_valid():
+                formset.save()
+                return redirect('donde_quieras_redirigir')  # Ajusta la redirección
+    else:
+        user_form = formularios.UserForm(instance=user)
+        formset = formularios.AsesorEmpresaFormset(instance=asesor)
+    
+    return render(request, 'catalogos/add_asesor.html', {
+        'user_form': user_form,
+        'formset': formset,
+        'helper': helper,
+        'titilo': 'Nuevo Asesor'
+    })

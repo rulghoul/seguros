@@ -101,6 +101,8 @@ class PersonaPrincipalForm(forms.ModelForm):
                 max_results=50,
                 attrs={
                     "data-minimum-input-length": 3,
+                    "data-placeholder": "Buscar por nombre o codigo postal",
+                    "theme": "bootstrap4"
                 }
     ))
 
@@ -172,8 +174,70 @@ class EmpresaWidget(s2forms.ModelSelect2MultipleWidget):
         "data-minimum-input-length": 3,
     }
 
+class UserForm(forms.ModelForm):
+    helper = FormHelper()
+    helper.layout = Layout(
+            Div(
+                Div('first_name', css_class='col-md-6'),
+                Div('last_name', css_class='col-md-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('username', css_class='col-md-4'),
+                Div('email', css_class='col-md-8'),
+                css_class='row'
+            ),
+            Div(
+                Submit('submit', 'Agregar', css_class='btn btn-info'),
+                HTML("""
+                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+                """),
+                css_class='col text-center'
+            ),
+    )
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
 
-        
+class AsesorEmpresaForm(forms.ModelForm):
+    class Meta:
+        model = modelos.AsesorEmpresa
+        fields = ['empresa', 'correo_empleado', 'codigo_empleado', 'telefono']
+
+class AsesorEmpresaFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_method = 'post'
+        self.layout = Layout(
+                Div(
+                    Div('empresa', css_class='col-md-6'),
+                    Div('codigo_empleado', css_class='col-md-3'),
+                    Div('telefono', css_class='col-md-3'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('correo_empleado', css_class='col-md-12'),
+                    css_class='row'
+                ),
+                Div(
+                    Submit('submit', 'Agregar', css_class='btn btn-info'),
+                    css_class='col text-center'
+                ),
+        )
+        self.render_required_fields = True
+
+AsesorEmpresaFormset = inlineformset_factory(
+    parent_model=modelos.Asesor,
+    model=modelos.AsesorEmpresa,
+    form=AsesorEmpresaForm,
+    min_num=2,
+    extra=1,  
+    max_num=5,
+    can_delete=True 
+)
+
+
+
 class AsesorCustomForm(forms.Form):
     usuario = forms.CharField(label='Nombre de usuario')
     correo = forms.EmailField(label='Correo electrónico')

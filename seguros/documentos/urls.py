@@ -13,6 +13,6 @@ urlpatterns = [
     path('lista_empresa/', views.EmpresaContratanteView.as_view(), name='lista_empresa'),
     path('lista_planes/', views.PlanesView.as_view(), name='lista_planes'),
     #Asesores y sus clientes
-    path('asesor_add', views.AsesorAdd.as_view(), name='asesor_add'),
+    path('asesor_add', views.crear_o_editar_asesor, name='asesor_add'),
     path('principal_add', views.PersonaPrincipalAdd.as_view(), name='principal_add'),
 ]
