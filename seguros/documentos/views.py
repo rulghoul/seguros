@@ -1,3 +1,4 @@
+import logging
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
@@ -165,19 +166,24 @@ class PlanesView(BaseListView):
     campos = ['clave', 'nombre', 'empresa',  'activo',]
 
 
-class PersonaPrincipalAdd(CreateView):
+class PersonaPrincipalAdd(FormView):
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = "home"
+    success_url = "sepomex:asentamiento_details"
     
     def form_valid(self, form):
-        if mod.Asesor.objects.filter(usuario = self.request.user).exists():
-            form.instance.asesor = mod.Asesor.objects.filter(usuario = self.request.user)  
+        logging.info("Entra en validacion")
+        try:
+            asesor_instance = mod.Asesor.objects.get(usuario=self.request.user)
+            form.instance.asesor = asesor_instance
+            logging.info("Encontró al asesor")
+        except mod.Asesor.DoesNotExist:
+            logging.info("No encontró al asesor")
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
+        logging.info("Entra en Contexto")
         context = super().get_context_data(**kwargs)
-        user = self.request.user
         context["titulo"] = "Agregar Cliente"
         context["redirige"] = "documentos:principal_add"
         context["informacion"] = "sepomex:asentamiento_details"
@@ -214,9 +220,9 @@ class PersonaPrincipalUpdate(UpdateView):
 
     
 @transaction.atomic
-def crear_o_editar_asesor(request, asesor_id=None):
-    if asesor_id:
-        asesor = mod.Asesor.objects.get(pk=asesor_id)
+def crear_o_editar_asesor(request, pk=None):
+    if pk:
+        asesor = mod.Asesor.objects.get(pk=pk)
         user = asesor.usuario
     else:
         asesor = mod.Asesor()
@@ -246,3 +252,18 @@ def crear_o_editar_asesor(request, asesor_id=None):
         'helper': helper,
         'titulo': 'Nuevo Asesor'
     })
+
+class ListAseror(ListView):
+    template_name = "catalogos/list_asesor.html"
+    model = mod.Asesor
+    paginate_by = 100
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Asesores"
+        context["encabezados"] = ('Nombre', 'Usuario', 'Empresas')
+        context["add"] = "documentos:asesor_add"
+        context["add_label"] = "Nuevo Asesor"
+        context["update"] = "documentos:asesor_update"
+        context["borra"] = "documentos:asesor_update"
+        return context

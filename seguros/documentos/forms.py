@@ -90,7 +90,7 @@ class AsentamientoWidget(s2forms.ModelSelect2MultipleWidget):
 
 class PersonaPrincipalForm(forms.ModelForm): 
     codigo_postal = forms.CharField(max_length=5, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
-    municipio = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    municipio = forms.CharField(label="Munuicipio/Alcaldia",max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     estado = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     asentamiento =  forms.ModelChoiceField(
         label="Colonia",
@@ -102,12 +102,9 @@ class PersonaPrincipalForm(forms.ModelForm):
                 attrs={
                     "data-minimum-input-length": 3,
                     "data-placeholder": "Buscar por nombre o codigo postal",
-                    "theme": "bootstrap4"
                 }
     ))
-
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    
+    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))    
     helper = FormHelper()
     helper.layout = Layout(
             Div(
@@ -141,7 +138,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Submit('submit', 'Agregar', css_class='btn btn-info'),
+                Submit('submit', 'Guardar', css_class='btn btn-info'),
                  HTML("""
                     <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
                 """),
@@ -222,10 +219,6 @@ class AsesorEmpresaFormSetHelper(FormHelper):
                     Div('correo_empleado', css_class='col-md-12'),
                     css_class='row'
                 ),
-                Div(
-                    Submit('submit', 'Agregar', css_class='btn btn-info'),
-                    css_class='col text-center'
-                ),
         )
         self.render_required_fields = True
 
@@ -233,8 +226,8 @@ AsesorEmpresaFormset = inlineformset_factory(
     parent_model=modelos.Asesor,
     model=modelos.AsesorEmpresa,
     form=AsesorEmpresaForm,
-    min_num=2,
-    extra=1,  
+    min_num=1,
+    extra=2,  
     max_num=5,
     can_delete=True 
 )

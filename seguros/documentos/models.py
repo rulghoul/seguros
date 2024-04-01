@@ -105,19 +105,20 @@ class EmpresaContratante(models.Model):
     
     def __str__(self) -> str:
         return self.nombre
-
-class Asesor(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-
+    
 class AsesorEmpresa(models.Model):
     asesor = models.ForeignKey('Asesor', on_delete=models.CASCADE)
     empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
     correo_empleado = models.EmailField(max_length=254)
     codigo_empleado = models.CharField(max_length=50)
-    telefono = models.CharField(max_length=20,blank=True, null=True, default=None)
+    telefono = models.CharField(max_length=20)
 
     def __str__(self) -> str:
         return f"{self.asesor} - {self.empresa}"
+
+class Asesor(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    empresa = models.ManyToManyField(EmpresaContratante, through=AsesorEmpresa)
 
     
 
@@ -146,12 +147,13 @@ class PersonaBase(models.Model):
 class PersonaPrincipal(PersonaBase):  
     asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
-    fecha_nacimiento = models.DateTimeField()   
+    fecha_nacimiento = models.DateField()   
     #direccion
     asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE, null=True, default=None)
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
+    correo = models.EmailField()
     
 
 class PersonaRelacionada(PersonaBase):
