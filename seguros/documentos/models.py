@@ -176,10 +176,9 @@ class Poliza(models.Model):
 
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
-    persona_relacionada = models.ForeignKey(PersonaRelacionada, on_delete=models.CASCADE) 
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
-    #persona_principal = models.CharField( max_length=20)  
-    porcentaje_participacion = models.PositiveSmallIntegerField( blank=True, null=True)  
+    nombre_completo = models.TextField()
+    porcentaje_participacion = models.PositiveSmallIntegerField()  
     
 
 class CheckDocumentos(models.Model):
