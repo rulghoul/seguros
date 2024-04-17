@@ -9,14 +9,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-!7)#etk19323^(uade5)dozi+dwl0+^#cpv=vg5*&lttu+tsr1"
+SECRET_KEY = os.environ.get("SECRET_KEY","emqctex@x=j1z&bcdlz67vj3_db($ks9(49c0y=p(#uwllb28l")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG","1")
 
-ALLOWED_HOSTS = ["*"]
+#ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost').split(',')
-CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_ALLOWED_HOSTS'+',https://seguros.ghoulrul.online', 'https://seguros.ghoulrul.online').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_ALLOWED_HOSTS'+',https://seguros.ghoulrul.online'+',http://localhost:1337', 'https://seguros.ghoulrul.online').split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -84,10 +83,10 @@ WSGI_APPLICATION = "seguros.wsgi.application"
 
 DATABASES = {
     'default': {
-        "ENGINE": os.environ.get("SEGUROS_SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.environ.get("SEGUROS_SQL_DATABASE", "seguros"),
-        "USER": os.environ.get("SEGUROS_SQL_USER", "usuario"),
-        "PASSWORD": os.environ.get("SEGUROS_SQL_PASSWORD", "contraseña"),
+        "ENGINE": os.environ.get("SEGUROS_SQL_ENGINE",  "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SEGUROS_SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("SEGUROS_SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SEGUROS_SQL_PASSWORD", "password"),
         "HOST": os.environ.get("SEGUROS_SQL_HOST", "localhost"),
         "PORT": os.environ.get("SEGUROS_SQL_PORT", "5432"),
     }
@@ -114,14 +113,14 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "5432") + "/1",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://127.0.0.1:6379") + "/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "5432") + "/1",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://127.0.0.1:6379") + "/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -162,6 +161,15 @@ CKEDITOR_BASEPATH =  os.path.join(STATIC_ROOT,"ckeditor/ckeditor/")
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#gmail_send/settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'valor_por_defecto')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'valor_por_defecto')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'elmonjeamarillo@gmail.com'
 
 
 LOGGING = {

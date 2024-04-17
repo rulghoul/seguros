@@ -11,4 +11,5 @@ urlpatterns = [
     path('municipio', views.MunicipioView.as_view(), name='municipio'),
     path('asentamiento', views.AsentamientoView.as_view(), name='asentamiento'),
     path('tipo_asentamiento', views.TipoAsentamientoView.as_view(), name='tipo_asentamiento'),
+    path('asentamiento_details/<int:id>/', views.get_asentamiento_details, name='asentamiento_details'),
 ]

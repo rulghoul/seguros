@@ -26,6 +26,7 @@ from sepomex import views as sepomex_views
 
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
     path("admin/", admin.site.urls),
     path('tema', include('tema.urls')),
     path('sepomex/', include('sepomex.urls')),

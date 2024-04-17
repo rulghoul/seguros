@@ -66,6 +66,7 @@ class PersonaPrincipal(models.Model):
     estatus = models.CharField( max_length=10)  
 
 class PersonaRelacionada(models.Model):
+    # Nombre, parentesco, porcentaje
     id = models.SmallAutoField(primary_key=True)
     clave = models.CharField(max_length=20)
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE)

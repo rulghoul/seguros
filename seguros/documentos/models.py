@@ -105,12 +105,21 @@ class EmpresaContratante(models.Model):
     
     def __str__(self) -> str:
         return self.nombre
+    
+class AsesorEmpresa(models.Model):
+    asesor = models.ForeignKey('Asesor', on_delete=models.CASCADE)
+    empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
+    correo_empleado = models.EmailField(max_length=254)
+    codigo_empleado = models.CharField(max_length=50)
+    telefono = models.CharField(max_length=20)
+
+    def __str__(self) -> str:
+        return f"{self.asesor} - {self.empresa}"
 
 class Asesor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    empresa = models.ManyToManyField(EmpresaContratante)
-    telefono1 = models.CharField(max_length=20)
-    telefono2 = models.CharField(max_length=20)
+    empresa = models.ManyToManyField(EmpresaContratante, through=AsesorEmpresa)
+
     
 
 class Planes(models.Model):
@@ -138,17 +147,17 @@ class PersonaBase(models.Model):
 class PersonaPrincipal(PersonaBase):  
     asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
-    fecha_nacimiento = models.DateTimeField()   
+    fecha_nacimiento = models.DateField()   
     #direccion
-    estado = models.ForeignKey(sepomex.Estado, on_delete=models.CASCADE, null=True, default=None)
-    municipio = models.ForeignKey(sepomex.Municipio, on_delete=models.CASCADE, null=True, default=None)
     asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE, null=True, default=None)
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
-    piso = models.CharField(max_length=2,blank=True, null=True, default=None)
+    numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
+    correo = models.EmailField()
     
 
 class PersonaRelacionada(PersonaBase):
+    #Nombre, parentesco, porcentaje
     parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE)
     persona_principal = models.ForeignKey(PersonaPrincipal, on_delete=models.CASCADE) 
     
@@ -167,10 +176,9 @@ class Poliza(models.Model):
 
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
-    persona_relacionada = models.ForeignKey(PersonaRelacionada, on_delete=models.CASCADE) 
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
-    #persona_principal = models.CharField( max_length=20)  
-    porcentaje_participacion = models.PositiveSmallIntegerField( blank=True, null=True)  
+    nombre_completo = models.TextField()
+    porcentaje_participacion = models.PositiveSmallIntegerField()  
     
 
 class CheckDocumentos(models.Model):

@@ -5,6 +5,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 import logging
 
@@ -168,3 +169,16 @@ def obtener_asentamientos(request):
     municipio_id = request.GET.get('municipio_id')
     asentamientos = mod.Asentamiento.objects.filter(municipio_id=municipio_id).values('id', 'nombre')
     return JsonResponse({'asentamientos': list(asentamientos)})
+
+def get_asentamiento_details(request, id):
+    # Asegúrate de manejar errores y casos en que el asentamiento no se encuentre
+    asentamiento = get_object_or_404(mod.Asentamiento, pk=id)
+    
+    # Construye el diccionario de datos para responder
+    data = {
+        'codigo_postal': asentamiento.codigo_postal,
+        'municipio': asentamiento.municipio.nombre,
+        'estado': asentamiento.municipio.estado.nombre
+    }
+    
+    return JsonResponse(data)

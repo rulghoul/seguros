@@ -88,38 +88,23 @@ class AsentamientoWidget(s2forms.ModelSelect2MultipleWidget):
     ]
 
 
-class PersonaPrincipalForm(forms.ModelForm):  
-    estado = forms.ModelChoiceField(queryset=sepomex.Estado.objects.all(),                                    
-        widget=s2forms.ModelSelect2Widget(
-            model=sepomex.Estado,
-            search_fields=['nombre__icontains'],
-            attrs={
-                "data-minimum-input-length": 4,
-            }
-    ))
-    municipio = forms.ModelChoiceField(queryset=sepomex.Municipio.objects.all(),                                    
-            widget=s2forms.ModelSelect2Widget(
-                model=sepomex.Municipio,
-                search_fields=['nombre__icontains'],
-                dependent_fields={'estado': 'estado'},
-                max_results=50,
-                attrs={
-                    "data-minimum-input-length": 4,
-                }
-    ))
-    asentamiento =  forms.ModelChoiceField(queryset=sepomex.Asentamiento.objects.all(),                                    
+class PersonaPrincipalForm(forms.ModelForm): 
+    codigo_postal = forms.CharField(max_length=5, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    municipio = forms.CharField(label="Munuicipio/Alcaldia",max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    estado = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    asentamiento =  forms.ModelChoiceField(
+        label="Colonia",
+        queryset=sepomex.Asentamiento.objects.all(),                                    
             widget=s2forms.ModelSelect2Widget(
                 model=sepomex.Asentamiento,
-                search_fields=['nombre__icontains'],
-                dependent_fields={'municipio': 'municipio'},
+                search_fields=['codigo_postal__icontains','nombre__icontains'],
                 max_results=50,
                 attrs={
-                    "data-minimum-input-length": 4,
+                    "data-minimum-input-length": 3,
+                    "data-placeholder": "Buscar por nombre o codigo postal",
                 }
     ))
-
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    
+    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))    
     helper = FormHelper()
     helper.layout = Layout(
             Div(
@@ -140,19 +125,20 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('estado', css_class='col-md-4'),
-                Div('municipio', css_class='col-md-4'),
+                Div('estado', css_class='col-md-3'),
+                Div('municipio', css_class='col-md-3'),
                 Div('asentamiento', css_class='col-md-4'),
+                Div('codigo_postal', css_class='col-md-2'),
                 css_class='row'
             ),
             Div(
                 Div('calle', css_class='col-md-6'),
                 Div('numero', css_class='col-md-3'),
-                Div('piso', css_class='col-md-3'),
+                Div('numero_interior', css_class='col-md-3'),
                 css_class='row'
             ),
             Div(
-                Submit('submit', 'Agregar', css_class='btn btn-info'),
+                Submit('submit', 'Guardar', css_class='btn btn-info'),
                  HTML("""
                     <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
                 """),
@@ -166,8 +152,8 @@ class PersonaPrincipalForm(forms.ModelForm):
         fields = ['tipo_persona', 'nombre', 'primer_apellido',
                   'segundo_apellido', 'genero', 'estatus',
                   'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
-                  'estado', 'municipio', 'asentamiento', 
-                  'calle', 'numero', 'piso',
+                  'asentamiento', 
+                  'calle', 'numero', 'numero_interior',
                   ]  
 
     
@@ -179,75 +165,98 @@ class EmpresaWidget(s2forms.ModelSelect2MultipleWidget):
         "nombre__icontains",
         "clave__icontains",
     ]
+    model=modelos.EmpresaContratante
+    queryset=modelos.EmpresaContratante.objects.all()
+    attrs={
+        "data-minimum-input-length": 3,
+    }
 
-
-        
-class AsesorCustomForm(forms.Form):
-    usuario = forms.CharField(label='Nombre de usuario')
-    correo = forms.EmailField(label='Correo electrónico')
-    nombre = forms.CharField(label='Nombre')
-    apellidos = forms.CharField(label='Apellidos')
-    empresa = forms.ModelMultipleChoiceField(label='Empresas',
-        queryset=modelos.EmpresaContratante.objects.all(),                                    
-        widget=s2forms.ModelSelect2MultipleWidget(
-            model=modelos.EmpresaContratante,
-            search_fields=['nombre__icontains'],
-            attrs={
-                "data-minimum-input-length": 3,
-            }
-    ))
-    telefono2 = forms.CharField(label='Telefono 1')
-    telefono1 = forms.CharField(label='Telefono 2')
+class UserForm(forms.ModelForm):
     helper = FormHelper()
+    helper.form_tag = False
     helper.layout = Layout(
             Div(
-                Div('nombre', css_class='col-md-5'),
-                Div('apellidos', css_class='col-md-5'),
-                Div('usuario', css_class='col-md-2'),
+                Div('first_name', css_class='col-md-6'),
+                Div('last_name', css_class='col-md-6'),
                 css_class='row'
             ),
             Div(
-                Div('correo', css_class='col-md-8'),
-                Div('empresa', css_class='col-md-4'),
-                css_class='row'
-            ),
-            Div(
-                Div('telefono1',css_class='col-md-2'),            
-                Div('telefono2',css_class='col-md-4'),
+                Div('username', css_class='col-md-4'),
+                Div('email', css_class='col-md-8'),
                 css_class='row'
             ),
             Div(
                 Submit('submit', 'Agregar', css_class='btn btn-info'),
-                 HTML("""
+                HTML("""
                     <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
                 """),
                 css_class='col text-center'
             ),
     )
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
 
-    @transaction.atomic
-    def crea_asesor(self):
-        username = self.cleaned_data.get('usuario')
-        email = self.cleaned_data.get('correo')
-        first_name = self.cleaned_data.get('nombre')
-        last_name = self.cleaned_data.get('apellidos')
-        empresa = self.cleaned_data.get('empresa')
-        telefono1 = self.cleaned_data.get('telefono1')
-        telefono2 = self.cleaned_data.get('telefono2')
+class AsesorEmpresaForm(forms.ModelForm):
+    class Meta:
+        model = modelos.AsesorEmpresa
+        fields = ['empresa', 'correo_empleado', 'codigo_empleado', 'telefono']
 
-        # Crear el usuario
-        user, created = User.objects.get_or_create(
-            username=username,
-            email=email,
-            first_name=first_name,
-            last_name=last_name
+class AsesorEmpresaFormSetHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_method = 'post'
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.layout = Layout(
+                Div(
+                    Div('empresa', css_class='col-md-6'),
+                    Div('codigo_empleado', css_class='col-md-3'),
+                    Div('telefono', css_class='col-md-3'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('correo_empleado', css_class='col-md-12'),
+                    css_class='row'
+                ),
+        )
+        self.render_required_fields = True
+
+AsesorEmpresaFormset = inlineformset_factory(
+    parent_model=modelos.Asesor,
+    model=modelos.AsesorEmpresa,
+    form=AsesorEmpresaForm,
+    min_num=1,
+    extra=2,  
+    max_num=5,
+    can_delete=True 
+)
+
+class FormBeneficiario(forms.ModelForm):
+    class Meta:
+        model = modelos.Beneficiarios
+        fields = ['tipo_persona', 'nombre_completo', 'porcentaje_participacion',]
+
+class BeneficiariosHelper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+                Div(
+                    Div('tipo_persona', css_class='col-md-3'),
+                    Div('nombre_completo', css_class='col-md-6'),
+                    Div('porcentaje_participacion', css_class='col-md-3'),
+                    css_class='row'
+                ),
         )
 
-        # Crear el perfil del asesor
-        asesor = modelos.Asesor.objects.create(
-            usuario=user,
-            telefono1=telefono1,
-            telefono2=telefono2
-        )   
-
-        asesor.empresa.set(empresa)     
+BeneficiariosFormset = inlineformset_factory(
+    parent_model=modelos.Poliza,
+    model=modelos.Beneficiarios,
+    form=FormBeneficiario,
+    min_num=1,
+    extra=2,  
+    max_num=5,
+    can_delete=True 
+)
