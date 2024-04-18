@@ -111,7 +111,7 @@ class AsesorEmpresa(models.Model):
     empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
     correo_empleado = models.EmailField(max_length=254)
     codigo_empleado = models.CharField(max_length=50)
-    telefono = models.CharField(max_length=20)
+    telefono = models.CharField(max_length=20,default="telefono")
 
     def __str__(self) -> str:
         return f"{self.asesor} - {self.empresa}"
@@ -153,7 +153,7 @@ class PersonaPrincipal(PersonaBase):
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
-    correo = models.EmailField()
+    correo = models.EmailField(default="correo@empresa.com")
     
 
 class PersonaRelacionada(PersonaBase):
@@ -177,8 +177,8 @@ class Poliza(models.Model):
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
-    nombre_completo = models.TextField()
-    porcentaje_participacion = models.PositiveSmallIntegerField()  
+    nombre_completo = models.TextField(default="")
+    porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
     
 
 class CheckDocumentos(models.Model):

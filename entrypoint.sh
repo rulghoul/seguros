@@ -14,6 +14,7 @@ python manage.py migrate --noinput
 # Recopilar archivos estáticos
 python manage.py collectstatic --noinput --clear
 
+python manage.py crear_usuario
 # Iniciar Gunicorn o el servidor de desarrollo
 # Descomenta la línea correspondiente a tu elección
 
