@@ -9,6 +9,8 @@ services:
       POSTGRES_USER: seguros
       POSTGRES_PASSWORD: T3@tbycCM2Unz
       POSTGRES_DB: seguros
+    ports:
+      - "6432:5432"
 
   redis:
     image: redis
