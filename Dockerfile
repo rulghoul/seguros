@@ -20,6 +20,6 @@ COPY entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
 # Configurar el script de entrada como punto de entrada
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["bash","entrypoint.sh"]
 
 

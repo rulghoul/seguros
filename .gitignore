@@ -7,6 +7,7 @@ db.sqlite3
 media
 /seguros/seguros/static
 /seguros/seguros/media
+/documentacion/build
 
 # Backup files # 
 *.bak 

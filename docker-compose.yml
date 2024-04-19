@@ -9,6 +9,8 @@ services:
       POSTGRES_USER: seguros
       POSTGRES_PASSWORD: T3@tbycCM2Unz
       POSTGRES_DB: seguros
+    ports:
+      - "6432:5432"
 
   redis:
     image: redis
@@ -21,9 +23,13 @@ services:
       - static:/seguros/seguros/seguros/static
       - media:/seguros/seguros/seguros/media
     environment:
+      SEGUROS_SUPERUSER_PASSWORD: "contraseñita"
+      SEGUROS_SUPERUSER_EMAIL: "example@example.com"
+      SEGUROS_SUPERUSER_USERNAME: "organizame.admin"
       DEBUG: 1
       SECRET_KEY: k$^m!=dp7ah&0_(9&0!b(47thue*@2x)u=883w3)1*pt8ae(i=
-      SEGUROS_ALLOWED_HOSTS: http://localhost:1337,localhost
+      SEGUROS_ALLOWED_HOSTS: localhost
+      SEGUROS_CSRF_TRUSTED_ORIGINS: "http://localhost:1337,http://127.0.0.1:1337"
       SEGUROS_SQL_ENGINE: django.db.backends.postgresql
       SEGUROS_SQL_DATABASE: seguros
       SEGUROS_SQL_USER: seguros
@@ -44,6 +50,9 @@ services:
       - media:/web/media
     ports:
       - "1337:80"
+    depends_on:
+      - django
+
 
 volumes:
   postgres_data:

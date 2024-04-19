@@ -1,0 +1,2 @@
+#Los archivos sh mantendran el fin de linea tipo Unix
+*.sh eol=lf

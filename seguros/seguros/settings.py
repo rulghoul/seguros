@@ -14,9 +14,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY","emqctex@x=j1z&bcdlz67vj3_db($ks9(49c0y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG","1")
 
+
 #ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost').split(',')
-CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_ALLOWED_HOSTS'+',https://seguros.ghoulrul.online'+',http://localhost:1337', 'https://seguros.ghoulrul.online').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_CSRF_TRUSTED_ORIGINS', 'https://seguros.ghoulrul.online,http://localhost').split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
