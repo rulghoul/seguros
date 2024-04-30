@@ -9,6 +9,8 @@
 <form action="" method="POST">
    {% crispy form_persona_principal %}
    {% crispy form_poliza %}
+   <hr class="hr" />
+   {% crispy formset_beneficiario helper_beneficiario %}  
 </form>
 
 <script>

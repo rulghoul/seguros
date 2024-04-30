@@ -304,9 +304,12 @@ def edit_poliza(request, pk=None):
         titulo = f"Editar Poliza: {poliza.numero_poliza}"
         persona_principal = poliza.persona_principal  # Acceder a la persona principal existente
     else:
-        poliza = None
-        persona_principal = None
+        poliza = mod.Poliza()
+        persona_principal = mod.PersonaPrincipal()
         titulo = f"Nueva Poliza"
+
+    helper_beneficiario = formularios.BeneficiariosHelper
+    formset_beneficiario = formularios.BeneficiariosFormset(request.POST or None, instance=poliza)
 
     if request.method == 'POST':
         form_poliza = formularios.PolizaForm(request.POST, instance=poliza)
@@ -326,6 +329,8 @@ def edit_poliza(request, pk=None):
     return render(request, 'asesor/add_poliza.html', {
         'form_poliza': form_poliza,
         'form_persona_principal': form_persona_principal,
+        'formset_beneficiario': formset_beneficiario,
+        'helper_beneficiario': helper_beneficiario,
         "informacion": "sepomex:asentamiento_details",
         'titulo': titulo
     })

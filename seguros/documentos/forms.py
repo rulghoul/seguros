@@ -106,6 +106,7 @@ class PersonaPrincipalForm(forms.ModelForm):
     ))
     fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))    
     helper = FormHelper()
+    helper.form_tag = False
     helper.layout = Layout(
             Div(
                 Div('nombre', css_class='col-md-4'),
@@ -239,6 +240,17 @@ AsesorEmpresaFormset = inlineformset_factory(
 )
 
 class FormBeneficiario(forms.ModelForm):
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.layout = Layout(
+            Div(
+                Div('tipo_persona', css_class='col-md-3'),
+                Div('nombre_completo', css_class='col-md-6'),
+                Div('porcentaje_participacion', css_class='col-md-3'),
+                css_class='row'
+            ),
+    )
+    
     class Meta:
         model = modelos.Beneficiarios
         fields = ['tipo_persona', 'nombre_completo', 'porcentaje_participacion',]
@@ -269,6 +281,7 @@ BeneficiariosFormset = inlineformset_factory(
 
 class PolizaForm(forms.ModelForm):  
     helper = FormHelper()
+    helper.form_tag = False
     helper.layout = Layout(
             Div(
                 Div('empresa', css_class='col-md-4'),
