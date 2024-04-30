@@ -7,18 +7,21 @@
       Seguros
     </a>
     <ul class="dropdown-menu" style="margin-left: 20px;">
-      <a class="dropdown-item" href="{% url 'documentos:lista_tipo_conducto_pago' %}">Tipo Conducto Pago</a>
-      <a class="dropdown-item" href="{% url 'documentos:lista_tipo_persona' %}">Tipo de Persona</a>
-      <a class="dropdown-item" href="{% url 'documentos:lista_forma_pago' %}">Forma de Pago</a>
-      <a class="dropdown-item" href="{% url 'documentos:lista_tipo_medio_conctacto' %}">Tipo Medio Contacto</a>
-      <li class="dropdown-divider"></li>
-      <a class="dropdown-item" href="{% url 'documentos:lista_documentos' %}">Documentos</a>
-      <a class="dropdown-item" href="{% url 'documentos:lista_parentesco' %}">Parentesco</a>
-      <a class="dropdown-item" href="{% url 'documentos:lista_empresa' %}">Empresa Contratante</a>
-      <a class="dropdown-item" href="{% url 'documentos:lista_planes' %}">Planes</a>
-      <li class="dropdown-divider"></li>
-      <a class="dropdown-item" href="{% url 'documentos:principal_add' %}">Persona Principal</a>
-      <li class="dropdown-divider"></li>
+      {% if user.is_staff %}
+        <a class="dropdown-item" href="{% url 'documentos:lista_tipo_conducto_pago' %}">Tipo Conducto Pago</a>
+        <a class="dropdown-item" href="{% url 'documentos:lista_tipo_persona' %}">Tipo de Persona</a>
+        <a class="dropdown-item" href="{% url 'documentos:lista_forma_pago' %}">Forma de Pago</a>
+        <a class="dropdown-item" href="{% url 'documentos:lista_tipo_medio_conctacto' %}">Tipo Medio Contacto</a>
+        <li class="dropdown-divider"></li>
+        <a class="dropdown-item" href="{% url 'documentos:lista_documentos' %}">Documentos</a>
+        <a class="dropdown-item" href="{% url 'documentos:lista_parentesco' %}">Parentesco</a>
+        <a class="dropdown-item" href="{% url 'documentos:lista_empresa' %}">Empresa Contratante</a>
+        <a class="dropdown-item" href="{% url 'documentos:lista_planes' %}">Planes</a>
+        <li class="dropdown-divider"></li>
+        <a class="dropdown-item" href="{% url 'documentos:principal_add' %}">Persona Principal</a>
+        <li class="dropdown-divider"></li>
+      {% endif %}
+      <a class="dropdown-item" href="{% url 'documentos:polizas' %}">Polizas</a>
     </ul>
   </li>
 
@@ -29,10 +32,12 @@
     </a>
     <ul class="dropdown-menu" style="margin-left: 20px;">
       <li>
+        {% if user.is_staff %}
         <a class="dropdown-item" href="{% url 'documentos:asesor_add' %}">
           <span class="fas fa-key"></span>
           Asesor
         </a>
+        {% endif %}
         <a class="dropdown-item" href="{% url 'password_change' %}">
           <span class="fas fa-key"></span>
           Contraseña
@@ -41,6 +46,7 @@
     </ul>
   </li>
 
+  {% if user.is_staff %}
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <span class="fa-solid fa-gear"></span>
@@ -76,4 +82,6 @@
       </li>
     </ul>
   </li>
+
+  {% endif %}
 </ul>

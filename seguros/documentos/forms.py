@@ -235,7 +235,7 @@ AsesorEmpresaFormset = inlineformset_factory(
     form=AsesorEmpresaForm,
     min_num=1,
     extra=2,  
-    max_num=5,
+    max_num=6,
     can_delete=True 
 )
 

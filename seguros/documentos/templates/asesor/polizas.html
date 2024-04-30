@@ -18,7 +18,7 @@
             <th>Plan</th>
             <th>Forma de Pago</th>
             <th>Fecha de Pago</th>
-            <th>Fecha de Emision</th>
+            <th>Emision de Poliza</th>
             <th>Estatus</th>
             {% if user.is_staff %}
             <th>Asesor</th>
@@ -30,7 +30,7 @@
         <tr>
             <td>{{ poliza.persona_principal.nombre }} {{ poliza.persona_principal.primer_apellido }} {{ poliza.persona_principal.segundo_apellido }}</td>
             <td>{{ poliza.persona_principal.telefono }}</td>
-            <td>{{ poliza.empresa. }}</td>
+            <td>{{ poliza.empresa }}</td>
             <td>{{ poliza.plan }}</td>
             <td>{{ poliza.forma_pago }}</td>
             <td>{{ poliza.fecha_pago }}</td>
