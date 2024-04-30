@@ -4,12 +4,12 @@
 set -e
 
 # Ejecutar migraciones
-#python manage.py makemigrations --noinput
+python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
-python manage.py loaddata sepomex_backup.json
+#python manage.py loaddata sepomex_backup.json
 
-rm sepomex_backup.json
+#rm sepomex_backup.json
 
 # Recopilar archivos estáticos
 python manage.py collectstatic --noinput --clear

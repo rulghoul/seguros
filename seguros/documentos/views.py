@@ -3,7 +3,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -270,50 +271,61 @@ class ListAseror(ListView):
         return context
     
 
-class ClientesView(LoginRequiredMixin, ListView):
-    model = mod.PersonaPrincipal
-    template_name = 'clientes_list.html'
-    context_object_name = 'clientes'
+class Poliza_List(LoginRequiredMixin, ListView):
+    model = mod.Poliza
+    template_name = 'asesor/polizas.html'
+    context_object_name = 'polizas'
 
     def get_queryset(self):
-        asesor = mod.Asesor.objects.get(usuario=self.request.user)
-        queryset = mod.PersonaPrincipal.objects.filter(asesor=asesor).select_related(
-            'asesor__asesorempresa__empresa',  # Asegúrate de adaptar estos nombres si tu modelo difiere
-            'poliza'
-        )
-        return queryset
-    
+        user = self.request.user
+        try:
+            asesor = mod.Asesor.objects.get(usuario=user)        
+            return mod.Poliza.objects.filter(asesor=asesor)
+        except mod.Asesor.DoesNotExist:
+            if user.is_staff or user.is_superuser:
+                return mod.Poliza.objects.all()
+            else: 
+                return mod.Poliza.objects.none()
+            
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Polizas"
+        context["add"] = "documentos:poliza_add"
+        context["add_label"] = "Nueva Poliza"
+        context["update"] = "documentos:poliza_update"
+        context["borra"] = "documentos:poliza_update"
+        return context
+            
     
 @transaction.atomic
-def crear_o_editar_poliza(request, pk=None):
+def edit_poliza(request, pk=None):
     if pk:
-        asesor = mod.Asesor.objects.get(pk=pk)
-        user = asesor.usuario
+        poliza = get_object_or_404(mod.Poliza, pk=pk)
+        titulo = f"Editar Poliza: {poliza.numero_poliza}"
+        persona_principal = poliza.persona_principal  # Acceder a la persona principal existente
     else:
-        asesor = mod.Asesor()
-        user = User()
+        poliza = None
+        persona_principal = None
+        titulo = f"Nueva Poliza"
 
-    helper = formularios.AsesorEmpresaFormSetHelper
-    formset = formularios.AsesorEmpresaFormset(request.POST or None, instance=asesor)
-    
     if request.method == 'POST':
-        user_form = formularios.UserForm(request.POST, instance=user)
-        if user_form.is_valid():
-            created_user = user_form.save()
-            asesor.usuario = created_user
-            asesor.save()                        
-            if formset.is_valid():
-                formset.save()
-                envia(request, created_user)
-                return redirect('home') 
-                
+        form_poliza = formularios.PolizaForm(request.POST, instance=poliza)
+        form_persona_principal = formularios.PersonaPrincipalForm(request.POST, instance=persona_principal)
+
+        if form_poliza.is_valid() and form_persona_principal.is_valid():
+            persona_principal = form_persona_principal.save()  # Guarda la persona principal
+            poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
+            poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
+            poliza.save()  # Guarda la póliza
+            messages.success(request, "Póliza guardada con éxito.")
+            return redirect('poliza_list')  # Redirige a una lista o alguna URL definida
     else:
-        user_form = formularios.UserForm(instance=user)
-        formset = formularios.AsesorEmpresaFormset(instance=asesor)
-    
+        form_poliza = formularios.PolizaForm(instance=poliza)
+        form_persona_principal = formularios.PersonaPrincipalForm(instance=persona_principal)
+
     return render(request, 'asesor/add_poliza.html', {
-        'user_form': user_form,
-        'formset': formset,
-        'helper': helper,
-        'titulo': 'Nuevo Asesor'
+        'form_poliza': form_poliza,
+        'form_persona_principal': form_persona_principal,
+        "informacion": "sepomex:asentamiento_details",
+        'titulo': titulo
     })

@@ -138,6 +138,11 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('correo', css_class='col-md-9'),
+                Div('telefono', css_class='col-md-3'),
+                css_class='row'
+            ),
+            Div(
                 Submit('submit', 'Guardar', css_class='btn btn-info'),
                  HTML("""
                     <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
@@ -154,6 +159,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                   'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
                   'asentamiento', 
                   'calle', 'numero', 'numero_interior',
+                  'correo', 'telefono',
                   ]  
 
     
@@ -260,3 +266,46 @@ BeneficiariosFormset = inlineformset_factory(
     max_num=5,
     can_delete=True 
 )
+
+class PolizaForm(forms.ModelForm):  
+    helper = FormHelper()
+    helper.layout = Layout(
+            Div(
+                Div('empresa', css_class='col-md-4'),
+                Div('numero_poliza', css_class='col-md-4'),
+                Div('forma_pago', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('tipo_conducto_pago', css_class='col-md-4'),
+                Div('plan', css_class='col-md-4'),
+                Div('fecha_vigencia', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('fecha_emision', css_class='col-md-4'),
+                Div('fecha_pago', css_class='col-md-4'),
+                Div('estatus', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Submit('submit', 'Guardar', css_class='btn btn-info'),
+                 HTML("""
+                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+                """),
+                css_class='col text-center'
+            ),
+    )
+
+    
+    class Meta:
+        model = modelos.Poliza
+        fields = ['empresa', 'numero_poliza', 'forma_pago',
+                  'tipo_conducto_pago', 'plan','fecha_vigencia', 'fecha_emision',
+                  'fecha_pago', 'estatus']
+        
+        widgets = {
+            'fecha_vigencia': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_emision': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_pago': forms.DateInput(attrs={'type': 'date'}),
+        }
