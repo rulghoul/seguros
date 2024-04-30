@@ -111,7 +111,7 @@ class AsesorEmpresa(models.Model):
     empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
     correo_empleado = models.EmailField(max_length=254)
     codigo_empleado = models.CharField(max_length=50)
-    telefono = models.CharField(max_length=20,default="telefono")
+    telefono = models.CharField(max_length=20,blank=True, null=True,default=None)
 
     def __str__(self) -> str:
         return f"{self.asesor} - {self.empresa}"
@@ -154,6 +154,7 @@ class PersonaPrincipal(PersonaBase):
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
     correo = models.EmailField(default="correo@empresa.com")
+    telefono = models.CharField(max_length=100, default="NA")
     
 
 class PersonaRelacionada(PersonaBase):
@@ -170,7 +171,9 @@ class Poliza(models.Model):
     forma_pago = models.ForeignKey(FormaPago, on_delete=models.CASCADE)  
     tipo_conducto_pago = models.ForeignKey(TipoConductoPago, on_delete=models.CASCADE) 
     plan = models.ForeignKey(Planes, on_delete=models.CASCADE)    
-    fechavigencia = models.DateTimeField()  
+    fecha_vigencia = models.DateTimeField()  
+    fecha_emision = models.DateTimeField(blank=True, null=True, default=None)
+    fecha_pago = models.DateTimeField(blank=True, null=True, default=None)
     estatus = models.CharField( max_length=10)  ## Hay catalogo de estatus de polizas?
     
 

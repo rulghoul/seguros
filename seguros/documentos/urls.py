@@ -18,4 +18,5 @@ urlpatterns = [
     path('asesor_list', views.ListAseror.as_view(), name='asesor_list'),
     path('principal_add', views.PersonaPrincipalAdd.as_view(), name='principal_add'),
     path('principal_update/<int:pk>/', views.PersonaPrincipalUpdate.as_view(), name='principal_update'),
+    
 ]

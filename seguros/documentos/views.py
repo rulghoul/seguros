@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
 from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.forms import UserCreationForm
@@ -267,3 +268,52 @@ class ListAseror(ListView):
         context["update"] = "documentos:asesor_update"
         context["borra"] = "documentos:asesor_update"
         return context
+    
+
+class ClientesView(LoginRequiredMixin, ListView):
+    model = mod.PersonaPrincipal
+    template_name = 'clientes_list.html'
+    context_object_name = 'clientes'
+
+    def get_queryset(self):
+        asesor = mod.Asesor.objects.get(usuario=self.request.user)
+        queryset = mod.PersonaPrincipal.objects.filter(asesor=asesor).select_related(
+            'asesor__asesorempresa__empresa',  # Asegúrate de adaptar estos nombres si tu modelo difiere
+            'poliza'
+        )
+        return queryset
+    
+    
+@transaction.atomic
+def crear_o_editar_poliza(request, pk=None):
+    if pk:
+        asesor = mod.Asesor.objects.get(pk=pk)
+        user = asesor.usuario
+    else:
+        asesor = mod.Asesor()
+        user = User()
+
+    helper = formularios.AsesorEmpresaFormSetHelper
+    formset = formularios.AsesorEmpresaFormset(request.POST or None, instance=asesor)
+    
+    if request.method == 'POST':
+        user_form = formularios.UserForm(request.POST, instance=user)
+        if user_form.is_valid():
+            created_user = user_form.save()
+            asesor.usuario = created_user
+            asesor.save()                        
+            if formset.is_valid():
+                formset.save()
+                envia(request, created_user)
+                return redirect('home') 
+                
+    else:
+        user_form = formularios.UserForm(instance=user)
+        formset = formularios.AsesorEmpresaFormset(instance=asesor)
+    
+    return render(request, 'asesor/add_poliza.html', {
+        'user_form': user_form,
+        'formset': formset,
+        'helper': helper,
+        'titulo': 'Nuevo Asesor'
+    })

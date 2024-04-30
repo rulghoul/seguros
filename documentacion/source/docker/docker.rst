@@ -36,7 +36,7 @@ Se descargara la rama main, para cambiarnos a la rama dev o nueva debemos ejecut
 
 .. code-block:: bash
 
-    git checkout nueva
+    git checkout dev
 
 La rama *nueva* es donde se realizan los cambios principales, una vez probados 
 normalmente se suben a la rama *dev* que es la rama principal de desarrollo donde todo funciona 
@@ -97,4 +97,4 @@ Ejecutar la imagen Docker
 
 .. code-block:: bash
 
-    docker-compose build
+    docker-compose up -d
