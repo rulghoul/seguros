@@ -13,17 +13,13 @@ from sepomex import models as sepomex
 from collections import OrderedDict
 
 from django.db import transaction
+from django.core.validators import RegexValidator
 
+curp_validator = RegexValidator(
+    regex='^[A-Z]{4}\d{6}(H|M)[A-Z]{5}[A-Z0-9]{2}$',
+    message='Introduce un CURP válido.'
+)
 
-##class PuntoCaracteristicasForm(forms.ModelForm):
-##    class Meta:
-##        model = modelos.PuntoCaracteristicas
-##        fields = ('desccaracteristicas', )
-
-##PuntoCaracteristicasFormSet = inlineformset_factory(
-##    modelos.PuntoAcupuntura, modelos.PuntoCaracteristicas, form=PuntoCaracteristicasForm,
-##    extra=0, min_num=1, max_num=1, can_delete=True, can_delete_extra=True
-##)
 
 class BootstrapCheckboxInput(forms.CheckboxInput):
     template_name = 'django/forms/widgets/checkbox.html'
@@ -92,6 +88,7 @@ class PersonaPrincipalForm(forms.ModelForm):
     codigo_postal = forms.CharField(max_length=5, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     municipio = forms.CharField(label="Munuicipio/Alcaldia",max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     estado = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    curp = forms.CharField(validators=[curp_validator], max_length=18) 
     asentamiento =  forms.ModelChoiceField(
         label="Colonia",
         queryset=sepomex.Asentamiento.objects.all(),                                    
@@ -115,9 +112,10 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('tipo_persona', css_class='col-md-4'),
-                Div('genero', css_class='col-md-4'),
-                Div('estatus', css_class='col-md-4'),
+                Div('curp', css_class='col-md-3'),
+                Div('tipo_persona', css_class='col-md-3'),
+                Div('genero', css_class='col-md-3'),
+                Div('estatus_persona', css_class='col-md-3'),
                 css_class='row'
             ),
             Div(
@@ -156,7 +154,7 @@ class PersonaPrincipalForm(forms.ModelForm):
     class Meta:
         model = modelos.PersonaPrincipal
         fields = ['tipo_persona', 'nombre', 'primer_apellido',
-                  'segundo_apellido', 'genero', 'estatus',
+                  'segundo_apellido', 'genero', 'estatus_persona',
                   'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
                   'asentamiento', 
                   'calle', 'numero', 'numero_interior',
@@ -258,9 +256,10 @@ class FormBeneficiario(forms.ModelForm):
 class BeneficiariosHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.form_method = 'post'
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.layout = Layout(
+        self.layout = Layout(
                 Div(
                     Div('tipo_persona', css_class='col-md-3'),
                     Div('nombre_completo', css_class='col-md-6'),
@@ -268,6 +267,7 @@ class BeneficiariosHelper(FormHelper):
                     css_class='row'
                 ),
         )
+        self.render_required_fields = True
 
 BeneficiariosFormset = inlineformset_factory(
     parent_model=modelos.Poliza,
@@ -322,3 +322,5 @@ class PolizaForm(forms.ModelForm):
             'fecha_emision': forms.DateInput(attrs={'type': 'date'}),
             'fecha_pago': forms.DateInput(attrs={'type': 'date'}),
         }
+
+# Archivos de la poliza

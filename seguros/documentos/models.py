@@ -142,7 +142,7 @@ class PersonaBase(models.Model):
     primer_apellido = models.CharField(max_length=120)
     segundo_apellido = models.CharField(max_length=120, blank=True, null=True)
     genero = models.CharField(max_length=1, choices=OPCIONES_GENERO)
-    estatus = models.CharField(max_length=10, choices=STATUS_PERSONA) ## Hay catalogo de estatus de personas?    
+    estatus_persona = models.CharField(max_length=10, choices=STATUS_PERSONA) ## Hay catalogo de estatus de personas?    
 
     class Meta:
         abstract = True
@@ -186,7 +186,7 @@ class Poliza(models.Model):
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
-    nombre_completo = models.TextField(default="")
+    nombre_completo = models.CharField(max_length=100)  
     porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
     
 

@@ -13,13 +13,9 @@
     {% load colores_del_sitio %}
     {% load django_bootstrap5 %}
     {% bootstrap_javascript %}
-    {% bootstrap_messages %}
-
     {# Load CSS and JavaScript #}
     {% bootstrap_css %}
 
-    {# Display django.contrib.messages as Bootstrap alerts #}
-    {% bootstrap_messages %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
@@ -50,6 +46,9 @@
     </div>
 
     <div class="vh-100 container-fluid align-items-center" style="background-color: {% get_rgba 'fondo' 0.8 %}; max-width: 90%;margin-top: 90px;">
+
+      {# Display django.contrib.messages as Bootstrap alerts #}
+      {% bootstrap_messages %}
       {% block content %}
 
       {% endblock %}
