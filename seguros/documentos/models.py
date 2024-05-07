@@ -115,6 +115,9 @@ class AsesorEmpresa(models.Model):
 
     def __str__(self) -> str:
         return f"{self.asesor} - {self.empresa}"
+    
+    class Meta:
+        unique_together = (("codigo_empleado", "empresa"),)
 
 class Asesor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -133,7 +136,7 @@ class Planes(models.Model):
         return self.nombre
 
 class PersonaBase(models.Model):
-    clave = ClaveField()
+    curp = ClaveField()
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=80)  # Asegúrate de que el max_length sea suficiente para ambos casos
     primer_apellido = models.CharField(max_length=120)
