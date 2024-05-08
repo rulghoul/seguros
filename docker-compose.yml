@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres
@@ -37,6 +35,9 @@ services:
       SEGUROS_SQL_HOST: db
       SEGUROS_SQL_PORT: 5432
       SEGUROS_REDIS: "redis://redis:6379"
+      EMAIL_HOST_USER: "elmonjeamarillo@gmail.com"
+      EMAIL_HOST_PASSWORD: "gzrlntcjrufjnvdt"
+      EMAIL_DEAFULT_FROM: "elmonjeamarillo@gmail.com"
     depends_on:
       - db
       - redis

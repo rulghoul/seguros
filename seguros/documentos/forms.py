@@ -13,17 +13,13 @@ from sepomex import models as sepomex
 from collections import OrderedDict
 
 from django.db import transaction
+from django.core.validators import RegexValidator
 
+curp_validator = RegexValidator(
+    regex='^[A-Z]{4}\d{6}(H|M)[A-Z]{5}[A-Z0-9]{2}$',
+    message='Introduce un CURP válido.'
+)
 
-##class PuntoCaracteristicasForm(forms.ModelForm):
-##    class Meta:
-##        model = modelos.PuntoCaracteristicas
-##        fields = ('desccaracteristicas', )
-
-##PuntoCaracteristicasFormSet = inlineformset_factory(
-##    modelos.PuntoAcupuntura, modelos.PuntoCaracteristicas, form=PuntoCaracteristicasForm,
-##    extra=0, min_num=1, max_num=1, can_delete=True, can_delete_extra=True
-##)
 
 class BootstrapCheckboxInput(forms.CheckboxInput):
     template_name = 'django/forms/widgets/checkbox.html'
@@ -92,6 +88,7 @@ class PersonaPrincipalForm(forms.ModelForm):
     codigo_postal = forms.CharField(max_length=5, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     municipio = forms.CharField(label="Munuicipio/Alcaldia",max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
     estado = forms.CharField(max_length=250, required=False, widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+    curp = forms.CharField(validators=[curp_validator], max_length=18) 
     asentamiento =  forms.ModelChoiceField(
         label="Colonia",
         queryset=sepomex.Asentamiento.objects.all(),                                    
@@ -104,8 +101,9 @@ class PersonaPrincipalForm(forms.ModelForm):
                     "data-placeholder": "Buscar por nombre o codigo postal",
                 }
     ))
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))    
+    fecha_nacimiento = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}))    
     helper = FormHelper()
+    helper.form_tag = False
     helper.layout = Layout(
             Div(
                 Div('nombre', css_class='col-md-4'),
@@ -114,9 +112,10 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('tipo_persona', css_class='col-md-4'),
-                Div('genero', css_class='col-md-4'),
-                Div('estatus', css_class='col-md-4'),
+                Div('curp', css_class='col-md-3'),
+                Div('tipo_persona', css_class='col-md-3'),
+                Div('genero', css_class='col-md-3'),
+                Div('estatus_persona', css_class='col-md-3'),
                 css_class='row'
             ),
             Div(
@@ -138,25 +137,42 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('correo', css_class='col-md-9'),
+                Div('telefono', css_class='col-md-3'),
+                css_class='row'
+            ),
+            Div(
                 Submit('submit', 'Guardar', css_class='btn btn-info'),
                  HTML("""
                     <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
                 """),
                 css_class='col text-center'
             ),
-            
+            Field('asesor_cliente', type="hidden"),
     )
 
     class Meta:
         model = modelos.PersonaPrincipal
-        fields = ['tipo_persona', 'nombre', 'primer_apellido',
-                  'segundo_apellido', 'genero', 'estatus',
-                  'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
+        fields = ['tipo_persona', 'nombre', 'primer_apellido','curp', 
+                  'segundo_apellido', 'genero', 'estatus_persona',
+                  'asesor_cliente', 'lugar_nacimiento', 'fecha_nacimiento',
                   'asentamiento', 
                   'calle', 'numero', 'numero_interior',
+                  'correo', 'telefono',
                   ]  
+        
+                
+        widgets = {
+            'asesor_cliente':forms.HiddenInput(),
+        }
 
-    
+    def __init__(self, *args, **kwargs):
+        super(PersonaPrincipalForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:            
+            self.fields['estado'].initial = self.instance.asentamiento.municipio.estado
+            self.fields['municipio'].initial = self.instance.asentamiento.municipio.estado
+            self.fields['codigo_postal'].initial = self.instance.asentamiento.codigo_postal
+
 
 #Asesores
         
@@ -228,11 +244,22 @@ AsesorEmpresaFormset = inlineformset_factory(
     form=AsesorEmpresaForm,
     min_num=1,
     extra=2,  
-    max_num=5,
+    max_num=6,
     can_delete=True 
 )
 
 class FormBeneficiario(forms.ModelForm):
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.layout = Layout(
+            Div(
+                Div('tipo_persona', css_class='col-md-3'),
+                Div('nombre_completo', css_class='col-md-6'),
+                Div('porcentaje_participacion', css_class='col-md-3'),
+                css_class='row'
+            ),
+    )
+    
     class Meta:
         model = modelos.Beneficiarios
         fields = ['tipo_persona', 'nombre_completo', 'porcentaje_participacion',]
@@ -240,9 +267,10 @@ class FormBeneficiario(forms.ModelForm):
 class BeneficiariosHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.form_method = 'post'
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.layout = Layout(
+        self.layout = Layout(
                 Div(
                     Div('tipo_persona', css_class='col-md-3'),
                     Div('nombre_completo', css_class='col-md-6'),
@@ -250,6 +278,7 @@ class BeneficiariosHelper(FormHelper):
                     css_class='row'
                 ),
         )
+        self.render_required_fields = True
 
 BeneficiariosFormset = inlineformset_factory(
     parent_model=modelos.Poliza,
@@ -260,3 +289,51 @@ BeneficiariosFormset = inlineformset_factory(
     max_num=5,
     can_delete=True 
 )
+
+class PolizaForm(forms.ModelForm):  
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.layout = Layout(
+            Div(
+                Div('empresa', css_class='col-md-4'),
+                Div('numero_poliza', css_class='col-md-4'),
+                Div('forma_pago', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('tipo_conducto_pago', css_class='col-md-4'),
+                Div('plan', css_class='col-md-4'),
+                Div('fecha_vigencia', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('fecha_emision', css_class='col-md-4'),
+                Div('fecha_pago', css_class='col-md-4'),
+                Div('estatus', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Submit('submit', 'Guardar', css_class='btn btn-info'),
+                 HTML("""
+                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+                """),
+                css_class='col text-center'
+            ),
+            Field('asesor_poliza', type="hidden"),
+    )
+
+    
+    class Meta:
+        model = modelos.Poliza
+        fields = ['empresa', 'numero_poliza', 'forma_pago', 'asesor_poliza',
+                  'tipo_conducto_pago', 'plan','fecha_vigencia', 'fecha_emision',
+                  'fecha_pago', 'estatus']        
+        
+        widgets = {
+            'fecha_vigencia': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
+            'fecha_emision': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
+            'fecha_pago': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
+            'asesor_poliza':forms.HiddenInput(),
+        }
+
+# Archivos de la poliza

@@ -36,7 +36,7 @@ Se descargara la rama main, para cambiarnos a la rama dev o nueva debemos ejecut
 
 .. code-block:: bash
 
-    git checkout nueva
+    git checkout dev
 
 La rama *nueva* es donde se realizan los cambios principales, una vez probados 
 normalmente se suben a la rama *dev* que es la rama principal de desarrollo donde todo funciona 
@@ -84,17 +84,11 @@ y el usuario por default
       SEGUROS_SQL_PASSWORD: T3@tbycCM2Unz
 
 
-Crear la imagen de Docker
----------------------------
+Crearo o actualiza las imagenes y ejecuta las imagenes de Docker
+-----------------------------------------------------------------
 
 
 .. code-block:: bash
 
-    docker-compose build
+    docker-compose up -d --build
 
-Ejecutar la imagen Docker
---------------------------
-
-.. code-block:: bash
-
-    docker-compose build

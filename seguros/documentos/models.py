@@ -20,7 +20,7 @@ STATUS_PLAN = [('TERMINADO'),]
 
 STATUS_SEGURO_VIDA = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ("EN PROCESO"), ("CANCELADO")]
 
-STATUS_GASTOS_MEDICOS = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ("EN PROCESO")]
+STATUS_GASTOS_MEDICOS = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ('EPR','EN PROCESO')]
 
 STATUS_PERSONA = [("A","ACTIVO"),("I","INACTIVO")]
 
@@ -111,10 +111,13 @@ class AsesorEmpresa(models.Model):
     empresa = models.ForeignKey('EmpresaContratante', on_delete=models.CASCADE)
     correo_empleado = models.EmailField(max_length=254)
     codigo_empleado = models.CharField(max_length=50)
-    telefono = models.CharField(max_length=20,default="telefono")
+    telefono = models.CharField(max_length=20,blank=True, null=True,default=None)
 
     def __str__(self) -> str:
         return f"{self.asesor} - {self.empresa}"
+    
+    class Meta:
+        unique_together = (("codigo_empleado", "empresa"),)
 
 class Asesor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -133,19 +136,19 @@ class Planes(models.Model):
         return self.nombre
 
 class PersonaBase(models.Model):
-    clave = ClaveField()
+    curp = ClaveField()
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=80)  # Asegúrate de que el max_length sea suficiente para ambos casos
     primer_apellido = models.CharField(max_length=120)
     segundo_apellido = models.CharField(max_length=120, blank=True, null=True)
     genero = models.CharField(max_length=1, choices=OPCIONES_GENERO)
-    estatus = models.CharField(max_length=10) ## Hay catalogo de estatus de personas?    
+    estatus_persona = models.CharField(max_length=10, choices=STATUS_PERSONA) ## Hay catalogo de estatus de personas?    
 
     class Meta:
         abstract = True
 
 class PersonaPrincipal(PersonaBase):  
-    asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE)
+    asesor_cliente = models.ForeignKey(Asesor, on_delete=models.CASCADE)
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
     fecha_nacimiento = models.DateField()   
     #direccion
@@ -153,7 +156,8 @@ class PersonaPrincipal(PersonaBase):
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
-    correo = models.EmailField(default="correo@empresa.com")
+    correo = models.EmailField( blank=True, null=True, default="correo@empresa.com")
+    telefono = models.CharField(max_length=100, blank=True, null=True, default=None)
     
 
 class PersonaRelacionada(PersonaBase):
@@ -164,20 +168,25 @@ class PersonaRelacionada(PersonaBase):
 
 class Poliza(models.Model):
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    asesor = models.ForeignKey(Asesor, on_delete=models.CASCADE) ## usuario
+    asesor_poliza = models.ForeignKey(Asesor, on_delete=models.CASCADE) ## usuario
     numero_poliza = models.CharField(max_length=25)  
     persona_principal =  models.ForeignKey(PersonaPrincipal, on_delete=models.CASCADE) 
     forma_pago = models.ForeignKey(FormaPago, on_delete=models.CASCADE)  
     tipo_conducto_pago = models.ForeignKey(TipoConductoPago, on_delete=models.CASCADE) 
     plan = models.ForeignKey(Planes, on_delete=models.CASCADE)    
-    fechavigencia = models.DateTimeField()  
-    estatus = models.CharField( max_length=10)  ## Hay catalogo de estatus de polizas?
+    fecha_vigencia = models.DateField()  
+    fecha_emision = models.DateField(blank=True, null=True, default=None)
+    fecha_pago = models.DateField(blank=True, null=True, default=None)
+    estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
+
+    class Meta:
+        unique_together = (("empresa", "numero_poliza"),)
     
 
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
-    nombre_completo = models.TextField(default="")
+    nombre_completo = models.CharField(max_length=100)  
     porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
     
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% extends 'base.html' %} 
+{% load crispy_forms_tags %} 
+{% block content %}
+
+
+<h3 class="card-title">{{ titulo }}</h3>
+
+<form action="" method="POST">
+   {% crispy form_persona_principal %}
+   {% crispy form_poliza %}
+   <hr class="hr" />
+   {% crispy formset_beneficiario helper_beneficiario %}  
+</form>
+
+<script>
+  function getCookie(name) {
+   let cookieValue = null;
+   if (document.cookie && document.cookie !== '') {
+       const cookies = document.cookie.split(';');
+       for (let i = 0; i < cookies.length; i++) {
+           const cookie = cookies[i].trim();
+           // Does this cookie string begin with the name we want?
+           if (cookie.substring(0, name.length + 1) === (name + '=')) {
+               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+               break;
+           }
+       }
+   }
+   return cookieValue;
+}   
+
+const csrftoken = getCookie('csrftoken');
+
+data = {
+     csrfmiddlewaretoken: csrftoken
+   }
+  $(document).ready(function() {
+      // Cuando cambia el select de asentamiento
+      $('[name="asentamiento"]').change(function() {
+          var asentamientoId = $(this).val();
+          // Asegúrate de actualizar la URL a la ruta correcta de tu servidor
+          var url = '{% url informacion 123 %}'.replace('123', asentamientoId);
+  
+          $.ajax({
+              url: url,
+              xhrFields: {
+                withCredentials: true
+              },
+              data: data,
+              success: function(data) {
+                  // Actualiza los campos con los datos recibidos
+                  $('[name="codigo_postal"]').val(data.codigo_postal);
+                  $('[name="municipio"]').val(data.municipio);
+                  $('[name="estado"]').val(data.estado);
+              },
+              error: function(xhr, status, error) {
+                  console.error("Ocurrió un error: " + error);
+              }
+          });
+      });
+  });
+  </script>
+
+{% endblock %}
