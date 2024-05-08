@@ -23,6 +23,7 @@
             {% if user.is_staff %}
             <th>Asesor</th>
             {% endif %}
+            <th></th>
         </tr>
     </thead>
     <tbody id="CuerpoCatalogo">
@@ -39,6 +40,16 @@
             {% if user.is_staff %}
             <td>{{ poliza.asesor_poliza.usuario.first_name }} {{ poliza.asesor_poliza.usuario.last_name }}</td>
             {% endif %}
+            <td class="text-center">
+              <!-- Update book buttons -->
+              <a type="button" class="update-book btn btn-sm btn-info" href="{% url update poliza.pk %}" >
+                <span class="fa fa-pencil"></span>
+              </a>
+              <!-- Delete book buttons -->
+              <a type="button" class="delete-book btn btn-sm btn-dark" href="{% url borra poliza.pk %}">
+                <span class="fa fa-trash"></span>
+              </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
