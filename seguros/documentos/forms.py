@@ -101,7 +101,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                     "data-placeholder": "Buscar por nombre o codigo postal",
                 }
     ))
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))    
+    fecha_nacimiento = forms.DateField(widget=forms.DateInput())    
     helper = FormHelper()
     helper.form_tag = False
     helper.layout = Layout(
@@ -148,20 +148,31 @@ class PersonaPrincipalForm(forms.ModelForm):
                 """),
                 css_class='col text-center'
             ),
-            
+            Field('asesor_cliente', type="hidden"),
     )
 
     class Meta:
         model = modelos.PersonaPrincipal
-        fields = ['tipo_persona', 'nombre', 'primer_apellido',
+        fields = ['tipo_persona', 'nombre', 'primer_apellido','curp', 
                   'segundo_apellido', 'genero', 'estatus_persona',
-                  'asesor', 'lugar_nacimiento', 'fecha_nacimiento',
+                  'asesor_cliente', 'lugar_nacimiento', 'fecha_nacimiento',
                   'asentamiento', 
                   'calle', 'numero', 'numero_interior',
                   'correo', 'telefono',
                   ]  
+        
+                
+        widgets = {
+            'asesor_cliente':forms.HiddenInput(),
+        }
 
-    
+    def __init__(self, *args, **kwargs):
+        super(PersonaPrincipalForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:            
+            self.fields['estado'].initial = self.instance.asentamiento.municipio.estado
+            self.fields['municipio'].initial = self.instance.asentamiento.municipio.estado
+            self.fields['codigo_postal'].initial = self.instance.asentamiento.codigo_postal
+
 
 #Asesores
         
@@ -308,19 +319,21 @@ class PolizaForm(forms.ModelForm):
                 """),
                 css_class='col text-center'
             ),
+            Field('asesor_poliza', type="hidden"),
     )
 
     
     class Meta:
         model = modelos.Poliza
-        fields = ['empresa', 'numero_poliza', 'forma_pago',
+        fields = ['empresa', 'numero_poliza', 'forma_pago', 'asesor_poliza',
                   'tipo_conducto_pago', 'plan','fecha_vigencia', 'fecha_emision',
-                  'fecha_pago', 'estatus']
+                  'fecha_pago', 'estatus']        
         
         widgets = {
-            'fecha_vigencia': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_emision': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_pago': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_vigencia': forms.DateInput(),
+            'fecha_emision': forms.DateInput(),
+            'fecha_pago': forms.DateInput(),
+            'asesor_poliza':forms.HiddenInput(),
         }
 
 # Archivos de la poliza

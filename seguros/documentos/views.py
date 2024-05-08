@@ -280,7 +280,7 @@ class Poliza_List(LoginRequiredMixin, ListView):
         user = self.request.user
         try:
             asesor = mod.Asesor.objects.get(usuario=user)        
-            return mod.Poliza.objects.filter(asesor=asesor)
+            return mod.Poliza.objects.filter(asesor_poliza=asesor)
         except mod.Asesor.DoesNotExist:
             if user.is_staff or user.is_superuser:
                 return mod.Poliza.objects.all()
@@ -301,9 +301,10 @@ class Poliza_List(LoginRequiredMixin, ListView):
 def edit_poliza(request, pk=None):
     try:
         asesor_instance = mod.Asesor.objects.get(usuario=request.user)
-        #messages.info(request, "Se encontró al asesor")
+        #messages.info(request, f"Se encontró al asesor {asesor_instance.usuario}")
     except mod.Asesor.DoesNotExist:
         messages.warning(request, "No encontró al asesor")
+        asesor_instance = None
 
     if pk:
         poliza = get_object_or_404(mod.Poliza, pk=pk)
@@ -312,22 +313,30 @@ def edit_poliza(request, pk=None):
     else:
         poliza = mod.Poliza()
         persona_principal = mod.PersonaPrincipal()
-        poliza.asesor = asesor_instance
-        persona_principal.asesor = asesor_instance
         titulo = f"Nueva Poliza"
+        poliza.asesor_poliza = asesor_instance
+        persona_principal.asesor_cliente = asesor_instance
+    
 
     helper_beneficiario = formularios.BeneficiariosHelper
     formset_beneficiario = formularios.BeneficiariosFormset(request.POST or None, instance=poliza)
 
     if request.method == 'POST':
-        messages.success(request, "Se entro al post")
-        form_poliza = formularios.PolizaForm(request.POST, instance=poliza, initial={'asesor': asesor_instance})
-        form_persona_principal = formularios.PersonaPrincipalForm(request.POST, instance=persona_principal, initial={'asesor': asesor_instance})                
-        form_persona_principal.instance.asesor = asesor_instance
+        #messages.success(request, "Se entro al post")
+        form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)        
+        form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal)                        
 
-        if form_poliza.is_valid()  and formset_beneficiario.is_valid():
-            messages.success(request, "Los formularios son validos")
-            total_porcentaje = sum(form.cleaned_data['porcentaje_participacion'] for form in formset_beneficiario)
+        if form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
+            
+            try:
+                total_porcentaje = 0
+                for form in formset_beneficiario:
+                    total_porcentaje += form.cleaned_data.get('porcentaje_participacion', 0)
+                    #messages.info(request, f"Porcentaje {form.cleaned_data['porcentaje_participacion']}  para un total de {total_porcentaje}")
+                #total_porcentaje = sum(form.cleaned_data['porcentaje_participacion'] for form in formset_beneficiario)
+            except Exception as e:
+                messages.error(request, f"Fallo el calculo de porcentaje, favor de revisar las cantidades")
+                total_porcentaje = 0
             messages.success(request, f"Los formularios son validos y el porcentaje es {total_porcentaje}")
             if total_porcentaje == 100:
                 persona_principal = form_persona_principal.save()  # Guarda la persona principal
@@ -336,7 +345,7 @@ def edit_poliza(request, pk=None):
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
                 messages.success(request, "Póliza guardada con éxito.")
-                return redirect('poliza_list')  # Redirige a una lista o alguna URL definida
+                return redirect('documentos:polizas')  # Redirige a una lista o alguna URL definida
             else:
                 messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
         else:

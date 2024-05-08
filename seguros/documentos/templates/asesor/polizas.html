@@ -37,7 +37,7 @@
             <td>{{ poliza.fecha_emision }}</td>
             <td>{{ poliza.estatus }}</td>
             {% if user.is_staff %}
-            <td>{{ poliza.asesor.usuario.first_name }} {{ poliza.asesor.usuario.last_name }}</td>
+            <td>{{ poliza.asesor_poliza.usuario.first_name }} {{ poliza.asesor_poliza.usuario.last_name }}</td>
             {% endif %}
         </tr>
         {% endfor %}
