@@ -101,7 +101,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                     "data-placeholder": "Buscar por nombre o codigo postal",
                 }
     ))
-    fecha_nacimiento = forms.DateField(widget=forms.DateInput())    
+    fecha_nacimiento = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}))    
     helper = FormHelper()
     helper.form_tag = False
     helper.layout = Layout(
@@ -330,9 +330,9 @@ class PolizaForm(forms.ModelForm):
                   'fecha_pago', 'estatus']        
         
         widgets = {
-            'fecha_vigencia': forms.DateInput(),
-            'fecha_emision': forms.DateInput(),
-            'fecha_pago': forms.DateInput(),
+            'fecha_vigencia': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
+            'fecha_emision': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
+            'fecha_pago': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
             'asesor_poliza':forms.HiddenInput(),
         }
 
