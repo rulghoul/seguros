@@ -1,18 +1,18 @@
 import logging
 from django.contrib.admin.views.decorators import staff_member_required
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import ListView, DetailView
+from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages #Mensajes
 from django.contrib.auth.mixins import LoginRequiredMixin 
-from django.urls import reverse, reverse_lazy
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import ListView, DetailView
-from django.views import View
-from django.db import transaction
 from django.contrib.auth.models import User
+from django.db import transaction
+from django.http import JsonResponse
 
 from . import models as mod
 from . import forms as formularios
@@ -337,7 +337,7 @@ def edit_poliza(request, pk=None):
             except Exception as e:
                 messages.error(request, f"Fallo el calculo de porcentaje, favor de revisar las cantidades")
                 total_porcentaje = 0
-            messages.success(request, f"Los formularios son validos y el porcentaje es {total_porcentaje}")
+            #messages.success(request, f"Los formularios son validos y el porcentaje es {total_porcentaje}")
             if total_porcentaje == 100:
                 persona_principal = form_persona_principal.save()  # Guarda la persona principal
                 poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
