@@ -17,7 +17,7 @@ DEBUG = os.environ.get("DEBUG","1")
 
 #ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost,seguros-git.ifnap8.easypanel.host').split(',')
-CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_CSRF_TRUSTED_ORIGINS', 'https://seguros.ghoulrul.online,http://localhost,seguros-git.ifnap8.easypanel.host').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_CSRF_TRUSTED_ORIGINS', 'https://seguros.ghoulrul.online,http://localhost,https://seguros-git.ifnap8.easypanel.host').split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
@@ -114,14 +114,14 @@ AUTH_PASSWORD_VALIDATORS = [
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://127.0.0.1:6379") + "/1",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://seguros_redis:6379") + "/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://127.0.0.1:6379") + "/2",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://seguros_redis:6379") + "/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
