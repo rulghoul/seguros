@@ -16,7 +16,7 @@ DEBUG = os.environ.get("DEBUG","1")
 
 
 #ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost,seguros-django.ifnap8.easypanel.hostt').split(',')
+ALLOWED_HOSTS = os.getenv('SEGUROS_ALLOWED_HOSTS', 'localhost,seguros-django.ifnap8.easypanel.host').split(',')
 CSRF_TRUSTED_ORIGINS = os.getenv('SEGUROS_CSRF_TRUSTED_ORIGINS', 'https://seguros.ghoulrul.online,http://localhost,https://seguros-git.ifnap8.easypanel.host').split(',')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
