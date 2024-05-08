@@ -301,8 +301,7 @@ class Poliza_List(LoginRequiredMixin, ListView):
 def edit_poliza(request, pk=None):
     try:
         asesor_instance = mod.Asesor.objects.get(usuario=request.user)
-        form_persona_principal.instance.asesor = asesor_instance
-        messages.info(request, "Se encontró al asesor")
+        #messages.info(request, "Se encontró al asesor")
     except mod.Asesor.DoesNotExist:
         messages.warning(request, "No encontró al asesor")
 
@@ -313,6 +312,8 @@ def edit_poliza(request, pk=None):
     else:
         poliza = mod.Poliza()
         persona_principal = mod.PersonaPrincipal()
+        poliza.asesor = asesor_instance
+        persona_principal.asesor = asesor_instance
         titulo = f"Nueva Poliza"
 
     helper_beneficiario = formularios.BeneficiariosHelper
@@ -320,10 +321,11 @@ def edit_poliza(request, pk=None):
 
     if request.method == 'POST':
         messages.success(request, "Se entro al post")
-        form_poliza = formularios.PolizaForm(request.POST, instance=poliza)
-        form_persona_principal = formularios.PersonaPrincipalForm(request.POST, instance=persona_principal)        
+        form_poliza = formularios.PolizaForm(request.POST, instance=poliza, initial={'asesor': asesor_instance})
+        form_persona_principal = formularios.PersonaPrincipalForm(request.POST, instance=persona_principal, initial={'asesor': asesor_instance})                
+        form_persona_principal.instance.asesor = asesor_instance
 
-        if form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
+        if form_poliza.is_valid()  and formset_beneficiario.is_valid():
             messages.success(request, "Los formularios son validos")
             total_porcentaje = sum(form.cleaned_data['porcentaje_participacion'] for form in formset_beneficiario)
             messages.success(request, f"Los formularios son validos y el porcentaje es {total_porcentaje}")

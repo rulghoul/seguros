@@ -84,17 +84,11 @@ y el usuario por default
       SEGUROS_SQL_PASSWORD: T3@tbycCM2Unz
 
 
-Crear la imagen de Docker
----------------------------
+Crearo o actualiza las imagenes y ejecuta las imagenes de Docker
+-----------------------------------------------------------------
 
 
 .. code-block:: bash
 
-    docker-compose build
+    docker-compose up -d --build
 
-Ejecutar la imagen Docker
---------------------------
-
-.. code-block:: bash
-
-    docker-compose up -d

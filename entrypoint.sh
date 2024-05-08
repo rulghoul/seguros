@@ -19,7 +19,7 @@ python manage.py crear_usuario
 # Descomenta la línea correspondiente a tu elección
 
 # Opción con Gunicorn (asegúrate de tener gunicorn en tu requirements.txt)
-gunicorn --workers 4 -t 240 seguros.wsgi:application --bind 0.0.0.0:8000
+gunicorn --workers 4 -t 240 seguros.wsgi:application --bind 0.0.0.0:8000 --log-level debug --log-file - --access-logfile - --error-logfile -
 
 # Opción con el servidor de desarrollo
 #python manage.py runserver 0.0.0.0:8000
