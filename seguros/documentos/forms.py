@@ -67,7 +67,7 @@ class EmpresaContratanteForm(forms.ModelForm):
 class PlanesForm(forms.ModelForm):
     class Meta:
         model = modelos.Planes
-        fields = ('clave', 'nombre', 'empresa',  'activo',)
+        fields = ('nombre', 'empresa',  'activo',)
 
 
 class MunicipioWidget(s2forms.ModelSelect2Widget):

@@ -164,8 +164,8 @@ class PlanesView(BaseListView):
     redirige = 'documentos:lista_planes'
     context_object_name = 'lista'
     title = 'Planes'
-    encabezados = ['CLAVE','NOMBRE', 'EMPRESA',  'ACTIVO',]
-    campos = ['clave', 'nombre', 'empresa',  'activo',]
+    encabezados = ['NOMBRE', 'EMPRESA',  'ACTIVO',]
+    campos = ['nombre', 'empresa',  'activo',]
 
 
 class PersonaPrincipalAdd(FormView):
