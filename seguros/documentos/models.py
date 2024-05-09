@@ -185,7 +185,7 @@ class Poliza(models.Model):
 
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
-    tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
+    parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE,blank=True, null=True,default=None) 
     nombre_completo = models.CharField(max_length=100)  
     porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
     

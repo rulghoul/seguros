@@ -7,10 +7,61 @@
 <h3 class="card-title">{{ titulo }}</h3>
 
 <form action="" method="POST">
-   {% crispy form_persona_principal %}
-   {% crispy form_poliza %}
-   <hr class="hr" />
-   {% crispy formset_beneficiario helper_beneficiario %}  
+    <div class="accordion">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="cliente-heading">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cliente-colapse" aria-expanded="true" aria-controls="cliente-colapse">
+                Datos del Cliente
+              </button>
+            </h2>
+            <div id="cliente-colapse" class="accordion-collapse collapse show" aria-labelledby="cliente-heading">
+                <div class="accordion-body">
+                    {% crispy form_persona_principal %}
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="poliza-heading">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#poliza-colapse" aria-expanded="true" aria-controls="poliza-colapse">
+                Datos del Poliza
+              </button>
+            </h2>
+            <div id="poliza-colapse" class="accordion-collapse collapse" aria-labelledby="poliza-heading">
+                <div class="accordion-body">
+                    {% crispy form_poliza %}
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="bene-heading">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bene-colapse" aria-expanded="true" aria-controls="bene-colapse">
+                Beneficiarios
+              </button>
+            </h2>
+            <div id="bene-colapse" class="accordion-collapse collapse" aria-labelledby="bene-heading">
+                <div class="accordion-body">
+                    {% crispy formset_beneficiario helper_beneficiario %}  
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="docs-heading">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#docs-colapse" aria-expanded="true" aria-controls="docs-colapse">
+                Documentos
+              </button>
+            </h2>
+            <div id="bene-colapse" class="accordion-collapse collapse" aria-labelledby="docs-heading">
+                <div class="accordion-body">
+                    Aqui se pondran los documentos 
+                </div>
+            </div>
+        </div>
+
+    </div>
 </form>
 
 <script>

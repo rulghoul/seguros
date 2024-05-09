@@ -262,7 +262,7 @@ class FormBeneficiario(forms.ModelForm):
     
     class Meta:
         model = modelos.Beneficiarios
-        fields = ['tipo_persona', 'nombre_completo', 'porcentaje_participacion',]
+        fields = ['parentesco', 'nombre_completo', 'porcentaje_participacion',]
 
 class BeneficiariosHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -272,7 +272,7 @@ class BeneficiariosHelper(FormHelper):
         self.helper.form_tag = False
         self.layout = Layout(
                 Div(
-                    Div('tipo_persona', css_class='col-md-3'),
+                    Div('parentesco', css_class='col-md-3'),
                     Div('nombre_completo', css_class='col-md-6'),
                     Div('porcentaje_participacion', css_class='col-md-3'),
                     css_class='row'
