@@ -6,7 +6,7 @@ from django.views.generic import ListView
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetDoneView
 from django.contrib.auth.decorators import login_required
 
 
@@ -123,6 +123,8 @@ class CustomLoginView(LoginView):
 
 class CustomLogoutView(LogoutView):
     next_page = 'home'
+
+
 
 def home_view(request):   
     template = loader.get_template('home.html')

@@ -129,6 +129,7 @@ class Planes(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
+    siniestros = models.BooleanField(default=False)
     activo = models.BooleanField(default=True)
     
     
@@ -185,7 +186,7 @@ class Poliza(models.Model):
 
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
-    tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE) 
+    parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE,blank=True, null=True,default=None) 
     nombre_completo = models.CharField(max_length=100)  
     porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
     
@@ -203,7 +204,6 @@ class CheckDocumentos(models.Model):
 
 
 class PlanDocumentos(models.Model):
-    clave = ClaveField()
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     documento = models.ForeignKey(Documentos, on_delete=models.CASCADE)
     

@@ -67,7 +67,7 @@ class EmpresaContratanteForm(forms.ModelForm):
 class PlanesForm(forms.ModelForm):
     class Meta:
         model = modelos.Planes
-        fields = ('clave', 'nombre', 'empresa',  'activo',)
+        fields = ('nombre', 'empresa',  'activo',)
 
 
 class MunicipioWidget(s2forms.ModelSelect2Widget):
@@ -98,7 +98,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 max_results=50,
                 attrs={
                     "data-minimum-input-length": 3,
-                    "data-placeholder": "Buscar por nombre o codigo postal",
+                    "data-placeholder": "No se encontro la la colonia o Codigo Postal",
                 }
     ))
     fecha_nacimiento = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}))    
@@ -262,7 +262,7 @@ class FormBeneficiario(forms.ModelForm):
     
     class Meta:
         model = modelos.Beneficiarios
-        fields = ['tipo_persona', 'nombre_completo', 'porcentaje_participacion',]
+        fields = ['parentesco', 'nombre_completo', 'porcentaje_participacion',]
 
 class BeneficiariosHelper(FormHelper):
     def __init__(self, *args, **kwargs):
@@ -272,7 +272,7 @@ class BeneficiariosHelper(FormHelper):
         self.helper.form_tag = False
         self.layout = Layout(
                 Div(
-                    Div('tipo_persona', css_class='col-md-3'),
+                    Div('parentesco', css_class='col-md-3'),
                     Div('nombre_completo', css_class='col-md-6'),
                     Div('porcentaje_participacion', css_class='col-md-3'),
                     css_class='row'
@@ -290,7 +290,23 @@ BeneficiariosFormset = inlineformset_factory(
     can_delete=True 
 )
 
-class PolizaForm(forms.ModelForm):  
+class PolizaForm(forms.ModelForm): 
+    plan = forms.ModelChoiceField(
+        queryset=modelos.Planes.objects.all(),  
+        label="Plan",
+        required=True,
+        widget=s2forms.ModelSelect2Widget(
+            model=modelos.Planes,
+            search_fields=['nombre__icontains'],
+            dependent_fields={'empresa': 'empresa'},
+            max_results=50,
+            attrs={
+                "data-minimum-input-length": 0,
+                "data-placeholder": "No hay planes Disponibles",  
+                "data-allow-clear": True,              
+            },
+        )
+    )
     helper = FormHelper()
     helper.form_tag = False
     helper.layout = Layout(
@@ -335,5 +351,16 @@ class PolizaForm(forms.ModelForm):
             'fecha_pago': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'}),
             'asesor_poliza':forms.HiddenInput(),
         }
+
+
+    def __init__(self, *args, **kwargs):   
+        super(PolizaForm, self).__init__(*args, **kwargs)
+        asesor = self.instance.asesor_poliza
+        if asesor and asesor.pk:
+            self.fields['empresa'].queryset = modelos.EmpresaContratante.objects.filter(
+                asesorempresa__asesor_id=asesor
+            )
+        else:
+            self.fields['empresa'].queryset = modelos.EmpresaContratante.objects.none()
 
 # Archivos de la poliza

@@ -53,5 +53,15 @@
 
       {% endblock %}
     </div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+          setTimeout(function() {
+              $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                  $(this).remove(); 
+              });
+          }, 4000);  // Ajusta el tiempo según necesites, aquí está a 4000 milisegundos = 4 segundos
+      });
+      </script>
+      
   </body>
 </html>
