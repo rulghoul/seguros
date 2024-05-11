@@ -316,6 +316,7 @@ def edit_poliza(request, pk=None):
         titulo = f"Nueva Poliza"
         poliza.asesor_poliza = asesor_instance
         persona_principal.asesor_cliente = asesor_instance
+        poliza.persona_principal = persona_principal
     
 
     helper_beneficiario = formularios.BeneficiariosHelper
