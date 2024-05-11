@@ -190,6 +190,9 @@ class Beneficiarios(models.Model):
     nombre_completo = models.CharField(max_length=100)  
     porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
     
+    class Meta:
+        unique_together = (("numero_poliza", "parentesco"),)
+    
 
 class CheckDocumentos(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
@@ -199,8 +202,7 @@ class CheckDocumentos(models.Model):
     necesario = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
     entregado = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
     archivo = models.FileField()
-    fecha_adjuntado = models.DateTimeField()  
-    
+    fecha_adjuntado = models.DateTimeField()      
 
 
 class PlanDocumentos(models.Model):
