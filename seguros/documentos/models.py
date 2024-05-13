@@ -129,7 +129,7 @@ class Planes(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    siniestros = models.BooleanField(default=False)
+    gastos_medicos = models.BooleanField(default=False)
     activo = models.BooleanField(default=True)
     
     
