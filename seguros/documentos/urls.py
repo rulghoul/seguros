@@ -16,11 +16,15 @@ urlpatterns = [
     path('asesor_add', views.crear_o_editar_asesor, name='asesor_add'),
     path('asesor_update/<int:pk>/', views.crear_o_editar_asesor, name='asesor_update'),
     path('asesor_list', views.ListAseror.as_view(), name='asesor_list'),
+    path('principal_list', views.ListCliente.as_view(), name='principal_list'),
     path('principal_add', views.PersonaPrincipalAdd.as_view(), name='principal_add'),
     path('principal_update/<int:pk>/', views.PersonaPrincipalUpdate.as_view(), name='principal_update'),
     #Polizas
     path('polizas', views.Poliza_List.as_view(), name='polizas'),
     path('poliza_add', views.edit_poliza, name='poliza_add'),
     path('poliza_update/<int:pk>/', views.edit_poliza, name='poliza_update'),
-    
+    #Sinestros
+    path('siniestros', views.Poliza_List.as_view(), name='siniestros'),
+    path('siniestro_add', views.edit_poliza, name='siniestro_add'),
+    path('siniestro_update/<int:pk>/', views.edit_poliza, name='siniestro_update'),    
 ]

@@ -82,9 +82,48 @@ y el usuario por default
       SEGUROS_SQL_DATABASE: seguros
       SEGUROS_SQL_USER: seguros
       SEGUROS_SQL_PASSWORD: T3@tbycCM2Unz
+      SEGUROS_SQL_HOST: db
+      SEGUROS_SQL_PORT: 5432
+      SEGUROS_REDIS: "redis://redis:6379"
+      EMAIL_HOST_USER: "elmonjeamarillo@gmail.com"
+      EMAIL_HOST_PASSWORD: "gzrlndcjrffjnrdt"
+      EMAIL_DEAFULT_FROM: "elmonjeamarillo@gmail.com"
+
+Crear los registros de Sepomex en la primera ejecucion
+=========================================================
+
+El aplicativo en puede no generar los registros
+de la base de sepomex que requiere el sistema, para lo cual tendremos que editar
+el archivo entrypoint.sh para que se generen la carga de la informacion a 
+la base de datos.
+
+.. code-block:: bash 
+    :linenos:
+    :emphasize-lines: 10,11
+
+    #!/bin/sh
+
+    # Detener la ejecución en caso de error
+    set -e
+
+    # Ejecutar migraciones
+    python manage.py makemigrations --noinput
+    python manage.py migrate --noinput
+
+    #python manage.py loaddata sepomex_backup.json
+    #rm sepomex_backup.json
+
+    # Recopilar archivos estáticos
+    python manage.py collectstatic --noinput --clear
+
+    python manage.py crear_usuario
+
+    # Opción con Gunicorn (asegúrate de tener gunicorn en tu requirements.txt)
+    gunicorn --workers 4 -t 240 seguros.wsgi:application --bind 0.0.0.0:8000 --log-level debug --log-file - --access-logfile - --error-logfile -
 
 
-Crearo o actualiza las imagenes y ejecuta las imagenes de Docker
+
+Crea o actualiza las imagenes y ejecuta las imagenes de Docker
 -----------------------------------------------------------------
 
 
