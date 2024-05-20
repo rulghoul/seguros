@@ -24,6 +24,7 @@ from .utils.send_email_new_asesor import envia_correo_new_asesor as envia
 class BaseListView(View):
     form_class = None
     model = None
+    lista_objetos = None
     template_name = ''
     redirige = ''
     context_object_name = 'lista'
@@ -70,7 +71,7 @@ class BaseListView(View):
         else:
             form = self.form_class()
 
-        context['lista'] = self.model.objects.all()
+        context['lista'] = self.lista_objetos if self.lista_objetos is not None else self.model.objects.all()
         context['form'] = form 
         context['titulo'] = self.title
         context['encabezados'] = self.encabezados
@@ -150,12 +151,13 @@ class ParentescoView(BaseListView):
 class EmpresaContratanteView(BaseListView):
     form_class = formularios.EmpresaContratanteForm
     model = mod.EmpresaContratante
+    lista_objetos = mod.EmpresaContratante.objects.all().order_by('clave')
     template_name = 'catalogos/list.html'
     redirige = 'documentos:lista_empresa'
     context_object_name = 'lista'
     title = 'Empresa Contratante'
-    encabezados = ['CLAVE','NOMBRE', 'LOGO', 'PLECA', 'ACTIVO',]
-    campos = ['clave', 'nombre', 'logo_small', 'pleca', 'activo',]
+    encabezados = ['CLAVE','NOMBRE', 'LINK','LOGO', 'PLECA', 'ACTIVO',]
+    campos = ['clave', 'nombre', 'link', 'logo_small', 'pleca', 'activo',]
 
 class PlanesView(BaseListView):
     form_class = formularios.PlanesForm
@@ -192,6 +194,7 @@ class PersonaPrincipalAdd(FormView):
         return context
     
 class PersonaPrincipalUpdate(UpdateView):
+    model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
     success_url = "home"
@@ -206,7 +209,7 @@ class PersonaPrincipalUpdate(UpdateView):
         user = self.request.user
         context["titulo"] = "Actualizar Cliente"
         context["redirige"] = "documentos:principal_update"
-        context["informacion"] = "documentos:asentamiento_details"
+        context["informacion"] = "sepomex:asentamiento_details"
         return context
     
     def get_initial(self):
@@ -217,6 +220,21 @@ class PersonaPrincipalUpdate(UpdateView):
         initial['municipio'] = asentamiento.municipio.nombre
         initial['estado'] = asentamiento.municipio.estado.nombre
         return initial
+
+class ListCliente(ListView):
+    template_name = "catalogos/list_cliente.html"
+    model = mod.PersonaPrincipal
+    paginate_by = 100
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Asesores"
+        context["encabezados"] = ('Nombre', 'Correo', 'Telefono', "Asesor")
+        context["add"] = "documentos:principal_add"
+        context["add_label"] = "Nuevo Cliente"
+        context["update"] = "documentos:principal_update"
+        context["borra"] = "documentos:principal_update"
+        return context
     
 #Asesores
 
@@ -303,13 +321,15 @@ def edit_poliza(request, pk=None):
         asesor_instance = mod.Asesor.objects.get(usuario=request.user)
         #messages.info(request, f"Se encontró al asesor {asesor_instance.usuario}")
     except mod.Asesor.DoesNotExist:
-        messages.warning(request, "No encontró al asesor")
-        asesor_instance = None
+        if pk is None:
+            messages.warning(request, "No encontró al asesor")
+            asesor_instance = None
 
     if pk:
         poliza = get_object_or_404(mod.Poliza, pk=pk)
         titulo = f"Editar Poliza: {poliza.numero_poliza}"
         persona_principal = poliza.persona_principal  # Acceder a la persona principal existente
+        asesor_instance = poliza.asesor_poliza
     else:
         poliza = mod.Poliza()
         persona_principal = mod.PersonaPrincipal()
@@ -371,3 +391,6 @@ def edit_poliza(request, pk=None):
         "informacion": "sepomex:asentamiento_details",
         'titulo': titulo
     })
+
+#Siniestros
+

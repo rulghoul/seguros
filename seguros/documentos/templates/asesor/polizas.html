@@ -5,7 +5,9 @@
 
 <div class="row" style="margin-bottom: 1em; margin-top: 1em;">
     <h3 class="col-5">{{ titulo }}</h3>
-    <a class="btn btn-secondary col-2" href="{% url add %}">{{ add_label }}</a>
+    {% if es_asesor %}
+      <a class="btn btn-secondary col-2" href="{% url add %}">{{ add_label }}</a>
+    {% endif %}
     <input class="form-control col-4 ml-auto" id="myInput" type="text" placeholder="Buscar..">
 </div>
 

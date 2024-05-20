@@ -98,9 +98,10 @@ class Parentesco(models.Model):
 class EmpresaContratante(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
+    logo_small = models.ImageField(upload_to='empresa',blank=True, null=True)
+    pleca = models.ImageField(upload_to='empresa',blank=True, null=True)
+    link = models.URLField(max_length=200,blank=True, null=True)
     activo = models.BooleanField(default=True)
-    logo_small = models.FileField(blank=True, null=True, default=None)
-    pleca = models.FileField(blank=True, null=True, default=None)
     
     
     def __str__(self) -> str:
@@ -122,6 +123,9 @@ class AsesorEmpresa(models.Model):
 class Asesor(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     empresa = models.ManyToManyField(EmpresaContratante, through=AsesorEmpresa)
+
+    def __str__(self) -> str:
+        return f"{self.usuario.first_name} {self.usuario.last_name}"
 
     
 

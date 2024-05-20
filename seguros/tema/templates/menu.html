@@ -18,9 +18,8 @@
         <a class="dropdown-item" href="{% url 'documentos:lista_empresa' %}">Empresa Contratante</a>
         <a class="dropdown-item" href="{% url 'documentos:lista_planes' %}">Planes</a>
         <li class="dropdown-divider"></li>
-        <a class="dropdown-item" href="{% url 'documentos:principal_add' %}">Persona Principal</a>
-        <li class="dropdown-divider"></li>
       {% endif %}
+      <a class="dropdown-item" href="{% url 'documentos:principal_list' %}">Persona Principal</a>
       <a class="dropdown-item" href="{% url 'documentos:polizas' %}">Polizas</a>
     </ul>
   </li>
