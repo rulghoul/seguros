@@ -101,8 +101,7 @@ class EmpresaContratante(models.Model):
     logo_small = models.ImageField(upload_to='empresa',blank=True, null=True)
     pleca = models.ImageField(upload_to='empresa',blank=True, null=True)
     link = models.URLField(max_length=200,blank=True, null=True)
-    activo = models.BooleanField(default=True)
-    
+    activo = models.BooleanField(default=True)    
     
     def __str__(self) -> str:
         return self.nombre

@@ -1,0 +1,517 @@
+[
+    {
+        "model": "documentos.tipoconductopago",
+        "pk": 4,
+        "fields": {
+            "clave": "1",
+            "descripcion": "Tarjeta de Credito",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipoconductopago",
+        "pk": 5,
+        "fields": {
+            "clave": "2",
+            "descripcion": "Tarjeta de Debito",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipoconductopago",
+        "pk": 6,
+        "fields": {
+            "clave": "3",
+            "descripcion": "Modo Directo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipopersona",
+        "pk": 1,
+        "fields": {
+            "clave": "1",
+            "descripcion": "Cliente",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipopersona",
+        "pk": 2,
+        "fields": {
+            "clave": "2",
+            "descripcion": "Asesor",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipopersona",
+        "pk": 3,
+        "fields": {
+            "clave": "3",
+            "descripcion": "Beneficiario",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.formapago",
+        "pk": 4,
+        "fields": {
+            "clave": "1",
+            "descripcion": "Anual",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.formapago",
+        "pk": 5,
+        "fields": {
+            "clave": "2",
+            "descripcion": "Semestral",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.formapago",
+        "pk": 6,
+        "fields": {
+            "clave": "3",
+            "descripcion": "Trimestral",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.formapago",
+        "pk": 7,
+        "fields": {
+            "clave": "4",
+            "descripcion": "Mensual",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 1,
+        "fields": {
+            "clave": "1",
+            "descripcion": "Identificación Oficial",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 2,
+        "fields": {
+            "clave": "2",
+            "descripcion": "Comprobante de Domicilio",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 3,
+        "fields": {
+            "clave": "3",
+            "descripcion": "Estado de Cuenta Bancario",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 4,
+        "fields": {
+            "clave": "4",
+            "descripcion": "Caratula de Póliza",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 5,
+        "fields": {
+            "clave": "5",
+            "descripcion": "Informe Médico",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 6,
+        "fields": {
+            "clave": "6",
+            "descripcion": "Interpretación de Estudios",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 7,
+        "fields": {
+            "clave": "7",
+            "descripcion": "Cotización de Material Extra a la Cirugía",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 8,
+        "fields": {
+            "clave": "8",
+            "descripcion": "Aviso de Accidente",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 9,
+        "fields": {
+            "clave": "9",
+            "descripcion": "Carta de Autorización de Pago Directo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 10,
+        "fields": {
+            "clave": "10",
+            "descripcion": "Carta de Autorización de Honorarios",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 11,
+        "fields": {
+            "clave": "11",
+            "descripcion": "Carta de Invalidez Total y Permanente",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.documentos",
+        "pk": 12,
+        "fields": {
+            "clave": "12",
+            "descripcion": "Carta de Aseguradora por Fallecimiento",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipomediocontacto",
+        "pk": 1,
+        "fields": {
+            "descripcion": "Telefono",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.tipomediocontacto",
+        "pk": 2,
+        "fields": {
+            "descripcion": "Correo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 1,
+        "fields": {
+            "descripcion": "Esposo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 2,
+        "fields": {
+            "descripcion": "Esposa",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 3,
+        "fields": {
+            "descripcion": "Hijo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 4,
+        "fields": {
+            "descripcion": "Hija",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 5,
+        "fields": {
+            "descripcion": "Padre",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 6,
+        "fields": {
+            "descripcion": "Madre",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 7,
+        "fields": {
+            "descripcion": "Tío",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 8,
+        "fields": {
+            "descripcion": "Tía",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 9,
+        "fields": {
+            "descripcion": "Hermano",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 10,
+        "fields": {
+            "descripcion": "Hermana",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 11,
+        "fields": {
+            "descripcion": "Sobrino",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 12,
+        "fields": {
+            "descripcion": "Sobrina",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 13,
+        "fields": {
+            "descripcion": "Primo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 14,
+        "fields": {
+            "descripcion": "Prima",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 15,
+        "fields": {
+            "descripcion": "Conyuge",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 16,
+        "fields": {
+            "descripcion": "Ahijado",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 17,
+        "fields": {
+            "descripcion": "Ahijada",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 18,
+        "fields": {
+            "descripcion": "Amigo",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.parentesco",
+        "pk": 19,
+        "fields": {
+            "descripcion": "Amiga",
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.empresacontratante",
+        "pk": 1,
+        "fields": {
+            "clave": "1",
+            "nombre": "Insignia Life",
+            "logo_small": "",
+            "pleca": "",
+            "link": null,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.empresacontratante",
+        "pk": 2,
+        "fields": {
+            "clave": "2",
+            "nombre": "GNP",
+            "logo_small": "",
+            "pleca": "",
+            "link": null,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.empresacontratante",
+        "pk": 3,
+        "fields": {
+            "clave": "3",
+            "nombre": "Seguros Monterrey New York Life",
+            "logo_small": "",
+            "pleca": "",
+            "link": null,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.empresacontratante",
+        "pk": 4,
+        "fields": {
+            "clave": "4",
+            "nombre": "MetLife",
+            "logo_small": "",
+            "pleca": "",
+            "link": null,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.empresacontratante",
+        "pk": 5,
+        "fields": {
+            "clave": "5",
+            "nombre": "Allianz",
+            "logo_small": "",
+            "pleca": "",
+            "link": null,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.empresacontratante",
+        "pk": 6,
+        "fields": {
+            "clave": "6",
+            "nombre": "Plan Seguro",
+            "logo_small": "",
+            "pleca": "",
+            "link": null,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.planes",
+        "pk": 1,
+        "fields": {
+            "clave": "1",
+            "nombre": "Plan uno Insignia",
+            "empresa": 1,
+            "gastos_medicos": false,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.planes",
+        "pk": 2,
+        "fields": {
+            "clave": "2",
+            "nombre": "Plan dos Insignia",
+            "empresa": 1,
+            "gastos_medicos": false,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.planes",
+        "pk": 3,
+        "fields": {
+            "clave": "3",
+            "nombre": "Plan uno GNP",
+            "empresa": 2,
+            "gastos_medicos": false,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.planes",
+        "pk": 4,
+        "fields": {
+            "clave": "4",
+            "nombre": "Plan dos GNP",
+            "empresa": 2,
+            "gastos_medicos": false,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.planes",
+        "pk": 5,
+        "fields": {
+            "clave": "5",
+            "nombre": "Plan uno Monterrey",
+            "empresa": 3,
+            "gastos_medicos": false,
+            "activo": true
+        }
+    },
+    {
+        "model": "documentos.personaprincipal",
+        "pk": 1,
+        "fields": {
+            "curp": "PEDR830101HASDFG12",
+            "tipo_persona": 1,
+            "nombre": "Raul",
+            "primer_apellido": "Paredez",
+            "segundo_apellido": "Muños",
+            "genero": "H",
+            "estatus_persona": "A",
+            "asesor_cliente": 1,
+            "lugar_nacimiento": "Algun Lugar",
+            "fecha_nacimiento": "2024-05-21",
+            "asentamiento": 157939,
+            "calle": "Insurgentes",
+            "numero": "12345",
+            "numero_interior": null,
+            "correo": "correo@empresa.com",
+            "telefono": "12"
+        }
+    }
+]

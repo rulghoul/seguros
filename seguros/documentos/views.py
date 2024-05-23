@@ -37,27 +37,29 @@ class BaseListView(View):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(request.POST)
+        context = self.get_context_data(post_data=request.POST, files=request.FILES, peticion=request)
         return render(request, self.template_name, context)
 
-    def get_context_data(self, post_data=None):
+    def get_context_data(self, post_data=None, files=None, peticion= None):
         context = {}
         if post_data:
-            if 'save' in post_data:   
+            if 'save' in post_data:
                 print(f"Se entro en SAVE")
                 pk = post_data.get('save')
                 if not pk:
-                    form = self.form_class(post_data)
-                    if form.is_valid():              
+                    form = self.form_class(post_data, files)
+                    if form.is_valid():
                         form.save()
                         form = self.form_class()
                     #form = self.form_class()
                 else:
                     print(f"Se entro el id = {pk}")
                     objeto = self.model.objects.get(id=pk)
-                    form = self.form_class(post_data, instance=objeto)  
-                    if form.is_valid():              
+                    form = self.form_class(post_data, files, instance=objeto)
+                    if form.is_valid():
                         form.save()
+                    else:
+                        messages.warning(peticion, f"Fallo el guardado por: {form.errors}")
                 
             elif 'delete' in post_data:
                 pk = post_data.get('delete')
@@ -156,8 +158,8 @@ class EmpresaContratanteView(BaseListView):
     redirige = 'documentos:lista_empresa'
     context_object_name = 'lista'
     title = 'Empresa Contratante'
-    encabezados = ['CLAVE','NOMBRE', 'LINK','LOGO', 'PLECA', 'ACTIVO',]
-    campos = ['clave', 'nombre', 'link', 'logo_small', 'pleca', 'activo',]
+    encabezados = ['CLAVE','NOMBRE', 'LINK','LOGO', 'ACTIVO',]
+    campos = ['clave', 'nombre', 'link', 'logo_small', 'activo',]
 
 class PlanesView(BaseListView):
     form_class = formularios.PlanesForm
@@ -197,7 +199,7 @@ class PersonaPrincipalUpdate(UpdateView):
     model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = "home"
+    success_url = "documentos:principal_update"
     
     def form_valid(self, form):
         if mod.Asesor.objects.filter(usuario = self.request.user).exists():
@@ -228,7 +230,7 @@ class ListCliente(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo"] = "Asesores"
+        context["titulo"] = "Clientes"
         context["encabezados"] = ('Nombre', 'Correo', 'Telefono', "Asesor")
         context["add"] = "documentos:principal_add"
         context["add_label"] = "Nuevo Cliente"
