@@ -99,7 +99,6 @@ class EmpresaContratante(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     logo_small = models.ImageField(upload_to='empresa',blank=True, null=True)
-    pleca = models.ImageField(upload_to='empresa',blank=True, null=True)
     link = models.URLField(max_length=200,blank=True, null=True)
     activo = models.BooleanField(default=True)    
     

@@ -62,7 +62,7 @@ class ParentescoForm(forms.ModelForm):
 class EmpresaContratanteForm(forms.ModelForm):
     class Meta:
         model = modelos.EmpresaContratante
-        fields = ('clave', 'nombre', 'link', 'logo_small', 'pleca', 'activo', )
+        fields = ('clave', 'nombre', 'link', 'logo_small', 'activo', )
 
 class PlanesForm(forms.ModelForm):
     class Meta:
