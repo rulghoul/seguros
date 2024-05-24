@@ -6,8 +6,8 @@
   </td>
 {% endfor %}
 <td class="text-center">
-  <button class="btn btn-primary" name="save" value="{{ elemento.id }}"><span class="fa fa-save"></span></button>
+  <button class="btn btn-primary p-1" name="save" value="{{ elemento.id }}"><span class="fa fa-save"></span></button>
   {% if  elemento.id != None %}
-    <a class="btn btn-secondary" href="{{request.META.HTTP_REFERER|escape}}"><span class="fa fa-times"></span></a>
+    <a class="btn btn-secondary p-1" href="{{request.META.HTTP_REFERER|escape}}"><span class="fa fa-times"></span></a>
   {% endif %}
 </td>
