@@ -66,13 +66,7 @@ class FormaPago(models.Model): #("CLIENTE", "BENEFICIARIO")
     def __str__(self) -> str:
         return self.descripcion
 
-class Documentos(models.Model):
-    clave = models.CharField(max_length=50, unique=True)
-    descripcion = models.CharField(max_length=100, blank=True, null=True)
-    activo = models.BooleanField(default=True)
-    
-    def __str__(self) -> str:
-        return self.descripcion
+
 
 
 class TipoMediocontacto(models.Model):
@@ -195,21 +189,6 @@ class Beneficiarios(models.Model):
     class Meta:
         unique_together = (("numero_poliza", "parentesco"),)
     
-
-class CheckDocumentos(models.Model):
-    numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
-    plan = models.ForeignKey(Planes, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    documento = models.ForeignKey(Documentos,on_delete=models.CASCADE)
-    necesario = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
-    entregado = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
-    archivo = models.FileField()
-    fecha_adjuntado = models.DateTimeField()      
-
-
-class PlanDocumentos(models.Model):
-    empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    documento = models.ForeignKey(Documentos, on_delete=models.CASCADE)
     
 
 class Siniestros(models.Model):
@@ -220,3 +199,18 @@ class Siniestros(models.Model):
     estatus = models.CharField(max_length=10)
     
 
+class Documentos(models.Model):
+    poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE,blank=True, null=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    
+    def __str__(self) -> str:
+        return self.descripcion
+    
+class DocumentosSiniestros(models.Model):
+    siniestro = models.ForeignKey(Siniestros,on_delete=models.CASCADE,blank=True, null=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    
+    def __str__(self) -> str:
+        return self.descripcion

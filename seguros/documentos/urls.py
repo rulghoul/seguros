@@ -26,5 +26,8 @@ urlpatterns = [
     #Sinestros
     path('siniestros', views.Poliza_List.as_view(), name='siniestros'),
     path('siniestro_add', views.edit_poliza, name='siniestro_add'),
-    path('siniestro_update/<int:pk>/', views.edit_poliza, name='siniestro_update'),    
+    path('siniestro_update/<int:pk>/', views.edit_poliza, name='siniestro_update'), 
+    #Documentos
+    path('doc_poliza/<int:pk>/', views.upload_documentos_poliza, name='doc_poliza'),
+    path('doc_siniestros/<int:pk>/', views.upload_documentos_poliza, name='doc_siniestros'),
 ]

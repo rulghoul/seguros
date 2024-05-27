@@ -396,5 +396,70 @@ def edit_poliza(request, pk=None):
         'titulo': titulo
     })
 
-#Siniestros
+# Archivos de la poliza y Siniestros
 
+POLIZA_DESCRIPCIONES = [
+    'Documento 1',
+    'Documento 2',
+    'Documento 3',
+]
+
+SINIESTRO_DESCRIPCIONES = [
+    'Documento Siniestro 1',
+    'Documento Siniestro 2',
+    'Documento Siniestro 3',
+]
+
+
+
+def upload_documentos_poliza(request, pk=None):
+    if request.method == 'POST':
+        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, request.POST, request.FILES)
+        if form.is_valid():
+            for descripcion in POLIZA_DESCRIPCIONES:
+                files = request.FILES.getlist(descripcion)
+                for file in files:
+                    mod.Documentos.objects.create(
+                        poliza_id=pk,
+                        descripcion=descripcion,
+                        activo=True,
+                        file=file
+                    )
+            return redirect(reverse('documentos:update_poliza', args=[form.id])) 
+    else:
+        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES)
+    
+    contexto = {'form': form,
+                "titulo": "Documentos Poliza", 
+                "redirige":"documentos:update_poliza",
+                }
+    return render(request, 'poliza/archivos_poliza.html', contexto)
+
+def upload_documentos_siniestro(request, pk=None):
+    if(pk is None):
+        siniestro = get_object_or_404(mod.Siniestros, pk=pk)
+    else:
+        siniestro = mod.Siniestros()
+
+    if request.method == 'POST':
+        form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES, request.POST, request.FILES)
+        if form.is_valid():
+            for descripcion in SINIESTRO_DESCRIPCIONES:
+                files = request.FILES.getlist(descripcion)
+                for file in files:
+                    mod.DocumentosSiniestros.objects.create(
+                        siniestro=siniestro,
+                        descripcion=descripcion,
+                        activo=True,
+                        file=file
+                    )
+            return redirect(reverse('documentos:update_siniestro', args=[form.id]))  
+    else:
+        form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES)
+
+    contexto = {'form': form,
+                "titulo": "Documentos del Siniestro", 
+                "redirige":"documentos:update_poliza",
+                "lista": mod.Siniestros.objects().filter(poliza=siniestro.poliza)
+                }
+    return render(request, 'poliza/archivos_siniestro.html', contexto)

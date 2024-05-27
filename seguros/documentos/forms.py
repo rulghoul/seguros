@@ -1,5 +1,6 @@
 from django import forms
 from django_select2 import forms as s2forms
+from django.shortcuts import render, redirect, reverse
 from django.forms import inlineformset_factory, BaseFormSet, formset_factory
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, HTML, Submit, Row, Field, Button
@@ -47,7 +48,7 @@ class FormaPagoForm(forms.ModelForm):
 class DocumentosForm(forms.ModelForm):
     class Meta:
         model = modelos.Documentos
-        fields = ('clave', 'descripcion', 'activo' )
+        fields = ('descripcion', 'activo' )
 
 class TipoMediocontactoForm(forms.ModelForm):
     class Meta:
@@ -363,4 +364,20 @@ class PolizaForm(forms.ModelForm):
         else:
             self.fields['empresa'].queryset = modelos.EmpresaContratante.objects.none()
 
-# Archivos de la poliza
+class MultiDocumentUploadForm(forms.Form):
+    def __init__(self, lista_archivos, *args, **kwargs):
+        super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
+        for archivo in lista_archivos:
+            self.fields[archivo] = forms.FileField(
+                widget=forms.ClearableFileInput(attrs={'multiple': True}),
+                required=False,
+                label=archivo
+            )
+        
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.form_enctype = 'multipart/form-data'
+        self.helper.layout = Layout(
+            *[Field(archivo) for archivo in lista_archivos],
+            Submit('submit', 'Upload')
+        )
