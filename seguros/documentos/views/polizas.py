@@ -119,6 +119,9 @@ POLIZA_DESCRIPCIONES = [
     'Documento Poliza 1',
     'Documento Poliza 2',
     'Documento Poliza 3',
+    'Documento Poliza 4',
+    'Documento Poliza 5',
+    'Documento Poliza 6',
 ]
 
 SINIESTRO_DESCRIPCIONES = [

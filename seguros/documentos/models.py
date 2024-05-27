@@ -189,7 +189,7 @@ class Beneficiarios(models.Model):
     class Meta:
         unique_together = (("numero_poliza", "parentesco"),)
     
-    
+
 
 class Siniestros(models.Model):
     poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE)

@@ -131,11 +131,10 @@ def home_view(request):
     colores = parametros_colores.objects.all().order_by('elemento').values()
     #graficos = parametros_imagenes.objects.all().order_by('descripcion').values()
     context = {'titulo': "Nueva Actividad", 
-               'colores': colores, 
-               'imagenes': [], 
-               'regresa':'lista_actividad'}
+               'regresa':'lista_actividad',
+               "user":request.user}
     return HttpResponse(template.render(context, request))
 
 def base_view(request):
     colores = parametros_colores.objects.all().order_by('elemento').values()
-    return render(request, 'base.html', {'site_colors': colores})
+    return render(request, 'base.html', {'site_colors': colores, "user":request.user})

@@ -14,3 +14,8 @@ def is_imagefield(instance, field_name):
 @register.filter
 def get_tipo_campo(obj, field_name):
     return getattr(obj, field_name)
+
+
+@register.filter
+def get_nombre_usuario(obj, field_name):
+    return getattr(obj, field_name)

@@ -12,56 +12,53 @@
     {# Load the tag library #}
     {% load colores_del_sitio %}
     {% load django_bootstrap5 %}
-    {% bootstrap_javascript %}
+
     {# Load CSS and JavaScript #}
     {% bootstrap_css %}
-
+    {% bootstrap_javascript %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
     <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
     <script type="text/javascript" src="{% static 'colorfield/colorfield.js' %}"></script>
-    <script src="{% static 'colorfield/jscolor/jscolor.js' %}"></script>
     {% include 'estilo.html' %}
   </head>
   <body>
-    <div class="fixed-top d-flex align-items-center" style="background-color: {% get_color 'pleca' %};">
-      <!-- Accionador del Slidebar -->
-      <a class="dropdown-item" href="#" onclick="toggleSlidebar()" style=" font-size: 32px; width: 2em; background-color: {% get_color 'pleca' %};"><span class="fa-solid fa-bars" style="background-color: {% get_color 'pleca' %};"></span></a>
-
-      <!-- Logo o Imagen -->
+    <div class="fixed-top d-flex align-items-center" style="background-color: {% get_color 'pleca' %};">      
+      <a class="dropdown-item align-items-center" href="#" onclick="toggleSlidebar()" style=" font-size: 32px; width: 1em; background-color: {% get_color 'pleca' %};"><span class="fa-solid fa-bars" style="background-color: {% get_color 'pleca' %};"></span></a>      
       <a class="nav-brand" href="{% url 'home' %}"><img src="{% get_imagen 'logo' %}" height="80px" /></a>
+
+      <div class="user-info">
+        
+        {% if user.is_authenticated %}
+          <span>Bienvenido, {% get_full_name user %}</span>           
+        {% else %}
+          <a class="btn btn-success enlace-inferior" href="{% url 'login' %}">Ingresar</a>
+        {% endif %}
+      </div>
     </div>
 
-    <div id="slidebar" class="slidebar" style="background-color: {% get_color 'menu' %};">
-      {% if user.is_authenticated %}
-        {% include 'menu.html' %}
-        <div class="enlace-inferior">
-          <a class="btn btn-danger" href="{% url 'logout' %}" style="margin-left: 50%; transform: translateX(-50%); font-size: large;">Salir</a>
-        </div>
-      {% else %}
-        <div class="enlace-inferior">
-          <a class="btn btn-success" href="{% url 'login' %}" style="margin-left: 50%; transform: translateX(-50%); font-size: large;">Ingresar</a>
-        </div>
-      {% endif %}
+    <div class="content-wrapper" id="contenido">
+      <div class="col-1 col-md-1 col-xl-2 px-sm-2 px-0 sidebar" id="slidebar" style="background-color: {% get_color 'menu' %};">
+        {% if user.is_authenticated %}
+          {% include 'menu_test.html' %}
+        {% else %}   
+        <div class="sidebar-content"></div>     
+          <div class="sidebar-footer">
+            
+          </div>        
+        {% endif %}
+      </div>
+
+      <div class="col p-4 main-content align-items-center" style="background-color: {% get_rgba 'fondo' 0.8 %};">
+        {% bootstrap_messages %}
+        {% block content %}
+
+        {% endblock %}
+      </div>
+
     </div>
-
-    <div class="vh-100 container-fluid align-items-center" style="background-color: {% get_rgba 'fondo' 0.8 %}; max-width: 90%;margin-top: 90px;">
-
-      {# Display django.contrib.messages as Bootstrap alerts #}
-      {% bootstrap_messages %}
-      {% block content %}
-
-      {% endblock %}
-    </div>
-    <script type="text/javascript">
-      $(document).ready(function() {
-          setTimeout(function() {
-              $(".alert").fadeTo(500, 0).slideUp(500, function(){
-                  $(this).remove(); 
-              });
-          }, 4000);  // Ajusta el tiempo según necesites, aquí está a 4000 milisegundos = 4 segundos
-      });
-      </script>
-      
   </body>
 </html>
