@@ -365,14 +365,17 @@ class PolizaForm(forms.ModelForm):
             self.fields['empresa'].queryset = modelos.EmpresaContratante.objects.none()
 
 class MultiDocumentUploadForm(forms.Form):
-    def __init__(self, lista_archivos, *args, **kwargs):
+    def __init__(self, lista_archivos, archivos_existentes=None, *args, **kwargs):
         super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
         for archivo in lista_archivos:
             self.fields[archivo] = forms.FileField(
-                widget=forms.ClearableFileInput(attrs={'multiple': True}),
+                #widget=forms.ClearableFileInput(attrs={'multiple': True}),
                 required=False,
                 label=archivo
             )
+
+            if archivos_existentes and archivo in archivos_existentes:
+                self.fields[archivo].initial = archivos_existentes[archivo]
         
         self.helper = FormHelper()
         self.helper.form_method = 'post'

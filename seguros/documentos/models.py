@@ -202,15 +202,23 @@ class Siniestros(models.Model):
 class Documentos(models.Model):
     poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE,blank=True, null=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
+    archivo = models.FileField(upload_to="documento_poliza/",  blank=True, null=True)
     activo = models.BooleanField(default=True)
     
     def __str__(self) -> str:
         return self.descripcion
+    
+    class Meta:
+        unique_together = ["poliza", "descripcion"]
     
 class DocumentosSiniestros(models.Model):
     siniestro = models.ForeignKey(Siniestros,on_delete=models.CASCADE,blank=True, null=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
+    archivo = models.FileField(upload_to="documento_siniestro/", blank=True, null=True)
     activo = models.BooleanField(default=True)
     
     def __str__(self) -> str:
-        return self.descripcion
+        return self.descripcion    
+    
+    class Meta:
+        unique_together = ["siniestro", "descripcion"]

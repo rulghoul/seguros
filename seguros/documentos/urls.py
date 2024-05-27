@@ -1,33 +1,35 @@
 from django.urls import path
-from . import views
+from .views import asesores
+from .views import catalogos
+from .views import polizas
 
 app_name = 'documentos' 
 
 urlpatterns = [    
-    path('lista_tipo_conducto_pago/', views.TipoConductoPagoView.as_view(), name='lista_tipo_conducto_pago'),
-    path('lista_tipo_persona/', views.TipoPersonaView.as_view(), name='lista_tipo_persona'),
-    path('lista_forma_pago/', views.FormaPagoView.as_view(), name='lista_forma_pago'),
-    path('lista_documentos/', views.DocumentosView.as_view(), name='lista_documentos'),
-    path('lista_tipo_medio_conctacto/', views.TipoMediocontactoView.as_view(), name='lista_tipo_medio_conctacto'),
-    path('lista_parentesco/', views.ParentescoView.as_view(), name='lista_parentesco'),
-    path('lista_empresa/', views.EmpresaContratanteView.as_view(), name='lista_empresa'),
-    path('lista_planes/', views.PlanesView.as_view(), name='lista_planes'),
+    path('lista_tipo_conducto_pago/', catalogos.TipoConductoPagoView.as_view(), name='lista_tipo_conducto_pago'),
+    path('lista_tipo_persona/', catalogos.TipoPersonaView.as_view(), name='lista_tipo_persona'),
+    path('lista_forma_pago/', catalogos.FormaPagoView.as_view(), name='lista_forma_pago'),
+    path('lista_documentos/', catalogos.DocumentosView.as_view(), name='lista_documentos'),
+    path('lista_tipo_medio_conctacto/', catalogos.TipoMediocontactoView.as_view(), name='lista_tipo_medio_conctacto'),
+    path('lista_parentesco/', catalogos.ParentescoView.as_view(), name='lista_parentesco'),
+    path('lista_empresa/', asesores.EmpresaContratanteView.as_view(), name='lista_empresa'),
+    path('lista_planes/', asesores.PlanesView.as_view(), name='lista_planes'),
     #Asesores y sus clientes
-    path('asesor_add', views.crear_o_editar_asesor, name='asesor_add'),
-    path('asesor_update/<int:pk>/', views.crear_o_editar_asesor, name='asesor_update'),
-    path('asesor_list', views.ListAseror.as_view(), name='asesor_list'),
-    path('principal_list', views.ListCliente.as_view(), name='principal_list'),
-    path('principal_add', views.PersonaPrincipalAdd.as_view(), name='principal_add'),
-    path('principal_update/<int:pk>/', views.PersonaPrincipalUpdate.as_view(), name='principal_update'),
+    path('asesor_add', asesores.crear_o_editar_asesor, name='asesor_add'),
+    path('asesor_update/<int:pk>/', asesores.crear_o_editar_asesor, name='asesor_update'),
+    path('asesor_list', asesores.ListAseror.as_view(), name='asesor_list'),
+    path('principal_list', asesores.ListCliente.as_view(), name='principal_list'),
+    path('principal_add', asesores.PersonaPrincipalAdd.as_view(), name='principal_add'),
+    path('principal_update/<int:pk>/', asesores.PersonaPrincipalUpdate.as_view(), name='principal_update'),
     #Polizas
-    path('polizas', views.Poliza_List.as_view(), name='polizas'),
-    path('poliza_add', views.edit_poliza, name='poliza_add'),
-    path('poliza_update/<int:pk>/', views.edit_poliza, name='poliza_update'),
+    path('polizas', polizas.Poliza_List.as_view(), name='polizas'),
+    path('poliza_add', polizas.edit_poliza, name='poliza_add'),
+    path('poliza_update/<int:pk>/', polizas.edit_poliza, name='poliza_update'),
     #Sinestros
-    path('siniestros', views.Poliza_List.as_view(), name='siniestros'),
-    path('siniestro_add', views.edit_poliza, name='siniestro_add'),
-    path('siniestro_update/<int:pk>/', views.edit_poliza, name='siniestro_update'), 
+    path('siniestros', polizas.Poliza_List.as_view(), name='siniestros'),
+    path('siniestro_add', polizas.edit_poliza, name='siniestro_add'),
+    path('siniestro_update/<int:pk>/', polizas.edit_poliza, name='siniestro_update'), 
     #Documentos
-    path('doc_poliza/<int:pk>/', views.upload_documentos_poliza, name='doc_poliza'),
-    path('doc_siniestros/<int:pk>/', views.upload_documentos_poliza, name='doc_siniestros'),
+    path('doc_poliza/<int:pk>/', polizas.upload_documentos_poliza, name='doc_poliza'),
+    path('doc_siniestros/<int:pk>/', polizas.upload_documentos_poliza, name='doc_siniestros'),
 ]
