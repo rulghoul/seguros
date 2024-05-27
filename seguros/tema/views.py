@@ -132,7 +132,8 @@ def home_view(request):
     #graficos = parametros_imagenes.objects.all().order_by('descripcion').values()
     context = {'titulo': "Nueva Actividad", 
                'regresa':'lista_actividad',
-               "user":request.user}
+               'colores': colores,
+               'user':request.user,}
     return HttpResponse(template.render(context, request))
 
 def base_view(request):

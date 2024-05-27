@@ -6,6 +6,7 @@ from documentos import models as mod
 from documentos import forms as formularios
 from django.shortcuts import render, redirect
 from django.contrib import messages 
+from django.urls import reverse_lazy
 
 from django.db import transaction
 from django.contrib.auth.models import User
@@ -40,7 +41,7 @@ class PlanesView(BaseListView):
 class PersonaPrincipalAdd(FormView):
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = "sepomex:asentamiento_details"
+    success_url = reverse_lazy("documentos:principal_list")
     
     def form_valid(self, form):
         logging.info("Entra en validacion")
@@ -64,7 +65,9 @@ class PersonaPrincipalUpdate(UpdateView):
     model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = "documentos:principal_update"
+
+    def get_success_url(self):
+        return reverse_lazy("documentos:principal_update", kwargs={'pk': self.object.pk})
     
     def form_valid(self, form):
         if mod.Asesor.objects.filter(usuario = self.request.user).exists():
@@ -73,9 +76,8 @@ class PersonaPrincipalUpdate(UpdateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.request.user
         context["titulo"] = "Actualizar Cliente"
-        context["redirige"] = "documentos:principal_update"
+        context["redirige"] = "documentos:principal_list"
         context["informacion"] = "sepomex:asentamiento_details"
         return context
     
@@ -92,6 +94,16 @@ class ListCliente(ListView):
     template_name = "catalogos/list_cliente.html"
     model = mod.PersonaPrincipal
     paginate_by = 100
+
+    def get_queryset(self):
+        user = self.request.user
+        if mod.Asesor.objects.filter(usuario=user).exists():
+            return mod.PersonaPrincipal.objects.filter(asesor_cliente=mod.Asesor.objects.get(usuario=user))
+        
+        elif user.is_staff:
+            return mod.PersonaPrincipal.objects.all()
+        
+        return mod.PersonaPrincipal.objects.none()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

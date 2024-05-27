@@ -4,30 +4,30 @@
   <a href="/" class="text-white d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"><span class="fs-5 d-none d-sm-inline">Menu</span></a>
   <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
     <li>
-      <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle" style="width: 100%;"><i class="fas fa-book-medical text-white"></i><span class="ms-1 d-none d-sm-inline text-white">Seguros</span></a>
+      <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle" style="width: 100%;"><i class="fas fa-address-book text-white"></i><span class="ms-1 d-none d-sm-inline text-white">Seguros</span></a>
       <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
 
       {% if user.is_staff %}
         <li class="w-100">
-          <a href="{% url 'documentos:lista_tipo_conducto_pago' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Tipo Conducto Pago </span><i class="fa-solid fa-circle-dot"></i></a>
+          <a href="{% url 'documentos:lista_tipo_conducto_pago' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Tipo Conducto Pago </span><i class="fa-solid fa-coins"></i></a>
         </li>
         <li>
-          <a href="{% url 'documentos:lista_tipo_persona' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Tipo de Persona </span><i class="fa-solid fa-lungs"></i></a>
+          <a href="{% url 'documentos:lista_tipo_persona' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Tipo de Persona </span><i class="fa-solid fa-person-circle-check"></i></a>
         </li>
         <li>
-          <a href="{% url 'documentos:lista_forma_pago' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Forma de Pago </span><i class="fa-solid fa-disease"></i></a>
+          <a href="{% url 'documentos:lista_forma_pago' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Forma de Pago </span><i class="fa-solid fa-money-bill"></i></a>
         </li>
         <li>
-          <a href="{% url 'documentos:lista_tipo_medio_conctacto' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Tipo Medio Contacto </span><i class="fa-solid fa-head-side-cough"></i></a>
+          <a href="{% url 'documentos:lista_tipo_medio_conctacto' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Tipo Medio Contacto </span><i class="fa-solid fa-id-card"></i></a>
         </li>
         <li>
-          <a href="{% url 'documentos:lista_documentos' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Documentos </span><i class="fa-solid fa-brain"></i></a>
+          <a href="{% url 'documentos:lista_documentos' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Documentos </span><i class="fa-solid fa-file-import"></i></a>
         </li>
         <li>
-          <a href="{% url 'documentos:lista_parentesco' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Parentesco </span><i class="fa-solid fa-fire"></i></a>
+          <a href="{% url 'documentos:lista_parentesco' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Parentesco </span><i class="fa-solid fa-people-arrows"></i></a>
         </li>
         <li>
-          <a href="{% url 'documentos:lista_empresa' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Empresa Contratante </span><i class="fa-solid fa-list"></i></a>
+          <a href="{% url 'documentos:lista_empresa' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Empresa Contratante </span><i class="fa-solid fa-piggy-bank"></i></a>
         </li>
         <li>
           <a href="{% url 'documentos:lista_planes' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Planes </span><i class="fa-solid fa-scale-balanced"></i></a>
@@ -36,7 +36,7 @@
 
         {% endif %}
         <li>
-          <a href="{% url 'documentos:principal_list' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Persona Principal </span><i class="fa-solid fa-table"></i></a>
+          <a href="{% url 'documentos:principal_list' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Persona Principal </span><i class="fa-solid fa-user-plus"></i></a>
         </li>
         <li>
           <a href="{% url 'documentos:polizas' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Polizas </span><i class="fa-solid fa-table"></i></a>
@@ -44,11 +44,14 @@
       </ul>
     </li>
     <li>
-        <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle" style="width: 100%;"><i class="fas fa-book-medical text-white"></i><span class="ms-1 d-none d-sm-inline text-white">Usuarios</span></a>
+        <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle" style="width: 100%;"><i class="fas fa-user text-white"></i><span class="ms-1 d-none d-sm-inline text-white">Usuarios</span></a>
       <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+
+        {% if user.is_staff %}
         <li>
-            <a href="{% url 'documentos:asesor_list' %}" class="text-white nav-link px-0"><i class="fas fa-key text-white"></i><span class="d-none d-sm-inline text-white">Asesor</span></a>
+            <a href="{% url 'documentos:asesor_list' %}" class="text-white nav-link px-0"><i class="fas fa-user-tie text-white"></i><span class="d-none d-sm-inline text-white">Asesor</span></a>
         </li>
+        {% endif %}
         <li>
             <a href="{% url 'password_change' %}" class="text-white nav-link px-0"><i class="fas fa-key text-white"></i><span class="d-none d-sm-inline text-white">Cambiar Contraseña</span></a>
         </li>
@@ -58,16 +61,16 @@
         <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle"><i class="fa-solid fa-gear text-white"></i> <span class="ms-1 d-none d-sm-inline text-white">Sepomex</span></a>
         <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
           <li class="w-100">
-            <a href="{% url 'sepomex:carga_sepomex' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Se </span><i class="fa-solid fa-brush"></i></a>
+            <a href="{% url 'sepomex:carga_sepomex' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Carga Sepomex </span><i class="fa-solid fa-book-atlas"></i></a>
           </li>
           <li>
-            <a href="{% url 'sepomex:estado' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Imagenes </span><i class="fa-solid fa-object-group"></i></a>
+            <a href="{% url 'sepomex:estado' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Estado </span><i class="fa-solid fa-earth-americas"></i></a>
           </li>
           <li>
-            <a href="{% url 'sepomex:municipio' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Carga de Catalogos <br/>Acupuntura </span><i class="fa-solid fa-file-lines"></i></a>
+            <a href="{% url 'sepomex:municipio' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Municipio </span><i class="fa-solid fa-location-dot"></i></a>
           </li>
           <li>
-            <a href="{% url 'sepomex:asentamiento' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Carga de Catalogos <br/>Acupuntura </span><i class="fa-solid fa-file-lines"></i></a>
+            <a href="{% url 'sepomex:asentamiento' %}" class="text-white nav-link px-0"><span class="d-none d-sm-inline">Asentamiento </span><i class="fa-solid fa-street-view"></i></a>
           </li>
         </ul>
       </li>
