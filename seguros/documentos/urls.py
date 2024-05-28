@@ -26,9 +26,9 @@ urlpatterns = [
     path('poliza_add', polizas.edit_poliza, name='poliza_add'),
     path('poliza_update/<int:pk>/', polizas.edit_poliza, name='poliza_update'),
     #Sinestros
-    path('siniestros', polizas.Poliza_List.as_view(), name='siniestros'),
-    path('siniestro_add', polizas.edit_poliza, name='siniestro_add'),
-    path('siniestro_update/<int:pk>/', polizas.edit_poliza, name='siniestro_update'), 
+    path('siniestros/<int:pk>/', polizas.Siniestro_List.as_view(), name='siniestros'),
+    path('siniestro_add/<int:pk>/', polizas.Siniestro_Add.as_view(), name='siniestro_add'),
+    path('siniestro_update/<int:pk>/', polizas.Siniestro_Update.as_view(), name='siniestro_update'), 
     #Documentos
     path('doc_poliza/<int:pk>/', polizas.upload_documentos_poliza, name='doc_poliza'),
     path('doc_siniestros/<int:pk>/', polizas.upload_documentos_poliza, name='doc_siniestros'),

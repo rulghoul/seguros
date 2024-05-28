@@ -1,9 +1,9 @@
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin 
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView, CreateView
 from django.contrib import messages #Mensajes
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from django.db import transaction
 from documentos import models as mod
@@ -110,7 +110,10 @@ def edit_poliza(request, pk=None):
         'formset_beneficiario': formset_beneficiario,
         'helper_beneficiario': helper_beneficiario,
         "informacion": "sepomex:asentamiento_details",
-        'titulo': titulo
+        'titulo': titulo,
+        'documento_url': 'documentos:doc_poliza',
+        'siniestros_url': 'documentos:siniestros',
+        'poliza_id':poliza.pk,
     })
 
 # Archivos de la poliza y Siniestros
@@ -133,9 +136,13 @@ SINIESTRO_DESCRIPCIONES = [
 
 
 def upload_documentos_poliza(request, pk=None):
+    if pk:
+        regresar = f"'documentos:poliza_update' {pk} "
+    else:
+        regresar = 'documentos:polizas'
 
     if request.method == 'POST':
-        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, request.POST, request.FILES)
+        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, request.POST, request.FILES, regresar=regresar)
         if form.is_valid():
             for descripcion in POLIZA_DESCRIPCIONES:
                 files = request.FILES.getlist(descripcion)
@@ -153,7 +160,7 @@ def upload_documentos_poliza(request, pk=None):
         documentos = mod.Documentos.objects.filter(poliza_id=pk)
         for documento in documentos:
             archivos_existentes[documento.descripcion] = documento.archivo
-        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, archivos_existentes=archivos_existentes)
+        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, archivos_existentes=archivos_existentes, regresar=regresar)
     
     contexto = {'form': form,
                 "titulo": "Documentos Poliza", 
@@ -161,11 +168,8 @@ def upload_documentos_poliza(request, pk=None):
                 }
     return render(request, 'poliza/archivos_poliza.html', contexto)
 
+
 def upload_documentos_siniestro(request, pk=None):
-    if(pk is None):
-        siniestro = get_object_or_404(mod.Siniestros, pk=pk)
-    else:
-        siniestro = mod.Siniestros()
 
     if request.method == 'POST':
         form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES, request.POST, request.FILES)
@@ -173,19 +177,81 @@ def upload_documentos_siniestro(request, pk=None):
             for descripcion in SINIESTRO_DESCRIPCIONES:
                 files = request.FILES.getlist(descripcion)
                 for file in files:
-                    mod.DocumentosSiniestros.objects.create(
-                        siniestro=siniestro,
-                        descripcion=descripcion,
-                        activo=True,
-                        archivo=ContentFile(file)
+                    obj, created= mod.DocumentosSiniestros.objects.update_or_create(
+                        siniestro_id=pk,
+                        descripcion=descripcion,        
+                        defaults={'activo': True, 'archivo': file}
                     )
+                    if created:
+                        messages.info(request, f"Se cargo {descripcion} para la el siniestro ")
             return redirect(reverse('documentos:update_siniestro', args=[pk]))  
     else:
-        form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES)
+        archivos_existentes = {}
+        documentos = mod.DocumentosSiniestros.objects.filter(siniestro_id=pk)
+        for documento in documentos:
+            archivos_existentes[documento.descripcion] = documento.archivo
+        form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES, archivos_existentes=archivos_existentes)
 
     contexto = {'form': form,
                 "titulo": "Documentos del Siniestro", 
-                "redirige":"documentos:update_poliza",
-                "lista": mod.Siniestros.objects().filter(poliza=siniestro.poliza)
+                "redirige":"documentos:list_siniestros",
                 }
     return render(request, 'poliza/archivos_siniestro.html', contexto)
+
+class Siniestro_Add(LoginRequiredMixin, CreateView):
+    model = mod.Siniestros
+    form_class = formularios.SiniestroForm
+    template_name = "catalogos/add.html"
+    success_url = reverse_lazy('documentos:list_siniestros')  
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Nuevo Siniestro"
+        context["redirige"] = "documentos:siniestros"
+        return context    
+        
+    def form_valid(self, form):
+        pk = self.kwargs.get('pk')
+        messages.info(self.request, "se intenta recuperar la poliza con el pk " + pk)
+        poliza = get_object_or_404(mod.Poliza, pk=pk)
+        form.instance.poliza = poliza
+        return super().form_valid(form)
+
+class Siniestro_Update(LoginRequiredMixin, UpdateView):
+    model = mod.Siniestros
+    form_class = formularios.SiniestroForm
+    template_name = "catalogos/update.html"
+    success_url = reverse_lazy('documentos:list_siniestros')
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Actualiza Siniestro"
+        context["redirige"] = "documentos:siniestros"
+        context["poliza"] =  self.request.GET.get('pk')
+
+class Siniestro_List(LoginRequiredMixin, ListView):
+    model = mod.Siniestros
+    template_name = 'asesor/siniestros.html'
+    context_object_name = 'siniestros'
+    pk = None
+
+    def get_queryset(self):        
+        self.pk = self.kwargs.get('pk')
+        try:
+            poliza = mod.Poliza.objects.get(pk=self.pk)        
+            return mod.Siniestros.objects.filter(poliza=poliza)
+        except mod.Poliza.DoesNotExist:
+            return mod.Poliza.objects.none()
+            
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        poliza = get_object_or_404(mod.Poliza, pk=self.pk)
+        context["titulo"] = "Siniestros"
+        context["poliza"] = poliza
+        context["cliente"] = poliza.persona_principal
+        context["add"] = 'documentos:siniestro_add'
+        context["add_label"] = "Nuevo Siniestro"
+        context["update"] = "documentos:poliza_update"
+        context["upload"] = "documentos:doc_siniestros"
+        context["poliza_id"] = self.pk
+        return context

@@ -155,6 +155,9 @@ class PersonaPrincipal(PersonaBase):
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
     correo = models.EmailField( blank=True, null=True, default="correo@empresa.com")
     telefono = models.CharField(max_length=100, blank=True, null=True, default=None)
+        
+    def __str__(self) -> str:
+        return f"{self.nombre} {self.primer_apellido} {self.segundo_apellido}"
     
 
 class PersonaRelacionada(PersonaBase):
@@ -177,7 +180,10 @@ class Poliza(models.Model):
     estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
 
     class Meta:
-        unique_together = (("empresa", "numero_poliza"),)
+        unique_together = (("empresa", "numero_poliza"),)    
+        
+    def __str__(self) -> str:
+        return f"{self.empresa} -- {self.plan} -- {self.numero_poliza}"
     
 
 class Beneficiarios(models.Model):
@@ -195,8 +201,8 @@ class Siniestros(models.Model):
     poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE)
     numero_siniestro = models.PositiveSmallIntegerField( blank=True, null=True)  
     descripcion_siniestro = models.CharField(max_length=500, blank=True, null=True)  
-    fecha_evento = models.DateTimeField()  
-    estatus = models.CharField(max_length=10)
+    fecha_evento = models.DateField()  
+    estatus = models.CharField(max_length=10, choices=STATUS_GASTOS_MEDICOS)
     
 
 class Documentos(models.Model):
