@@ -56,7 +56,20 @@
             </h2>
             <div id="docs-colapse" class="accordion-collapse collapse" aria-labelledby="docs-heading">
                 <div class="accordion-body">
-                    Aqui se pondran los documentos 
+                    <a class="btn btn-secondary col-2" href="{% url documento_url poliza_id %}">Documentos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="siniestros-heading">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#siniestros-colapse" aria-expanded="true" aria-controls="siniestros-colapse">
+                Siniestros
+              </button>
+            </h2>
+            <div id="siniestros-colapse" class="accordion-collapse collapse" aria-labelledby="siniestros-heading">
+                <div class="accordion-body">
+                    <a class="btn btn-secondary col-2" href="{% url siniestros_url pk=poliza_id %}">Ver Siniestros</a>
                 </div>
             </div>
         </div>

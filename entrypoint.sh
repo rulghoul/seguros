@@ -10,6 +10,10 @@ python manage.py migrate --noinput
 #python manage.py loaddata sepomex_backup.json
 #rm sepomex_backup.json
 
+
+#python manage.py loaddata documentos.json
+#rm documentos.json
+
 # Recopilar archivos estáticos
 #python manage.py collectstatic --noinput --clear
 

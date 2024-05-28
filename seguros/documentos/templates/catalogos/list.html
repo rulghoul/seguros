@@ -4,12 +4,15 @@
   {{ titulo }}
 {% endblock %}
 
+{% load comprueba_tipo %}
+
+
 {% block content %}
   <div class="row" style="margin-bottom: 1em; margin-top: 1em;">
     <h3 class="col-5">{{ titulo }}</h3>
     <input class="form-control col-4 ml-auto" id="myInput" type="text" placeholder="Buscar.." />
   </div>
-  <form method="post" action="{% url redirige %}">
+  <form method="post" action="{% url redirige %}" enctype="multipart/form-data">
     <table class="table table-striped table-sm">
       <thead class="thead-dark">
         <tr>
@@ -31,25 +34,31 @@
               {% include 'catalogos/save.html' %}
             {% else %}
               {% for campo in campos %}
+              <td>
                 {% if campo == 'activo' %}
-                  <td>{{ elemento.activo|yesno:'Activo,Inactivo,Indefinido' }}</td>
+                  {{ elemento.activo|yesno:'Activo,Inactivo,Indefinido' }}
+                {% elif elemento|is_imagefield:campo %}
+                  <a href="/media/{{ elemento|getattribute:campo }}" target="_blank">
+                    <img src="/media/{{ elemento|getattribute:campo }}" alt="{{ elemento|getattribute:campo }}" style="height: 50px;">
+                  </a>
                 {% else %}
-                  <td>{{ elemento|getattribute:campo }}</td>
+                  {{ elemento|getattribute:campo }}
                 {% endif %}
+                </td>
               {% endfor %}
               <td class="text-center">
                 <!-- detalle -->
-                <button formnovalidate class="btn btn-secondary" 
+                <button formnovalidate class="btn btn-secondary p-1" 
                 name="edit" value="{{ elemento.pk }}">
                 <span class="fa fa-eye"></span>
                 </button>
                 <!-- Actualizar -->
-                <button formnovalidate class="btn btn-success" 
+                <button formnovalidate class="btn btn-success p-1" 
                 name="edit" value="{{ elemento.pk }}">
                 <span class="fa fa-pencil"></span>
                 </button>
                 <!-- Borrar -->
-                <button formnovalidate class="btn btn-danger" 
+                <button formnovalidate class="btn btn-danger p-1" 
                 name="delete" value="{{ elemento.pk }}">
                 <span class="fa fa-trash"></span>
                 </button>

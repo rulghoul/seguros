@@ -6,10 +6,10 @@
 {% block content %}
 {% if user.is_authenticated %}
   Hola {{ user.username }}!
-  <p><a href="{% url 'logout' %}">Salir</a></p>
+  <p><a class="btn btn-danger enlace-inferior" href="{% url 'logout' %}">Salir</a></p>
 {% else %}
   <p>Aun no haz iniciado sesion</p>
-  <a href="{% url 'login' %}">Ingresar</a>
+  <a class="btn btn-success enlace-inferior" href="{% url 'login' %}">Ingresar</a>  
 {% endif %}
 
 

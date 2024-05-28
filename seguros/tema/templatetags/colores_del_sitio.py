@@ -31,3 +31,9 @@ def get_imagen(nombre):
         return f"No se encontro la imagen con el titulo {nombre}"
     else:
         return momo.image.url
+    
+@register.simple_tag
+def get_full_name(user):
+    if user.is_authenticated:
+        return f"{user.first_name} {user.last_name}"
+    return ""

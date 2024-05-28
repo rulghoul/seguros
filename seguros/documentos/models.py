@@ -66,13 +66,7 @@ class FormaPago(models.Model): #("CLIENTE", "BENEFICIARIO")
     def __str__(self) -> str:
         return self.descripcion
 
-class Documentos(models.Model):
-    clave = models.CharField(max_length=50, unique=True)
-    descripcion = models.CharField(max_length=100, blank=True, null=True)
-    activo = models.BooleanField(default=True)
-    
-    def __str__(self) -> str:
-        return self.descripcion
+
 
 
 class TipoMediocontacto(models.Model):
@@ -99,10 +93,8 @@ class EmpresaContratante(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     logo_small = models.ImageField(upload_to='empresa',blank=True, null=True)
-    pleca = models.ImageField(upload_to='empresa',blank=True, null=True)
     link = models.URLField(max_length=200,blank=True, null=True)
-    activo = models.BooleanField(default=True)
-    
+    activo = models.BooleanField(default=True)    
     
     def __str__(self) -> str:
         return self.nombre
@@ -163,6 +155,9 @@ class PersonaPrincipal(PersonaBase):
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
     correo = models.EmailField( blank=True, null=True, default="correo@empresa.com")
     telefono = models.CharField(max_length=100, blank=True, null=True, default=None)
+        
+    def __str__(self) -> str:
+        return f"{self.nombre} {self.primer_apellido} {self.segundo_apellido}"
     
 
 class PersonaRelacionada(PersonaBase):
@@ -185,7 +180,10 @@ class Poliza(models.Model):
     estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
 
     class Meta:
-        unique_together = (("empresa", "numero_poliza"),)
+        unique_together = (("empresa", "numero_poliza"),)    
+        
+    def __str__(self) -> str:
+        return f"{self.empresa} -- {self.plan} -- {self.numero_poliza}"
     
 
 class Beneficiarios(models.Model):
@@ -198,27 +196,35 @@ class Beneficiarios(models.Model):
         unique_together = (("numero_poliza", "parentesco"),)
     
 
-class CheckDocumentos(models.Model):
-    numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
-    plan = models.ForeignKey(Planes, on_delete=models.CASCADE)
-    empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    documento = models.ForeignKey(Documentos,on_delete=models.CASCADE)
-    necesario = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
-    entregado = models.CharField(max_length=1,choices=OPCIONES_BOLEANO)
-    archivo = models.FileField()
-    fecha_adjuntado = models.DateTimeField()      
-
-
-class PlanDocumentos(models.Model):
-    empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    documento = models.ForeignKey(Documentos, on_delete=models.CASCADE)
-    
 
 class Siniestros(models.Model):
     poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE)
     numero_siniestro = models.PositiveSmallIntegerField( blank=True, null=True)  
     descripcion_siniestro = models.CharField(max_length=500, blank=True, null=True)  
-    fecha_evento = models.DateTimeField()  
-    estatus = models.CharField(max_length=10)
+    fecha_evento = models.DateField()  
+    estatus = models.CharField(max_length=10, choices=STATUS_GASTOS_MEDICOS)
     
 
+class Documentos(models.Model):
+    poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE,blank=True, null=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    archivo = models.FileField(upload_to="documento_poliza/",  blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    
+    def __str__(self) -> str:
+        return self.descripcion
+    
+    class Meta:
+        unique_together = ["poliza", "descripcion"]
+    
+class DocumentosSiniestros(models.Model):
+    siniestro = models.ForeignKey(Siniestros,on_delete=models.CASCADE,blank=True, null=True)
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    archivo = models.FileField(upload_to="documento_siniestro/", blank=True, null=True)
+    activo = models.BooleanField(default=True)
+    
+    def __str__(self) -> str:
+        return self.descripcion    
+    
+    class Meta:
+        unique_together = ["siniestro", "descripcion"]

@@ -1,79 +1,84 @@
-
 {% load colores_del_sitio %}
 
 <style>
-    body {
-        position: relative;
+    .fixed-top {
+        z-index: 1030;
     }
-    
-    body::before {
-        content: '';
+
+    .content-wrapper {
+        margin-top: 80px;
+        display: flex;
+    }
+
+    .fixed-top .user-info {
         position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-image: url("{% get_imagen 'fondo' %}");
-        background-repeat: repeat;
-        opacity: 0.2; /* Ajusta este valor para cambiar la opacidad */
-        z-index: -1;
-    }      
-
-
-    /* Estilo del Slidebar */
-    .slidebar {
-        height: 100%;
-        width: 9em;
-        position: fixed;
-        left: -100%;
-        left: 100%;
-        background-color:  {% get_color 'menu' %};
-        transition: 1.0s;
-        padding-top: 80px;
+        right: 20px;
+        bottom: 10px;
     }
-    
-    .slidebar .enlace-inferior {       
-        position: absolute; 
-        bottom: 0; 
-        width: 100%;
-        margin-bottom:3em;
-        align-items: center;
-    }    
-    
+
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: calc(100vh - 80px);
+        overflow-y: auto;
+    }
+
+    .sidebar-content {
+        flex: 1;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .main-content {
+        flex: 1;
+        height: calc(100vh - 80px);
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+    .toggled .sidebar {
+        width: 0;
+        display: none;
+    }
+
+    .toggled .main-content {
+        flex: 1 0 100%;
+    }
+
     /* Redondear imputs */
-    .select{
-      border-radius: 3rem;
-      }
-    .textinput   {
-      border-radius: 3rem;
-      }
-    .input   {
-      border-radius: 3rem;
-      }
+    .select {
+        border-radius: 3rem;
+    }
+
+    .textinput {
+        border-radius: 3rem;
+    }
+
+    .input {
+        border-radius: 3rem;
+    }
+
     .passwordinput {
         border-radius: 3rem;
     }
+
     .urlinput {
         border-radius: 3rem;
     }
+
     .emailinput {
         border-radius: 3rem;
     }
-
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const slidebar = document.getElementById('slidebar');
-        // Mostrar el menú cuando el mouse se mueva hacia el lado izquierdo de la pantalla
-        document.addEventListener('mousemove', function (e) {
-            if (e.clientX < 100) { // Ajusta este valor según sea necesario
-                slidebar.style.left = '0';
-            }
-        });
-        // Ocultar el menú cuando el mouse se mueva fuera del menú
-        slidebar.addEventListener('mouseleave', function (e) {
-            slidebar.style.left = '-100%'; // Asegúrate de que esto coincida con el ancho de tu slidebar
-        });
-    });
-</script>  
+
+<script type="text/javascript">
+    function toggleSlidebar() {
+        $('#contenido').toggleClass('toggled');
+    }
+</script>
