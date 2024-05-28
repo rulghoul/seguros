@@ -1,7 +1,7 @@
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin 
-from django.views.generic import ListView, UpdateView, CreateView
+from django.views.generic import ListView, UpdateView, CreateView, FormView
 from django.contrib import messages #Mensajes
 from django.urls import reverse, reverse_lazy
 
@@ -118,116 +118,170 @@ def edit_poliza(request, pk=None):
 
 # Archivos de la poliza y Siniestros
 
+
 POLIZA_DESCRIPCIONES = [
-    'Documento Poliza 1',
-    'Documento Poliza 2',
-    'Documento Poliza 3',
-    'Documento Poliza 4',
-    'Documento Poliza 5',
-    'Documento Poliza 6',
+    'Identificacion Oficial',
+    'Estado de Cuenta Bancario',
+    'Comprobante de Domicilio',
+    'Caratula de Póliza',
 ]
 
 SINIESTRO_DESCRIPCIONES = [
-    'Documento Siniestro 1',
-    'Documento Siniestro 2',
-    'Documento Siniestro 3',
+    'Informe Médico',
+    'Interpretación de Estudios',
+    'Cotización de Material Extra a la Cirugía',
+    'Aviso de Accidente',
+    'Carta de Autorización de Pago Directo',
+    'Carta de Autorización de Honorarios',
+    'Carta de Invalidez Total y Permanente',
+    'Carta de Aseguradora por Fallecimiento',
 ]
 
 
+class upload_documentos_poliza(LoginRequiredMixin, FormView):
+    template_name = 'poliza/archivos_poliza.html'
+    form_class = formularios.MultiDocumentUploadForm
+    pk = None
 
-def upload_documentos_poliza(request, pk=None):
-    if pk:
-        regresar = f"'documentos:poliza_update' {pk} "
-    else:
-        regresar = 'documentos:polizas'
-
-    if request.method == 'POST':
-        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, request.POST, request.FILES, regresar=regresar)
-        if form.is_valid():
-            for descripcion in POLIZA_DESCRIPCIONES:
-                files = request.FILES.getlist(descripcion)
-                for file in files:
-                    obj, created = mod.Documentos.objects.update_or_create(
-                            poliza_id=pk,
-                            descripcion=descripcion,                            
-                            defaults={'activo': True, 'archivo': file}
-                    )
-                    if created:
-                        messages.info(request, f"Se cargo {descripcion} para la poliza ")
-            return redirect(reverse('documentos:doc_poliza', args=[pk])) 
-    else:
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.pk = self.kwargs.get('pk')
         archivos_existentes = {}
-        documentos = mod.Documentos.objects.filter(poliza_id=pk)
+        documentos = mod.Documentos.objects.filter(poliza_id=self.pk)
         for documento in documentos:
             archivos_existentes[documento.descripcion] = documento.archivo
-        form = formularios.MultiDocumentUploadForm(POLIZA_DESCRIPCIONES, archivos_existentes=archivos_existentes, regresar=regresar)
-    
-    contexto = {'form': form,
-                "titulo": "Documentos Poliza", 
-                "redirige":"documentos:update_poliza",
-                }
-    return render(request, 'poliza/archivos_poliza.html', contexto)
+        kwargs.update({
+            'lista_archivos': POLIZA_DESCRIPCIONES,
+            'archivos_existentes': archivos_existentes,
+            'retorno': 'documentos:poliza_update',
+            'indice': self.pk,
+        })
+        return kwargs
 
+    def form_valid(self, form):
+        for descripcion in POLIZA_DESCRIPCIONES:
+            files = self.request.FILES.getlist(descripcion)
+            for file in files:
+                obj, created = mod.Documentos.objects.update_or_create(
+                    poliza_id=self.pk,
+                    descripcion=descripcion,                            
+                    defaults={'activo': True, 'archivo': file}
+                )
+                if created:
+                    messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
+        return redirect(reverse_lazy('documentos:doc_poliza', args=[self.pk]))
 
-def upload_documentos_siniestro(request, pk=None):
-
-    if request.method == 'POST':
-        form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES, request.POST, request.FILES)
-        if form.is_valid():
-            for descripcion in SINIESTRO_DESCRIPCIONES:
-                files = request.FILES.getlist(descripcion)
-                for file in files:
-                    obj, created= mod.DocumentosSiniestros.objects.update_or_create(
-                        siniestro_id=pk,
-                        descripcion=descripcion,        
-                        defaults={'activo': True, 'archivo': file}
-                    )
-                    if created:
-                        messages.info(request, f"Se cargo {descripcion} para la el siniestro ")
-            return redirect(reverse('documentos:update_siniestro', args=[pk]))  
-    else:
-        archivos_existentes = {}
-        documentos = mod.DocumentosSiniestros.objects.filter(siniestro_id=pk)
-        for documento in documentos:
-            archivos_existentes[documento.descripcion] = documento.archivo
-        form = formularios.MultiDocumentUploadForm(SINIESTRO_DESCRIPCIONES, archivos_existentes=archivos_existentes)
-
-    contexto = {'form': form,
-                "titulo": "Documentos del Siniestro", 
-                "redirige":"documentos:list_siniestros",
-                }
-    return render(request, 'poliza/archivos_siniestro.html', contexto)
-
-class Siniestro_Add(LoginRequiredMixin, CreateView):
-    model = mod.Siniestros
-    form_class = formularios.SiniestroForm
-    template_name = "catalogos/add.html"
-    success_url = reverse_lazy('documentos:list_siniestros')  
-        
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo"] = "Nuevo Siniestro"
-        context["redirige"] = "documentos:siniestros"
-        return context    
-        
+        context.update({
+            "titulo": "Documentos Póliza", 
+            "redirige": "documentos:update_poliza",
+        })
+        return context
+
+
+class upload_documentos_siniestro(LoginRequiredMixin, FormView):
+    template_name = 'poliza/archivos_siniestros.html'
+    form_class = formularios.MultiDocumentUploadForm
+    pk = None
+    poliza_pk = None
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.pk = self.kwargs.get('pk')
+        archivos_existentes = {}
+        siniestro = mod.Siniestros.objects.get(pk=self.pk)
+        self.poliza_pk = siniestro.poliza.pk
+        documentos = mod.DocumentosSiniestros.objects.filter(siniestro_id=self.pk)
+        for documento in documentos:
+            archivos_existentes[documento.descripcion] = documento.archivo
+        kwargs.update({
+            'lista_archivos': SINIESTRO_DESCRIPCIONES,
+            'archivos_existentes': archivos_existentes,
+            'retorno': 'documentos:siniestros',
+            'indice': self.poliza_pk,
+        })
+        return kwargs
+
     def form_valid(self, form):
-        pk = self.kwargs.get('pk')
-        messages.info(self.request, "se intenta recuperar la poliza con el pk " + pk)
-        poliza = get_object_or_404(mod.Poliza, pk=pk)
+        for descripcion in SINIESTRO_DESCRIPCIONES:
+            files = self.request.FILES.getlist(descripcion)
+            for file in files:
+                obj, created = mod.Documentos.objects.update_or_create(
+                    poliza_id=self.pk,
+                    descripcion=descripcion,                            
+                    defaults={'activo': True, 'archivo': file}
+                )
+                if created:
+                    messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
+        return redirect(reverse_lazy('documentos:doc_siniestros', args=[self.poliza_pk]))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "titulo": "Documentos Siniestro", 
+            "redirige": f"'documentos:siniestros' { self.poliza_pk }",
+        })
+        return context
+
+
+class Siniestro_Add(LoginRequiredMixin, FormView):
+    form_class = formularios.SiniestroForm
+    template_name = "catalogos/add.html"
+    pk = None
+
+    def get_initial(self):
+        initial = super().get_initial()
+        self.pk = self.kwargs.get('pk')
+        initial['poliza'] = self.pk 
+        return initial
+
+    def get_success_url(self):
+        return reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
+        context["titulo"] = "Nuevo Siniestro"
+        context["redirige"] = reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
+        return context
+
+    def form_valid(self, form):
+        messages.info(self.request, f"Form valid: se intenta recuperar la poliza con el pk {self.pk}")
+        poliza = get_object_or_404(mod.Poliza, pk=self.pk)
         form.instance.poliza = poliza
+        form.save()
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        messages.error(self.request, "El formulario es inválido. Revisa los datos ingresados.")
+        return self.render_to_response(self.get_context_data(form=form))
+
 class Siniestro_Update(LoginRequiredMixin, UpdateView):
-    model = mod.Siniestros
     form_class = formularios.SiniestroForm
-    template_name = "catalogos/update.html"
-    success_url = reverse_lazy('documentos:list_siniestros')
+    template_name = "catalogos/add.html"
+    poliza = None   
+
+    def get_initial(self):
+        initial = super().get_initial()        
+        siniestro = self.get_object()
+        self.poliza = siniestro.poliza
+        messages.info(self.request, f"Form valid: se intenta recuperar la poliza con el pk {self.poliza}")
+
+        return initial 
+    
+    def get_object(self):
+        siniestro_id = self.kwargs.get('pk')
+        return get_object_or_404(mod.Siniestros, pk=siniestro_id)
+
+    def get_success_url(self):
+        return reverse_lazy('documentos:siniestros', kwargs={"pk": 3})
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Actualiza Siniestro"
         context["redirige"] = "documentos:siniestros"
-        context["poliza"] =  self.request.GET.get('pk')
+        return context
 
 class Siniestro_List(LoginRequiredMixin, ListView):
     model = mod.Siniestros
@@ -251,7 +305,7 @@ class Siniestro_List(LoginRequiredMixin, ListView):
         context["cliente"] = poliza.persona_principal
         context["add"] = 'documentos:siniestro_add'
         context["add_label"] = "Nuevo Siniestro"
-        context["update"] = "documentos:poliza_update"
+        context["update"] = "documentos:siniestro_update"
         context["upload"] = "documentos:doc_siniestros"
         context["poliza_id"] = self.pk
         return context

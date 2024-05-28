@@ -112,7 +112,7 @@ class DocumentosView(BaseListView):
     context_object_name = 'lista'
     title = 'Documentos'
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
-    campos = ['clave', 'descripcion', 'activo']
+    campos = ['id', 'descripcion', 'activo']
 
 
 class TipoMediocontactoView(BaseListView):

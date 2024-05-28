@@ -384,7 +384,7 @@ class PolizaForm(forms.ModelForm):
 
 
 class MultiDocumentUploadForm(forms.Form):
-    def __init__(self, lista_archivos, archivos_existentes=None, regresar=None, *args, **kwargs):
+    def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, *args, **kwargs):
         super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
         for archivo in lista_archivos:
             self.fields[archivo] = forms.FileField(
@@ -401,8 +401,11 @@ class MultiDocumentUploadForm(forms.Form):
         self.helper.layout = Layout(
             *[Field(archivo) for archivo in lista_archivos],
             Submit('submit', 'Cargar'),
-            HTML('<a class="btn btn-primary" href="' +
-                 "{% url " + regresar + "%}" + '">Regresar</a>'),
+            HTML("""
+                    <a class="btn btn-primary" href="{% url '""" +
+                      "{0}' {1}".format(retorno,indice) +
+                      """ %}">Regresar</a>
+                """),
         )
 
 
