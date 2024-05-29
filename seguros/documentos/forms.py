@@ -157,7 +157,7 @@ class PersonaPrincipalForm(forms.ModelForm):
         Div(
             Submit('submit', 'Guardar', css_class='btn btn-info'),
             HTML("""
-                    <a class="btn btn-primary" href="{% url 'documentos:principal_list' %}">Regresar</a>
+                    <a class="btn btn-primary" href="{% url 'documentos:clientes' %}">Regresar</a>
                 """),
             css_class='col text-center'
         ),

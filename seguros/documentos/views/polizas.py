@@ -207,14 +207,14 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
         for descripcion in SINIESTRO_DESCRIPCIONES:
             files = self.request.FILES.getlist(descripcion)
             for file in files:
-                obj, created = mod.Documentos.objects.update_or_create(
-                    poliza_id=self.pk,
+                obj, created = mod.DocumentosSiniestros.objects.update_or_create(
+                    siniestro_id=self.pk,
                     descripcion=descripcion,                            
                     defaults={'activo': True, 'archivo': file}
                 )
                 if created:
                     messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
-        return redirect(reverse_lazy('documentos:doc_siniestros', args=[self.poliza_pk]))
+        return redirect(reverse_lazy('documentos:doc_siniestros', args=[self.pk]))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

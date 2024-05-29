@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %} 
 {% block content %}
 
-<div class="row"><h3 class="col-12">{{ titulo }} {{ poliza }} {{ cliente }} </h3></div>
+<div class="row"><h3 class="col-12">{{ titulo }} {{ poliza }} -- {{ poliza.presona_principal }} </h3></div>
 <div class="row" style="margin-bottom: 1em; margin-top: 1em;">
     <h3 class="col-5"></h3>
     {% if es_asesor %}
