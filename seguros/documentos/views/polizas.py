@@ -142,10 +142,12 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
     template_name = 'poliza/archivos_poliza.html'
     form_class = formularios.MultiDocumentUploadForm
     pk = None
+    poliza = None
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         self.pk = self.kwargs.get('pk')
+        self.poliza = mod.Poliza.objects.get(pk= self.pk)
         archivos_existentes = {}
         documentos = mod.Documentos.objects.filter(poliza_id=self.pk)
         for documento in documentos:
@@ -174,7 +176,7 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            "titulo": "Documentos Póliza", 
+            "titulo": f"Documentos { self.poliza }", 
             "redirige": "documentos:update_poliza",
         })
         return context
@@ -302,7 +304,6 @@ class Siniestro_List(LoginRequiredMixin, ListView):
         poliza = get_object_or_404(mod.Poliza, pk=self.pk)
         context["titulo"] = "Siniestros"
         context["poliza"] = poliza
-        context["cliente"] = poliza.persona_principal
         context["add"] = 'documentos:siniestro_add'
         context["add_label"] = "Nuevo Siniestro"
         context["update"] = "documentos:siniestro_update"
