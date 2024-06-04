@@ -35,6 +35,7 @@
             </div>
         </div>
 
+        {% if poliza_id %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="bene-heading">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bene-colapse" aria-expanded="true" aria-controls="bene-colapse">
@@ -47,7 +48,6 @@
                 </div>
             </div>
         </div>
-
         <div class="accordion-item">
             <h2 class="accordion-header" id="docs-heading">
               <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#docs-colapse" aria-expanded="true" aria-controls="docs-colapse">
@@ -73,6 +73,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
     </div>
 </form>
