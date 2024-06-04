@@ -123,7 +123,7 @@ class ListCliente(ListView):
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Clientes"
         context["encabezados"] = ('Nombre', 'Correo', 'Telefono', "Asesor")
-        context["add"] = "documentos:principal_add"
+        context["add"] = "documentos:cliente_add"
         context["add_label"] = "Nuevo Cliente"
         context["update"] = "documentos:cliente_update"
         context["borra"] = "documentos:borra_cliente"
