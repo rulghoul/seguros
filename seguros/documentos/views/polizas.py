@@ -176,7 +176,7 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            "titulo": f"Documentos { self.poliza }", 
+            "titulo": f"Documentos: { self.poliza }", 
             "redirige": "documentos:update_poliza",
         })
         return context
@@ -220,8 +220,9 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        #poliza = mod.Poliza.objects.get(pk=self.poliza_pk)
         context.update({
-            "titulo": "Documentos Siniestro", 
+            "titulo": f"Documentos Siniestro:", 
             "redirige": f"'documentos:siniestros' { self.poliza_pk }",
         })
         return context
@@ -239,12 +240,13 @@ class Siniestro_Add(LoginRequiredMixin, FormView):
         return initial
 
     def get_success_url(self):
-        return reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
+        return reverse_lazy('documentos:siniestros', kwargs={"pk": self.pk})
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
-        context["titulo"] = "Nuevo Siniestro"
+        poliza = get_object_or_404(mod.Poliza, pk=self.pk)
+        context["titulo"] = f"Nuevo Siniestro para la poliza: {poliza}"
         context["redirige"] = reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
         return context
 
