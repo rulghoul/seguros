@@ -57,8 +57,7 @@ def edit_poliza(request, pk=None):
         titulo = f"Nueva Poliza"
         poliza.asesor_poliza = asesor_instance
         persona_principal.asesor_cliente = asesor_instance
-        poliza.persona_principal = persona_principal
-    
+        poliza.persona_principal = persona_principal    
 
     helper_beneficiario = formularios.BeneficiariosHelper
     formset_beneficiario = formularios.BeneficiariosFormset(request.POST or None, instance=poliza)
@@ -66,7 +65,7 @@ def edit_poliza(request, pk=None):
     if request.method == 'POST':
         #messages.success(request, "Se entro al post")
         form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)        
-        form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal)                        
+        form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal, retorno='documentos:polizas')                        
 
         if form_poliza.is_valid() and form_persona_principal.is_valid():
 
@@ -111,7 +110,7 @@ def edit_poliza(request, pk=None):
                         messages.error(request, "Detalles: " + ", ".join([f"{field}: {error}" for field, error in form.errors.items()]))
     else:        
         form_poliza = formularios.PolizaForm(instance=poliza)
-        form_persona_principal = formularios.PersonaPrincipalForm(instance=persona_principal)
+        form_persona_principal = formularios.PersonaPrincipalForm(instance=persona_principal, retorno='documentos:polizas')
 
     return render(request, 'asesor/add_poliza.html', {
         'form_poliza': form_poliza,

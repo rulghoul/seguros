@@ -117,52 +117,6 @@ class PersonaPrincipalForm(forms.ModelForm):
         format='%Y-%m-%d', attrs={'type': 'date'}))
     helper = FormHelper()
     helper.form_tag = False
-    helper.layout = Layout(
-        Div(
-            Div('nombre', css_class='col-md-4'),
-            Div('primer_apellido', css_class='col-md-4'),
-            Div('segundo_apellido', css_class='col-md-4'),
-            css_class='row'
-        ),
-        Div(
-            Div('curp', css_class='col-md-3'),
-            Div('tipo_persona', css_class='col-md-3'),
-            Div('genero', css_class='col-md-3'),
-            Div('estatus_persona', css_class='col-md-3'),
-            css_class='row'
-        ),
-        Div(
-            Div('lugar_nacimiento', css_class='col-md-8'),
-            Div('fecha_nacimiento', css_class='col-md-4'),
-            css_class='row'
-        ),
-        Div(
-            Div('estado', css_class='col-md-3'),
-            Div('municipio', css_class='col-md-3'),
-            Div('asentamiento', css_class='col-md-4'),
-            Div('codigo_postal', css_class='col-md-2'),
-            css_class='row'
-        ),
-        Div(
-            Div('calle', css_class='col-md-6'),
-            Div('numero', css_class='col-md-3'),
-            Div('numero_interior', css_class='col-md-3'),
-            css_class='row'
-        ),
-        Div(
-            Div('correo', css_class='col-md-9'),
-            Div('telefono', css_class='col-md-3'),
-            css_class='row'
-        ),
-        Div(
-            Submit('submit', 'Guardar', css_class='btn btn-info'),
-            HTML("""
-                    <a class="btn btn-primary" href="{% url 'documentos:clientes' %}">Regresar</a>
-                """),
-            css_class='col text-center'
-        ),
-        Field('asesor_cliente', type="hidden"),
-    )
 
     class Meta:
         model = modelos.PersonaPrincipal
@@ -178,12 +132,62 @@ class PersonaPrincipalForm(forms.ModelForm):
             'asesor_cliente': forms.HiddenInput(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, retorno="documentos:clientes",*args, **kwargs):
         super(PersonaPrincipalForm, self).__init__(*args, **kwargs)
+        self.retorno = retorno        
         if self.instance and self.instance.pk:
             self.fields['estado'].initial = self.instance.asentamiento.municipio.estado
             self.fields['municipio'].initial = self.instance.asentamiento.municipio.estado
             self.fields['codigo_postal'].initial = self.instance.asentamiento.codigo_postal
+        
+        self.helper.layout = Layout(
+            Div(
+                Div('nombre', css_class='col-md-4'),
+                Div('primer_apellido', css_class='col-md-4'),
+                Div('segundo_apellido', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('curp', css_class='col-md-3'),
+                Div('tipo_persona', css_class='col-md-3'),
+                Div('genero', css_class='col-md-3'),
+                Div('estatus_persona', css_class='col-md-3'),
+                css_class='row'
+            ),
+            Div(
+                Div('lugar_nacimiento', css_class='col-md-8'),
+                Div('fecha_nacimiento', css_class='col-md-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('estado', css_class='col-md-3'),
+                Div('municipio', css_class='col-md-3'),
+                Div('asentamiento', css_class='col-md-4'),
+                Div('codigo_postal', css_class='col-md-2'),
+                css_class='row'
+            ),
+            Div(
+                Div('calle', css_class='col-md-6'),
+                Div('numero', css_class='col-md-3'),
+                Div('numero_interior', css_class='col-md-3'),
+                css_class='row'
+            ),
+            Div(
+                Div('correo', css_class='col-md-9'),
+                Div('telefono', css_class='col-md-3'),
+                css_class='row'
+            ),
+            Div(
+                Submit('submit', 'Guardar', css_class='btn btn-info'),
+                HTML("""
+                        <a class="btn btn-primary" href="{% url '""" +
+                        "{0}' ".format(self.retorno) +
+                        """ %}">Regresar</a>
+                    """),
+                css_class='col text-center'
+            ),
+            Field('asesor_cliente', type="hidden"),
+        )
 
 
 # Asesores
