@@ -1,5 +1,7 @@
 import logging
-from django.views.generic.edit import  UpdateView, FormView
+
+from django.contrib.auth.mixins import LoginRequiredMixin 
+from django.views.generic.edit import  UpdateView, FormView, DeleteView
 from django.views.generic import ListView
 
 from documentos import models as mod
@@ -41,7 +43,7 @@ class PlanesView(BaseListView):
 class PersonaPrincipalAdd(FormView):
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = reverse_lazy("documentos:principal_list")
+    success_url = reverse_lazy("documentos:clientes")
     
     def form_valid(self, form):
         logging.info("Entra en validacion")
@@ -57,7 +59,7 @@ class PersonaPrincipalAdd(FormView):
         logging.info("Entra en Contexto")
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Agregar Cliente"
-        context["redirige"] = "documentos:principal_add"
+        context["redirige"] = "documentos:clientes"
         context["informacion"] = "sepomex:asentamiento_details"
         return context
     
@@ -67,7 +69,7 @@ class PersonaPrincipalUpdate(UpdateView):
     form_class = formularios.PersonaPrincipalForm
 
     def get_success_url(self):
-        return reverse_lazy("documentos:principal_update", kwargs={'pk': self.object.pk})
+        return reverse_lazy("documentos:cliente_update", kwargs={'pk': self.object.pk})
     
     def form_valid(self, form):
         if mod.Asesor.objects.filter(usuario = self.request.user).exists():
@@ -77,7 +79,7 @@ class PersonaPrincipalUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Actualizar Cliente"
-        context["redirige"] = "documentos:principal_list"
+        context["redirige"] = "documentos:clientes"
         context["informacion"] = "sepomex:asentamiento_details"
         return context
     
@@ -89,6 +91,18 @@ class PersonaPrincipalUpdate(UpdateView):
         initial['municipio'] = asentamiento.municipio.nombre
         initial['estado'] = asentamiento.municipio.estado.nombre
         return initial
+
+class borrar_cliente(LoginRequiredMixin, DeleteView):
+    model = mod.PersonaPrincipal
+    template_name = "catalogos/borrar.html"
+    success_url = reverse_lazy('documentos:clientes')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = "Borrar Cliente"
+        context['redirige'] = "documentos:clientes"
+        return context
+
 
 class ListCliente(ListView):
     template_name = "catalogos/list_cliente.html"
@@ -109,10 +123,10 @@ class ListCliente(ListView):
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Clientes"
         context["encabezados"] = ('Nombre', 'Correo', 'Telefono', "Asesor")
-        context["add"] = "documentos:principal_add"
+        context["add"] = "documentos:cliente_add"
         context["add_label"] = "Nuevo Cliente"
-        context["update"] = "documentos:principal_update"
-        context["borra"] = "documentos:principal_update"
+        context["update"] = "documentos:cliente_update"
+        context["borra"] = "documentos:borra_cliente"
         return context
     
 #Asesores
@@ -152,6 +166,19 @@ def crear_o_editar_asesor(request, pk=None):
         'titulo': 'Nuevo Asesor'
     })
 
+class borrar_asesor(LoginRequiredMixin, DeleteView):
+    model = mod.Asesor
+    template_name = "catalogos/borrar.html"
+    success_url = reverse_lazy('documentos:asesor_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = "Borrar Asesor"
+        context['redirige'] = "documentos:asesor_list"
+        return context
+
+
+
 class ListAseror(ListView):
     template_name = "catalogos/list_asesor.html"
     model = mod.Asesor
@@ -164,6 +191,6 @@ class ListAseror(ListView):
         context["add"] = "documentos:asesor_add"
         context["add_label"] = "Nuevo Asesor"
         context["update"] = "documentos:asesor_update"
-        context["borra"] = "documentos:asesor_update"
+        context["borra"] = "documentos:asesor_delete"
         return context
     

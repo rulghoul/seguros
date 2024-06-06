@@ -183,7 +183,7 @@ class Poliza(models.Model):
         unique_together = (("empresa", "numero_poliza"),)    
         
     def __str__(self) -> str:
-        return f"{self.empresa} -- {self.plan} -- {self.numero_poliza}"
+        return f"{self.empresa} / {self.plan} / {self.numero_poliza} / {self.persona_principal}"
     
 
 class Beneficiarios(models.Model):
