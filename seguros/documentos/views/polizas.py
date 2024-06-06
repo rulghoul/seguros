@@ -68,7 +68,16 @@ def edit_poliza(request, pk=None):
         form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)        
         form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal)                        
 
-        if form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
+        if form_poliza.is_valid() and form_persona_principal.is_valid():
+
+            persona_principal = form_persona_principal.save()  # Guarda la persona principal
+            poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
+            poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
+            poliza.save()  
+            messages.success(request, "Póliza guardada con éxito.")
+            return redirect('documentos:poliza_update', pk=poliza.pk)
+
+        elif form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
             
             try:
                 total_porcentaje = 0
@@ -86,8 +95,8 @@ def edit_poliza(request, pk=None):
                 poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
-                messages.success(request, "Póliza guardada con éxito.")
-                return redirect('documentos:polizas')  # Redirige a una lista o alguna URL definida
+                messages.success(request, "Se actualizo la Póliza.")                
+                return redirect('documentos:poliza_update', pk=poliza.pk)  # Redirige a una lista o alguna URL definida
             else:
                 messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
         else:
