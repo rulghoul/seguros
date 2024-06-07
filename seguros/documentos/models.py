@@ -80,8 +80,7 @@ class TipoMediocontacto(models.Model):
 
 class Parentesco(models.Model):
     descripcion = models.CharField(max_length=20, unique=True)
-    activo = models.BooleanField(default=True)
-    
+    activo = models.BooleanField(default=True)    
     
     def __str__(self) -> str:
         return self.descripcion
@@ -133,7 +132,7 @@ class Planes(models.Model):
         return self.nombre
 
 class PersonaBase(models.Model):
-    curp = ClaveField()
+    curp = models.CharField(max_length=20)
     tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=80)  # Asegúrate de que el max_length sea suficiente para ambos casos
     primer_apellido = models.CharField(max_length=120)
@@ -158,6 +157,9 @@ class PersonaPrincipal(PersonaBase):
         
     def __str__(self) -> str:
         return f"{self.nombre} {self.primer_apellido} {self.segundo_apellido}"
+    
+    class Meta:
+        unique_together = (("asesor_cliente", "curp"),) 
     
 
 class PersonaRelacionada(PersonaBase):

@@ -2,7 +2,7 @@ from django.views import View
 
 from documentos import models as mod
 from documentos import forms as formularios
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib import messages 
 
 
@@ -39,7 +39,7 @@ class BaseListView(View):
                     if form.is_valid():
                         form.save()
                         form = self.form_class()
-                        return redirect(self.redirige)
+                        #return redirect(reverse(self.redirige, post_data, files))
                     #form = self.form_class()
                 else:
                     print(f"Se entro el id = {pk}")
@@ -47,7 +47,7 @@ class BaseListView(View):
                     form = self.form_class(post_data, files, instance=objeto)
                     if form.is_valid():
                         form.save()
-                        return redirect(self.redirige)
+                        #return redirect(reverse(self.redirige))
                     else:
                         messages.warning(peticion, f"Fallo el guardado por: {form.errors}")
                 

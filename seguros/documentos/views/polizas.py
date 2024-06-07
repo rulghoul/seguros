@@ -57,8 +57,7 @@ def edit_poliza(request, pk=None):
         titulo = f"Nueva Poliza"
         poliza.asesor_poliza = asesor_instance
         persona_principal.asesor_cliente = asesor_instance
-        poliza.persona_principal = persona_principal
-    
+        poliza.persona_principal = persona_principal    
 
     helper_beneficiario = formularios.BeneficiariosHelper
     formset_beneficiario = formularios.BeneficiariosFormset(request.POST or None, instance=poliza)
@@ -66,9 +65,18 @@ def edit_poliza(request, pk=None):
     if request.method == 'POST':
         #messages.success(request, "Se entro al post")
         form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)        
-        form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal)                        
+        form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal, retorno='documentos:polizas')                        
 
-        if form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
+        if form_poliza.is_valid() and form_persona_principal.is_valid():
+
+            persona_principal = form_persona_principal.save()  # Guarda la persona principal
+            poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
+            poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
+            poliza.save()  
+            messages.success(request, "Póliza guardada con éxito.")
+            return redirect('documentos:poliza_update', pk=poliza.pk)
+
+        elif form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
             
             try:
                 total_porcentaje = 0
@@ -86,8 +94,8 @@ def edit_poliza(request, pk=None):
                 poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
-                messages.success(request, "Póliza guardada con éxito.")
-                return redirect('documentos:polizas')  # Redirige a una lista o alguna URL definida
+                messages.success(request, "Se actualizo la Póliza.")                
+                return redirect('documentos:poliza_update', pk=poliza.pk)  # Redirige a una lista o alguna URL definida
             else:
                 messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
         else:
@@ -102,7 +110,7 @@ def edit_poliza(request, pk=None):
                         messages.error(request, "Detalles: " + ", ".join([f"{field}: {error}" for field, error in form.errors.items()]))
     else:        
         form_poliza = formularios.PolizaForm(instance=poliza)
-        form_persona_principal = formularios.PersonaPrincipalForm(instance=persona_principal)
+        form_persona_principal = formularios.PersonaPrincipalForm(instance=persona_principal, retorno='documentos:polizas')
 
     return render(request, 'asesor/add_poliza.html', {
         'form_poliza': form_poliza,
