@@ -24,6 +24,7 @@ urlpatterns = [
     path('cliente_add', asesores.PersonaPrincipalAdd.as_view(), name='cliente_add'),
     path('borra_cliente/<int:pk>/', asesores.borrar_cliente.as_view(), name='borra_cliente'),
     path('cliente_update/<int:pk>/', asesores.PersonaPrincipalUpdate.as_view(), name='cliente_update'),
+    path('buscar_cliente_por_curp/', asesores.buscar_cliente_por_curp, name='buscar_cliente_por_curp'),
     #Polizas
     path('polizas', polizas.Poliza_List.as_view(), name='polizas'),
     path('poliza_add', polizas.edit_poliza, name='poliza_add'),

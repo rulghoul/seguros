@@ -133,7 +133,6 @@ class Planes(models.Model):
 
 class PersonaBase(models.Model):
     curp = models.CharField(max_length=20)
-    tipo_persona = models.ForeignKey(TipoPersona, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=80)  # Asegúrate de que el max_length sea suficiente para ambos casos
     primer_apellido = models.CharField(max_length=120)
     segundo_apellido = models.CharField(max_length=120, blank=True, null=True)
@@ -152,6 +151,7 @@ class PersonaPrincipal(PersonaBase):
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
     numero = models.CharField(max_length=5,blank=True, null=True, default=None)
     numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
+    #contacto
     correo = models.EmailField( blank=True, null=True, default="correo@empresa.com")
     telefono = models.CharField(max_length=100, blank=True, null=True, default=None)
         

@@ -120,7 +120,7 @@ class PersonaPrincipalForm(forms.ModelForm):
 
     class Meta:
         model = modelos.PersonaPrincipal
-        fields = ['tipo_persona', 'nombre', 'primer_apellido', 'curp',
+        fields = ['nombre', 'primer_apellido', 'curp',
                   'segundo_apellido', 'genero', 'estatus_persona',
                   'asesor_cliente', 'lugar_nacimiento', 'fecha_nacimiento',
                   'asentamiento',
@@ -132,9 +132,8 @@ class PersonaPrincipalForm(forms.ModelForm):
             'asesor_cliente': forms.HiddenInput(),
         }
 
-    def __init__(self, retorno="documentos:clientes",*args, **kwargs):
-        super(PersonaPrincipalForm, self).__init__(*args, **kwargs)
-        self.retorno = retorno        
+    def __init__(self,*args, **kwargs):
+        super(PersonaPrincipalForm, self).__init__(*args, **kwargs)      
         if self.instance and self.instance.pk:
             self.fields['estado'].initial = self.instance.asentamiento.municipio.estado
             self.fields['municipio'].initial = self.instance.asentamiento.municipio.estado
@@ -148,8 +147,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('curp', css_class='col-md-3'),
-                Div('tipo_persona', css_class='col-md-3'),
+                Div('curp', css_class='col-md-6'),
                 Div('genero', css_class='col-md-3'),
                 Div('estatus_persona', css_class='col-md-3'),
                 css_class='row'
@@ -181,7 +179,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 Submit('submit', 'Guardar', css_class='btn btn-info'),
                 HTML("""
                         <a class="btn btn-primary" href="{% url '""" +
-                        "{0}' ".format(self.retorno) +
+                        "documentos:polizas' "
                         """ %}">Regresar</a>
                     """),
                 css_class='col text-center'

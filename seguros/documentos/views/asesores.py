@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 from .catalogos import BaseListView
 
@@ -129,6 +130,47 @@ class ListCliente(ListView):
         context["borra"] = "documentos:borra_cliente"
         return context
     
+
+
+def buscar_cliente_por_curp(request):
+    curp = request.GET.get('curp', None)
+    if curp:
+        try:
+            asesor = mod.Asesor.objects.get(usuario = request.user)
+            messages.info(request, f"Asesor encontrado {asesor}")
+            persona = mod.PersonaPrincipal.objects.get(curp=curp, asesor_cliente=asesor.pk)
+            messages.info(request, f"Persona encontrada: {persona}")
+            data = {
+                'nombre': persona.nombre,
+                'primer_apellido': persona.primer_apellido,
+                'segundo_apellido': persona.segundo_apellido,
+                'genero': persona.genero,
+                'estatus_persona': persona.estatus_persona,
+                'lugar_nacimiento': persona.lugar_nacimiento,
+                'fecha_nacimiento': persona.fecha_nacimiento,
+                # Direccion
+                'asentamiento': persona.asentamiento.nombre,
+                'municipio': persona.asentamiento.municipio.nombre,
+                'estado': persona.asentamiento.municipio.estado.nombre,
+                'codigo_postal': persona.asentamiento.codigo_postal,
+
+                'calle': persona.calle,
+                'numero': persona.numero,
+                'numero_interior': persona.numero_interior,
+                # Contacto
+                'correo': persona.correo,
+                'telefono': persona.telefono,
+            }
+            return JsonResponse({'status': 'ok', 'data': data})
+        except mod.PersonaPrincipal.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'No se encontró una persona con ese CURP'})
+        except mod.Asesor.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'No se encontro el Asesor'})
+        except Exception as inst:
+            return JsonResponse({'status': 'error', 'message': f'Fallo no identificado: {inst}'})
+        
+    return JsonResponse({'status': 'error', 'message': 'CURP no proporcionado'})
+
 #Asesores
 
     
