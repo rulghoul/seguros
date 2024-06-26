@@ -33,3 +33,4 @@ soupsieve==2.5
 sqlparse==0.4.4
 urllib3==2.2.1
 gunicorn==21.2.0
+cryptography==42.0.8 

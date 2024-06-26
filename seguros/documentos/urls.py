@@ -27,8 +27,12 @@ urlpatterns = [
     path('buscar_cliente_por_curp/', asesores.buscar_cliente_por_curp, name='buscar_cliente_por_curp'),
     #Polizas
     path('polizas', polizas.Poliza_List.as_view(), name='polizas'),
+    path('polizas_cliente/<int:pk>/', polizas.polizas_cliente.as_view(), name='polizas_cliente'),
     path('poliza_add', polizas.edit_poliza, name='poliza_add'),
+    path('poliza_delete/<int:pk>/', polizas.borrar_poliza.as_view(), name='poliza_delete'),
     path('poliza_update/<int:pk>/', polizas.edit_poliza, name='poliza_update'),
+    path('poliza_cliente_update/<int:pk>/<int:cliente>/', polizas.edit_poliza_cliente, name='poliza_cliente_update'),
+    path('poliza_cliente_add/<int:cliente>/', polizas.edit_poliza_cliente, name='poliza_cliente_add'),
     #Sinestros
     path('siniestros/<int:pk>/', polizas.Siniestro_List.as_view(), name='siniestros'),
     path('siniestro_add/<int:pk>/', polizas.Siniestro_Add.as_view(), name='siniestro_add'),

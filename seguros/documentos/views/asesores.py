@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin 
-from django.views.generic.edit import  UpdateView, FormView, DeleteView
+from django.views.generic.edit import  UpdateView, FormView, DeleteView, CreateView
 from django.views.generic import ListView
 
 from documentos import models as mod
@@ -14,7 +14,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
-from .catalogos import BaseListView
+from .generic_view import BaseListView
 
 
 from documentos.utils.send_email_new_asesor import envia_correo_new_asesor as envia 
@@ -41,23 +41,25 @@ class PlanesView(BaseListView):
     campos = ['nombre', 'empresa',  'activo',]
 
 
-class PersonaPrincipalAdd(FormView):
+class PersonaPrincipalAdd(CreateView):
+    model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
-    success_url = reverse_lazy("documentos:clientes")
+
+    def get_success_url(self):
+        return reverse_lazy("documentos:cliente_update", kwargs={'pk': self.object.pk})
     
     def form_valid(self, form):
-        logging.info("Entra en validacion")
+        messages.info(self.request,"Entra en validacion")
         try:
             asesor_instance = mod.Asesor.objects.get(usuario=self.request.user)
             form.instance.asesor = asesor_instance
-            logging.info("Encontró al asesor")
+            messages.info(self.request,"Encontró al asesor")
         except mod.Asesor.DoesNotExist:
-            logging.info("No encontró al asesor")
+            messages.info(self.request,"No encontró al asesor")
         return super().form_valid(form)
     
     def get_context_data(self, **kwargs):
-        logging.info("Entra en Contexto")
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Agregar Cliente"
         context["redirige"] = "documentos:clientes"

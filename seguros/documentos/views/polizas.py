@@ -1,7 +1,7 @@
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin 
-from django.views.generic import ListView, UpdateView, CreateView, FormView
+from django.views.generic import ListView, UpdateView, CreateView, FormView, DeleteView
 from django.contrib import messages #Mensajes
 from django.urls import reverse, reverse_lazy
 
@@ -28,14 +28,61 @@ class Poliza_List(LoginRequiredMixin, ListView):
             
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo"] = "Polizas"
+        context["titulo"] = "Base de datos de Clientes"
         context["add"] = "documentos:poliza_add"
-        context["add_label"] = "Nueva Poliza"
+        context["add_label"] = "Nuevo Cliente"
         context["update"] = "documentos:poliza_update"
         context["borra"] = "documentos:poliza_update"
         return context
             
+class polizas_cliente(LoginRequiredMixin, ListView):
+    model = mod.Poliza
+    template_name = 'asesor/polizas_cliente.html'
+    context_object_name = 'polizas'
+
+    def get_queryset(self):
+        cliente_pk =  self.kwargs.get('pk')
+        try:       
+            return mod.Poliza.objects.filter(persona_principal=cliente_pk)
+        except: 
+            return mod.Poliza.objects.none()
+            
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+
+            
+    def get_context_data(self, **kwargs):
+        cliente_pk =  self.kwargs.get('pk')
+        cliente = mod.PersonaPrincipal.objects.get(pk=cliente_pk)
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Polizas de: "
+        context["add"] = "documentos:poliza_cliente_add"
+        context["add_label"] = "Nueva Poliza"
+        context["update"] = "documentos:poliza_cliente_update"
+        context["borra"] = "documentos:poliza_delete"
+        context["cliente_pk"] = cliente_pk
+        context["cliente"] = cliente
+        return context
+            
     
+class borrar_poliza(LoginRequiredMixin, DeleteView):
+    model = mod.Poliza
+    template_name = "catalogos/borrar.html"
+
+    def get_success_url(self):
+        cliente_pk = self.kwargs.get('pk')
+        return reverse_lazy('documentos:polizas_cliente', kwargs={'cliente': cliente_pk})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        cliente_pk =  self.kwargs.get('pk')
+        context['titulo'] = "Borrar Cliente"
+        context['redirige'] = "documentos:polizas_cliente"
+        context["cliente"] = cliente_pk
+        return context
+
+
 @transaction.atomic
 def edit_poliza(request, pk=None):
     try:
@@ -124,6 +171,80 @@ def edit_poliza(request, pk=None):
         'poliza_id':poliza.pk,
     })
 
+   
+@transaction.atomic
+def edit_poliza_cliente(request, cliente = None, pk=None):
+    cliente_object = get_object_or_404(mod.PersonaPrincipal, pk=cliente)
+
+    if pk:
+        poliza = get_object_or_404(mod.Poliza, pk=pk)
+        titulo = f"Editar Poliza: {poliza.numero_poliza}"
+        persona_principal = poliza.persona_principal        
+    else:
+        poliza = mod.Poliza()
+        persona_principal = mod.PersonaPrincipal.objects.get(pk=cliente)
+        titulo = f"Nueva Poliza"
+        poliza.asesor_poliza = persona_principal.asesor_cliente        
+        poliza.persona_principal = persona_principal
+
+    helper_beneficiario = formularios.BeneficiariosHelper
+    formset_beneficiario = formularios.BeneficiariosFormset(request.POST or None, instance=poliza)
+
+    if request.method == 'POST':
+        #messages.success(request, "Se entro al post")
+        form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)
+
+        if form_poliza.is_valid():            
+            poliza = form_poliza.save(commit=False)  
+            poliza.save()  
+            messages.success(request, "Póliza guardada con éxito.")
+            return redirect('documentos:poliza_cliente_update', kwargs={"pk":poliza.pk, "cliente":cliente})
+
+        elif form_poliza.is_valid() and formset_beneficiario.is_valid():
+            
+            try:
+                total_porcentaje = 0
+                for form in formset_beneficiario:
+                    total_porcentaje += form.cleaned_data.get('porcentaje_participacion', 0)
+                    #messages.info(request, f"Porcentaje {form.cleaned_data['porcentaje_participacion']}  para un total de {total_porcentaje}")
+                #total_porcentaje = sum(form.cleaned_data['porcentaje_participacion'] for form in formset_beneficiario)
+            except Exception as e:
+                messages.error(request, f"Fallo el calculo de porcentaje, favor de revisar las cantidades")
+                total_porcentaje = 0
+            #messages.success(request, f"Los formularios son validos y el porcentaje es {total_porcentaje}")
+            if total_porcentaje == 100:
+                poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
+                poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
+                poliza.save()  # Guarda la póliza
+                formset_beneficiario.save()
+                messages.success(request, "Se actualizo la Póliza.")                
+                return redirect('documentos:poliza_cliente_update', kwargs={"pk":poliza.pk, "cliente":cliente})
+            else:
+                messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
+        else:
+            if not form_poliza.is_valid():
+                messages.error(request, "Hubo un problema con el formulario de la póliza: " + ", ".join([f"{field}: {error}" for field, error in form_poliza.errors.items()]))            
+            if not formset_beneficiario.is_valid():
+                messages.error(request, "Hubo un problema con el formset de beneficiarios.")
+                for form in formset_beneficiario:
+                    if not form.is_valid():
+                        messages.error(request, "Detalles: " + ", ".join([f"{field}: {error}" for field, error in form.errors.items()]))
+    else:        
+        form_poliza = formularios.PolizaForm(instance=poliza)        
+
+    return render(request, 'asesor/edit_poliza.html', {
+        'form_poliza': form_poliza,
+        'persona_principal': persona_principal,
+        'formset_beneficiario': formset_beneficiario,
+        'helper_beneficiario': helper_beneficiario,
+        "informacion": "sepomex:asentamiento_details",
+        'titulo': titulo,
+        'documento_url': 'documentos:doc_poliza',
+        'siniestros_url': 'documentos:siniestros',
+        'poliza_id':poliza.pk,
+        'cliente':cliente_object,
+    })
+
 # Archivos de la poliza y Siniestros
 
 
@@ -144,6 +265,9 @@ SINIESTRO_DESCRIPCIONES = [
     'Carta de Invalidez Total y Permanente',
     'Carta de Aseguradora por Fallecimiento',
 ]
+
+ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+MAX_FILE_SIZE_MB = 1
 
 
 class upload_documentos_poliza(LoginRequiredMixin, FormView):
@@ -169,9 +293,23 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
+        archivos_invalidos = False
         for descripcion in POLIZA_DESCRIPCIONES:
             files = self.request.FILES.getlist(descripcion)
             for file in files:
+
+                # Validar tipo de archivo
+                if file.content_type not in ALLOWED_FILE_TYPES:
+                    messages.error(self.request, f"El archivo {file.name} no es de un tipo permitido.")
+                    archivos_invalidos = True
+                    continue
+                
+                # Validar tamaño de archivo
+                if file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {MAX_FILE_SIZE_MB} MB.")
+                    archivos_invalidos = True
+                    continue
+
                 obj, created = mod.Documentos.objects.update_or_create(
                     poliza_id=self.pk,
                     descripcion=descripcion,                            
@@ -179,6 +317,10 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
                 )
                 if created:
                     messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
+        
+        if archivos_invalidos:
+            messages.error(self.request, "Algunos archivos no se pudieron cargar.")
+
         return redirect(reverse_lazy('documentos:doc_poliza', args=[self.pk]))
 
     def get_context_data(self, **kwargs):
@@ -214,9 +356,24 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
+        archivos_invalidos = False
         for descripcion in SINIESTRO_DESCRIPCIONES:
             files = self.request.FILES.getlist(descripcion)
+            
             for file in files:
+
+                # Validar tipo de archivo
+                if file.content_type not in ALLOWED_FILE_TYPES:
+                    messages.error(self.request, f"El archivo {file.name} no es de un tipo permitido.")
+                    archivos_invalidos = True
+                    continue
+                
+                # Validar tamaño de archivo
+                if file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {MAX_FILE_SIZE_MB} MB.")
+                    archivos_invalidos = True
+                    continue
+
                 obj, created = mod.DocumentosSiniestros.objects.update_or_create(
                     siniestro_id=self.pk,
                     descripcion=descripcion,                            
@@ -224,6 +381,10 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
                 )
                 if created:
                     messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
+        
+            if archivos_invalidos:
+                messages.error(self.request, _("Algunos archivos no se pudieron cargar debido a errores."))
+
         return redirect(reverse_lazy('documentos:doc_siniestros', args=[self.pk]))
 
     def get_context_data(self, **kwargs):

@@ -179,7 +179,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 Submit('submit', 'Guardar', css_class='btn btn-info'),
                 HTML("""
                         <a class="btn btn-primary" href="{% url '""" +
-                        "documentos:polizas' "
+                        "documentos:clientes' "
                         """ %}">Regresar</a>
                     """),
                 css_class='col text-center'

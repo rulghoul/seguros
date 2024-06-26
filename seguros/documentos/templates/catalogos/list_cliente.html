@@ -33,6 +33,14 @@
     
     <td class="text-center">
       <!-- Update book buttons -->
+      <a type="button" class="update-book btn btn-sm btn-info" href="{% url 'documentos:polizas_cliente' elemento.pk %}" >
+        <span class="fa fa-eye"></span>
+      </a>
+      <!-- Update book buttons -->
+      <a type="button" class="update-book btn btn-sm btn-info" href="{% url 'documentos:poliza_cliente_add' elemento.pk %}" >
+        <span class="fa fa-plus"></span>
+      </a>
+      <!-- Update book buttons -->
       <a type="button" class="update-book btn btn-sm btn-info" href="{% url update elemento.pk %}" >
         <span class="fa fa-pencil"></span>
       </a>
