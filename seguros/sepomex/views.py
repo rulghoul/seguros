@@ -17,12 +17,13 @@ from . import xml_import as xml
 def upload_xml(request):
     
     if request.method == 'POST':
-        logging.info("Se recibio post")
+        messages.info(request, "Se recibio post")
         form = formularios.xml_sepomex_upload_form(request.POST, request.FILES)
         if form.is_valid():
             sepomex_xml = request.FILES['sepomex_xml']
             if sepomex_xml:
                 # Usar la función importada para procesar el archivo
+                messages.success(request, "se pudo leer el arcchivo")
                 try:
                     message = xml.recorrer_xml_datos(sepomex_xml) 
                     messages.success(request, message)

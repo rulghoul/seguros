@@ -22,36 +22,37 @@ def procesar_tabla(elem):
         'c_cve_ciudad': elem.find('{NewDataSet}c_cve_ciudad').text if elem.find('{NewDataSet}c_cve_ciudad') is not None else None,
     }
     try:
-        # Intenta obtener o crear el Estado
-        estado, created = models.Estado.objects.get_or_create(
-            nombre_estado = datos_tabla['d_estado'],
-            defaults={'clave':datos_tabla['c_estado']}
-        )
-        
-        # Obtener o crear TipoAsentamiento
-        tipo_asentamiento, created = models.TipoAsentamiento.objects.get_or_create(
-            nombre_tipo_asentamiento= datos_tabla['d_tipo_asenta'],
-            defaults={'clave':datos_tabla['c_tipo_asenta']}
-        )
+        with transaction.atomic():
+            # Intenta obtener o crear el Estado
+            estado, created = models.Estado.objects.get_or_create(
+                nombre=datos_tabla['d_estado'],
+                defaults={'clave': datos_tabla['c_estado']}
+            )
+            
+            # Obtener o crear TipoAsentamiento
+            tipo_asentamiento, created = models.TipoAsentamiento.objects.get_or_create(
+                nombre=datos_tabla['d_tipo_asenta'],
+                defaults={'clave': datos_tabla['c_tipo_asenta']}
+            )
 
-        # Obtener o crear Municipio (depende del Estado)
-        municipio, created = models.Municipio.objects.get_or_create(
-            estado=estado,
-            nombre_municipio=datos_tabla['D_mnpio'],
-            defaults={'clave':datos_tabla['c_mnpio']}
-        )
-        
-        # Finalmente, crear el Asentamiento
-        asentamiento, created = models.Asentamiento.objects.get_or_create(
-            codigo_postal=datos_tabla['d_codigo'],
-            municipio=municipio,
-            nombre_asentamiento= datos_tabla['d_asenta'],
-            defaults={'tipo_asentamiento':tipo_asentamiento}
-        )
+            # Obtener o crear Municipio (depende del Estado)
+            municipio, created = models.Municipio.objects.get_or_create(
+                estado=estado,
+                nombre=datos_tabla['D_mnpio'],
+                defaults={'clave': datos_tabla['c_mnpio']}
+            )
+            
+            # Finalmente, crear el Asentamiento
+            asentamiento, created = models.Asentamiento.objects.get_or_create(
+                codigo_postal=datos_tabla['d_codigo'],
+                municipio=municipio,
+                nombre=datos_tabla['d_asenta'],
+                defaults={'tipo_asentamiento': tipo_asentamiento}
+            )
     except Exception as e:
-          raise Exception(F"{e}\n{datos_tabla}") 
+        raise Exception(f"{e}\n{datos_tabla}")
 
-@transaction.atomic
+#@transaction.atomic
 def recorrer_xml_datos(archivo_xml):
     try:
         models.Estado.objects.all().delete()

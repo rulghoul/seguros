@@ -3,7 +3,7 @@ from django.db import models
 # SEPOMEX
 
 class Estado(models.Model):
-    clave = models.CharField(max_length=20, default=None,null=True) #"c_estado"
+    clave = models.CharField(max_length=20, unique=True) #"c_estado"
     nombre = models.CharField(max_length=250, unique=True) #"d_estado"
 
     def __str__(self) -> str:
