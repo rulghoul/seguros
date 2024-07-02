@@ -1,7 +1,6 @@
 import logging
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.views.generic import ListView, UpdateView, CreateView, FormView, DeleteView
 from django.contrib import messages #Mensajes
 from django.urls import reverse, reverse_lazy
@@ -9,7 +8,12 @@ from django.urls import reverse, reverse_lazy
 from django.db import transaction
 from documentos import models as mod
 from documentos import forms as formularios
-from django.core.files.base import ContentFile
+
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
 
 from django.conf import settings
 from documentos.utils.encript_files import desencripta_archivo, encripta_archivo
@@ -86,7 +90,7 @@ class borrar_poliza(LoginRequiredMixin, DeleteView):
         context["cliente"] = cliente_pk
         return context
 
-
+@login_required
 @transaction.atomic
 def edit_poliza(request, pk=None):
     try:
@@ -176,6 +180,7 @@ def edit_poliza(request, pk=None):
     })
 
    
+@login_required
 @transaction.atomic
 def edit_poliza_cliente(request, cliente = None, pk=None):
     cliente_object = get_object_or_404(mod.PersonaPrincipal, pk=cliente)
@@ -479,7 +484,8 @@ class Siniestro_List(LoginRequiredMixin, ListView):
         context["upload"] = "documentos:doc_siniestros"
         context["poliza_id"] = self.pk
         return context
-    
+
+@login_required
 def download_decrypted_file(request, pk, modelo):
     if modelo == 'Documentos':
         documento = get_object_or_404(mod.Documentos, pk=pk)
@@ -497,4 +503,3 @@ def download_decrypted_file(request, pk, modelo):
     except Exception as e:
         raise Http404(f"No se puede desencriptar el archivo o el archivo no existe.<br> {e}")
     
-    200 

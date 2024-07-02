@@ -1,5 +1,11 @@
 import logging
 
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+
 from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.views.generic.edit import  UpdateView, FormView, DeleteView, CreateView
 from django.views.generic import ListView
@@ -41,7 +47,7 @@ class PlanesView(BaseListView):
     campos = ['nombre', 'empresa',  'activo',]
 
 
-class PersonaPrincipalAdd(CreateView):
+class PersonaPrincipalAdd(LoginRequiredMixin,CreateView):
     model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
@@ -66,7 +72,7 @@ class PersonaPrincipalAdd(CreateView):
         context["informacion"] = "sepomex:asentamiento_details"
         return context
     
-class PersonaPrincipalUpdate(UpdateView):
+class PersonaPrincipalUpdate(LoginRequiredMixin,UpdateView):
     model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
@@ -107,7 +113,7 @@ class borrar_cliente(LoginRequiredMixin, DeleteView):
         return context
 
 
-class ListCliente(ListView):
+class ListCliente(LoginRequiredMixin,ListView):
     template_name = "catalogos/list_cliente.html"
     model = mod.PersonaPrincipal
     paginate_by = 100
@@ -133,7 +139,7 @@ class ListCliente(ListView):
         return context
     
 
-
+@login_required
 def buscar_cliente_por_curp(request):
     curp = request.GET.get('curp', None)
     if curp:
@@ -175,7 +181,7 @@ def buscar_cliente_por_curp(request):
 
 #Asesores
 
-    
+@staff_member_required 
 @transaction.atomic
 def crear_o_editar_asesor(request, pk=None):
     if pk:
@@ -222,7 +228,7 @@ class borrar_asesor(LoginRequiredMixin, DeleteView):
         return context
 
 
-
+@method_decorator(staff_member_required, name="dispatch")
 class ListAseror(ListView):
     template_name = "catalogos/list_asesor.html"
     model = mod.Asesor

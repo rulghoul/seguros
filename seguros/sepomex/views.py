@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -23,7 +24,7 @@ def upload_xml(request):
             sepomex_xml = request.FILES['sepomex_xml']
             if sepomex_xml:
                 # Usar la función importada para procesar el archivo
-                messages.success(request, "se pudo leer el arcchivo")
+                messages.success(request, "se pudo leer el archivo")
                 try:
                     message = xml.recorrer_xml_datos(sepomex_xml) 
                     messages.success(request, message)
@@ -43,8 +44,7 @@ def upload_xml(request):
 
     return render(request, 'upload_xml.html', {'form': form})
 
-@method_decorator(login_required, name="dispatch")
-class BaseListView(View):
+class BaseListView(LoginRequiredMixin, View):
     form_class = None
     model = None
     template_name = ''
@@ -119,7 +119,7 @@ class BaseListView(View):
         context['redirige'] = self.redirige
         return context
     
-
+@method_decorator(staff_member_required, name="dispatch")
 class EstadoView(BaseListView):
     form_class = formularios.EstadoForm
     model = mod.Estado
@@ -130,7 +130,7 @@ class EstadoView(BaseListView):
     encabezados = ['CLAVE', 'NOMBRE']
     campos = ['clave', 'nombre',]
 
-
+@method_decorator(staff_member_required, name="dispatch")
 class MunicipioView(BaseListView):
     form_class = formularios.MunicipioForm
     model = mod.Municipio
@@ -141,6 +141,7 @@ class MunicipioView(BaseListView):
     encabezados = ['ESTADO', 'CLAVE',  'NOMBRE']
     campos = ['estado','clave', 'nombre',]
 
+@method_decorator(staff_member_required, name="dispatch")
 class TipoAsentamientoView(BaseListView):
     form_class = formularios.TipoAsentamientoForm
     model = mod.TipoAsentamiento
@@ -151,6 +152,7 @@ class TipoAsentamientoView(BaseListView):
     encabezados = ['CLAVE', 'NOMBRE']
     campos = ['clave', 'nombre',]
 
+@method_decorator(staff_member_required, name="dispatch")
 class AsentamientoView(BaseListView):
     form_class = formularios.AsentamientoForm
     model = mod.Asentamiento
@@ -161,16 +163,19 @@ class AsentamientoView(BaseListView):
     encabezados = ['MUNUCIPIO', 'TIPO ASENTAMIENTO', 'CODIGO POSTAL', 'NOMBRE']
     campos = ['municipio','tipo_asentamiento','codigo_postal', 'nombre',]
 
+@login_required
 def obtener_municipios(request):
     estado_id = request.GET.get('estado_id')
     municipios = mod.Municipio.objects.filter(estado_id=estado_id).values('id', 'nombre')
     return JsonResponse({'municipios': list(municipios)})
 
+@login_required
 def obtener_asentamientos(request):
     municipio_id = request.GET.get('municipio_id')
     asentamientos = mod.Asentamiento.objects.filter(municipio_id=municipio_id).values('id', 'nombre')
     return JsonResponse({'asentamientos': list(asentamientos)})
 
+@login_required
 def get_asentamiento_details(request, id):
     # Asegúrate de manejar errores y casos en que el asentamiento no se encuentre
     asentamiento = get_object_or_404(mod.Asentamiento, pk=id)

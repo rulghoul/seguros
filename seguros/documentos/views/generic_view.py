@@ -2,10 +2,12 @@ from django.views import View
 from django.shortcuts import render
 from django.contrib import messages 
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 ######################### Vista Base ###########################
 
 
-class BaseListView(View):
+class BaseListView(LoginRequiredMixin, View):
     form_class = None
     model = None
     lista_objetos = None
