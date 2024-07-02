@@ -13,8 +13,13 @@ from . import models as modelos
 from sepomex import models as sepomex
 from collections import OrderedDict
 
+from django.utils.safestring import mark_safe
+
 from django.db import transaction
 from django.core.validators import RegexValidator
+
+from documentos.utils.encript_files import encripta_archivo, desencripta_archivo
+import os
 
 curp_validator = RegexValidator(
     regex='^[A-Z]{4}\\d{6}(H|M)[A-Z]{5}[A-Z0-9]{2}$',
@@ -386,8 +391,9 @@ class PolizaForm(forms.ModelForm):
 
 
 class MultiDocumentUploadForm(forms.Form):
-    def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, *args, **kwargs):
+    def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, modelo=None, *args, **kwargs):
         super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
+        
         for archivo in lista_archivos:
             self.fields[archivo] = forms.FileField(
                 required=False,
@@ -395,7 +401,18 @@ class MultiDocumentUploadForm(forms.Form):
             )
 
             if archivos_existentes and archivo in archivos_existentes:
-                self.fields[archivo].initial = archivos_existentes[archivo]
+                #self.fields[archivo].initial = archivos_existentes[archivo]
+                documento = archivos_existentes[archivo]
+                self.fields[archivo] = forms.FileField(
+                    required=False,
+                    label=mark_safe(f'{archivo}<div class="input-group"><span class="input-group-text">Actualmente</span><a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}">{documento.name.replace(".enc","")}</a></div>'),
+                    widget=forms.ClearableFileInput()
+                )
+            else:
+                self.fields[archivo] = forms.FileField(
+                    required=False,
+                    label=archivo, 
+                )
 
         self.helper = FormHelper()
         self.helper.form_method = 'post'

@@ -59,5 +59,19 @@
       </div>
 
     </div>
+    <script>
+      // Desaparecer mensajes automáticamente después de 5 segundos
+      setTimeout(function() {
+          var alerts = document.querySelectorAll('.alert');
+          alerts.forEach(function(alert) {
+              alert.classList.remove('show');
+              alert.classList.add('fade');
+              setTimeout(function() {
+                  alert.remove();
+              }, 500); // Tiempo para el fade out
+          });
+      }, 5000); // 5000 milisegundos = 5 segundos
+  </script>
+  
   </body>
 </html>

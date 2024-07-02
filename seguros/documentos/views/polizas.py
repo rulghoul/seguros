@@ -1,4 +1,5 @@
 import logging
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.views.generic import ListView, UpdateView, CreateView, FormView, DeleteView
@@ -9,6 +10,9 @@ from django.db import transaction
 from documentos import models as mod
 from documentos import forms as formularios
 from django.core.files.base import ContentFile
+
+from django.conf import settings
+from documentos.utils.encript_files import desencripta_archivo, encripta_archivo
 
 class Poliza_List(LoginRequiredMixin, ListView):
     model = mod.Poliza
@@ -266,9 +270,6 @@ SINIESTRO_DESCRIPCIONES = [
     'Carta de Aseguradora por Fallecimiento',
 ]
 
-ALLOWED_FILE_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
-MAX_FILE_SIZE_MB = 1
-
 
 class upload_documentos_poliza(LoginRequiredMixin, FormView):
     template_name = 'poliza/archivos_poliza.html'
@@ -289,6 +290,7 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
             'archivos_existentes': archivos_existentes,
             'retorno': 'documentos:poliza_update',
             'indice': self.pk,
+            'modelo': "Documentos",
         })
         return kwargs
 
@@ -299,14 +301,14 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
             for file in files:
 
                 # Validar tipo de archivo
-                if file.content_type not in ALLOWED_FILE_TYPES:
+                if file.content_type not in settings.ALLOWED_FILE_TYPES:
                     messages.error(self.request, f"El archivo {file.name} no es de un tipo permitido.")
                     archivos_invalidos = True
                     continue
                 
                 # Validar tamaño de archivo
-                if file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
-                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {MAX_FILE_SIZE_MB} MB.")
+                if file.size > int(settings.MAX_FILE_SIZE_MB) * 1024 * 1024:
+                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {settings.MAX_FILE_SIZE_MB} MB.")
                     archivos_invalidos = True
                     continue
 
@@ -317,9 +319,6 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
                 )
                 if created:
                     messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
-        
-        if archivos_invalidos:
-            messages.error(self.request, "Algunos archivos no se pudieron cargar.")
 
         return redirect(reverse_lazy('documentos:doc_poliza', args=[self.pk]))
 
@@ -352,6 +351,7 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
             'archivos_existentes': archivos_existentes,
             'retorno': 'documentos:siniestros',
             'indice': self.poliza_pk,
+            'modelo': "DocumentosSiniestros",
         })
         return kwargs
 
@@ -363,14 +363,14 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
             for file in files:
 
                 # Validar tipo de archivo
-                if file.content_type not in ALLOWED_FILE_TYPES:
+                if file.content_type not in settings.ALLOWED_FILE_TYPES:
                     messages.error(self.request, f"El archivo {file.name} no es de un tipo permitido.")
                     archivos_invalidos = True
                     continue
                 
                 # Validar tamaño de archivo
-                if file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
-                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {MAX_FILE_SIZE_MB} MB.")
+                if file.size > int(settings.MAX_FILE_SIZE_MB) * 1024 * 1024:
+                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {settings.MAX_FILE_SIZE_MB} MB.")
                     archivos_invalidos = True
                     continue
 
@@ -382,16 +382,14 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
                 if created:
                     messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
         
-            if archivos_invalidos:
-                messages.error(self.request, _("Algunos archivos no se pudieron cargar debido a errores."))
 
         return redirect(reverse_lazy('documentos:doc_siniestros', args=[self.pk]))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #poliza = mod.Poliza.objects.get(pk=self.poliza_pk)
+        poliza = mod.Poliza.objects.get(pk=self.poliza_pk)
         context.update({
-            "titulo": f"Documentos Siniestro:", 
+            "titulo": f"Documentos Siniestro: {poliza}", 
             "redirige": f"'documentos:siniestros' { self.poliza_pk }",
         })
         return context
@@ -481,3 +479,22 @@ class Siniestro_List(LoginRequiredMixin, ListView):
         context["upload"] = "documentos:doc_siniestros"
         context["poliza_id"] = self.pk
         return context
+    
+def download_decrypted_file(request, pk, modelo):
+    if modelo == 'Documentos':
+        documento = get_object_or_404(mod.Documentos, pk=pk)
+    elif modelo == 'DocumentosSiniestros':
+        documento = get_object_or_404(mod.DocumentosSiniestros, pk=pk)
+    else:
+        raise Http404("Modelo no soportado.")    
+    
+    try:
+        print(type(documento.archivo))
+        desencriptado = desencripta_archivo(documento.archivo)
+        response = HttpResponse(desencriptado.read(), content_type='application/octet-stream')
+        response['Content-Disposition'] = f'inline; filename="{desencriptado.name}"'
+        return response
+    except Exception as e:
+        raise Http404(f"No se puede desencriptar el archivo o el archivo no existe.<br> {e}")
+    
+    200 

@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from django_ckeditor_5.fields import CKEditor5Field
 from simple_history.models import HistoricalRecords
 
 from sepomex import models as sepomex
+
+from documentos.utils.encript_files import desencripta_archivo, encripta_archivo
 
 ######################### Opciones ###########################
 
@@ -35,6 +36,23 @@ class ClaveField(models.CharField):
         kwargs['blank'] = False  # No permite cadenas vacías
         kwargs['unique'] = True  # Hace que el campo sea único por defecto
         super().__init__(*args, **kwargs)
+
+class EncryptedFileField(models.FileField):
+
+
+    def pre_save(self, model_instance, add):
+        file = getattr(model_instance, self.attname)
+        if file and not file._committed:
+            # Encriptar el archivo antes de guardarlo
+            encrypted_file = encripta_archivo(file)
+            setattr(model_instance, self.attname, encrypted_file)
+        return super().pre_save(model_instance, add)
+    
+    def to_python(self, value):
+        if isinstance(value, models.FieldFile) and value:
+            # Desencriptar el contenido del archivo cuando se accede
+            value = desencripta_archivo(value)
+        return super().to_python(value)
 
 
 ######################### Catalogos ###########################
@@ -222,7 +240,7 @@ class Documentos(models.Model):
 class DocumentosSiniestros(models.Model):
     siniestro = models.ForeignKey(Siniestros,on_delete=models.CASCADE,blank=True, null=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
-    archivo = models.FileField(upload_to="documento_siniestro/", blank=True, null=True)
+    archivo = EncryptedFileField(upload_to="documento_siniestro/", blank=True, null=True)
     activo = models.BooleanField(default=True)
     
     def __str__(self) -> str:
