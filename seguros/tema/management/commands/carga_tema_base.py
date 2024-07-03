@@ -34,7 +34,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Successfully loaded data: {}'.format(data)))
 
         # Mover archivos a la carpeta media
-        source_dir = os.path.join(settings.BASEDIR,'tema_inicial')
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        source_dir = os.path.join(script_dir, 'imagenes')
         target_dir = os.path.join(settings.MEDIA_ROOT, 'images_parameter')
 
         if not os.path.exists(target_dir):

@@ -4,10 +4,11 @@
 {% block content %}
 
 <div class="row" style="margin-bottom: 1em; margin-top: 1em;">
-    <h3 class="col-5">{{ titulo }}</h3>
+    <h3 class="col-5">{{ titulo }} {{ cliente }}</h3>
     {% if es_asesor %}
-      <a class="btn btn-secondary col-2" href="{% url add %}">{{ add_label }}</a>
+      <a class="btn btn-secondary col-2" href="{% url add cliente_pk %}">{{ add_label }}</a>
     {% endif %}
+    <a class="btn btn-secondary col-2" href="{% url 'documentos:clientes' %}">Regresar</a>
     <input class="form-control col-4 ml-auto" id="myInput" type="text" placeholder="Buscar..">
 </div>
 
@@ -15,7 +16,6 @@
     <thead class="thead-dark">
         <tr>
             <th>Cliente</th>
-            <th>Nueva Poliza</th>
             <th>Telefono</th>
             <th>Aseguradora</th>
             <th>Plan</th>
@@ -33,12 +33,7 @@
     <tbody id="CuerpoCatalogo">
         {% for poliza in polizas %}
         <tr>
-            <td>{{ poliza.persona_principal.nombre }} {{ poliza.persona_principal.primer_apellido }} {{ poliza.persona_principal.segundo_apellido }}</td>
-            <td>
-            <a type="button" class="update-book btn btn-sm btn-success" href="{% url add %}" >
-              <span class="fa fa-plus"></span>
-            </a>
-            </td>
+            <td>{{ poliza.persona_principal }}</td>
             <td>{{ poliza.persona_principal.telefono }}</td>
             <td>{{ poliza.empresa }}</td>
             <td>{{ poliza.plan }}</td>
@@ -52,16 +47,12 @@
             {% endif %}
             <td class="text-center">
 
-              <!-- New Poliza -->
-              <a type="button" class="update-book btn btn-sm btn-success" href="{% url add %}" >
-                <span class="fa fa-plus"></span>
-              </a>
               <!-- Update book buttons -->
-              <a type="button" class="update-book btn btn-sm btn-info" href="{% url update poliza.pk %}" >
+              <a type="button" class="update-book btn btn-sm btn-info" href="{% url update poliza.pk cliente_pk %}" >
                 <span class="fa fa-pencil"></span>
               </a>
               <!-- Delete book buttons -->
-              <a type="button" class="delete-book btn btn-sm btn-dark" href="{% url borra poliza.pk %}">
+              <a type="button" class="delete-book btn btn-sm btn-danger" href="{% url borra poliza.pk %}">
                 <span class="fa fa-trash"></span>
               </a>
             </td>

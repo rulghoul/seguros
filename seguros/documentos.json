@@ -93,7 +93,6 @@
         "model": "documentos.documentos",
         "pk": 1,
         "fields": {
-            "clave": "1",
             "descripcion": "Identificación Oficial",
             "activo": true
         }
@@ -102,7 +101,6 @@
         "model": "documentos.documentos",
         "pk": 2,
         "fields": {
-            "clave": "2",
             "descripcion": "Comprobante de Domicilio",
             "activo": true
         }
@@ -111,7 +109,6 @@
         "model": "documentos.documentos",
         "pk": 3,
         "fields": {
-            "clave": "3",
             "descripcion": "Estado de Cuenta Bancario",
             "activo": true
         }
@@ -120,7 +117,6 @@
         "model": "documentos.documentos",
         "pk": 4,
         "fields": {
-            "clave": "4",
             "descripcion": "Caratula de Póliza",
             "activo": true
         }
@@ -129,7 +125,6 @@
         "model": "documentos.documentos",
         "pk": 5,
         "fields": {
-            "clave": "5",
             "descripcion": "Informe Médico",
             "activo": true
         }
@@ -138,7 +133,6 @@
         "model": "documentos.documentos",
         "pk": 6,
         "fields": {
-            "clave": "6",
             "descripcion": "Interpretación de Estudios",
             "activo": true
         }
@@ -147,7 +141,6 @@
         "model": "documentos.documentos",
         "pk": 7,
         "fields": {
-            "clave": "7",
             "descripcion": "Cotización de Material Extra a la Cirugía",
             "activo": true
         }
@@ -156,7 +149,6 @@
         "model": "documentos.documentos",
         "pk": 8,
         "fields": {
-            "clave": "8",
             "descripcion": "Aviso de Accidente",
             "activo": true
         }
@@ -165,7 +157,6 @@
         "model": "documentos.documentos",
         "pk": 9,
         "fields": {
-            "clave": "9",
             "descripcion": "Carta de Autorización de Pago Directo",
             "activo": true
         }
@@ -174,7 +165,6 @@
         "model": "documentos.documentos",
         "pk": 10,
         "fields": {
-            "clave": "10",
             "descripcion": "Carta de Autorización de Honorarios",
             "activo": true
         }
@@ -183,7 +173,6 @@
         "model": "documentos.documentos",
         "pk": 11,
         "fields": {
-            "clave": "11",
             "descripcion": "Carta de Invalidez Total y Permanente",
             "activo": true
         }
@@ -192,7 +181,6 @@
         "model": "documentos.documentos",
         "pk": 12,
         "fields": {
-            "clave": "12",
             "descripcion": "Carta de Aseguradora por Fallecimiento",
             "activo": true
         }
@@ -372,7 +360,6 @@
             "clave": "1",
             "nombre": "Insignia Life",
             "logo_small": "",
-            "pleca": "",
             "link": null,
             "activo": true
         }
@@ -384,7 +371,6 @@
             "clave": "2",
             "nombre": "GNP",
             "logo_small": "",
-            "pleca": "",
             "link": null,
             "activo": true
         }
@@ -396,7 +382,6 @@
             "clave": "3",
             "nombre": "Seguros Monterrey New York Life",
             "logo_small": "",
-            "pleca": "",
             "link": null,
             "activo": true
         }
@@ -408,7 +393,6 @@
             "clave": "4",
             "nombre": "MetLife",
             "logo_small": "",
-            "pleca": "",
             "link": null,
             "activo": true
         }
@@ -420,7 +404,6 @@
             "clave": "5",
             "nombre": "Allianz",
             "logo_small": "",
-            "pleca": "",
             "link": null,
             "activo": true
         }
@@ -432,7 +415,6 @@
             "clave": "6",
             "nombre": "Plan Seguro",
             "logo_small": "",
-            "pleca": "",
             "link": null,
             "activo": true
         }
@@ -490,28 +472,6 @@
             "empresa": 3,
             "gastos_medicos": false,
             "activo": true
-        }
-    },
-    {
-        "model": "documentos.personaprincipal",
-        "pk": 1,
-        "fields": {
-            "curp": "PEDR830101HASDFG12",
-            "tipo_persona": 1,
-            "nombre": "Raul",
-            "primer_apellido": "Paredez",
-            "segundo_apellido": "Muños",
-            "genero": "H",
-            "estatus_persona": "A",
-            "asesor_cliente": 1,
-            "lugar_nacimiento": "Algun Lugar",
-            "fecha_nacimiento": "2024-05-21",
-            "asentamiento": 157939,
-            "calle": "Insurgentes",
-            "numero": "12345",
-            "numero_interior": null,
-            "correo": "correo@empresa.com",
-            "telefono": "12"
         }
     }
 ]

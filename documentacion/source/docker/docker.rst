@@ -88,6 +88,9 @@ y el usuario por default
       EMAIL_HOST_USER: "elmonjeamarillo@gmail.com"
       EMAIL_HOST_PASSWORD: "gzrlndcjrffjnrdt"
       EMAIL_DEAFULT_FROM: "elmonjeamarillo@gmail.com"
+      MAX_FILE_SIZE_MB: 1
+      RUL_ASU_BET: "_DVWRoqmwRLj-ywo5h0eD0Q="
+      ALLOWED_FILE_TYPES: "application/pdf,image/jpeg,image/png,image/webp"
 
 Crear los registros de Sepomex en la primera ejecucion
 =========================================================

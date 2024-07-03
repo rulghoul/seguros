@@ -38,6 +38,9 @@ services:
       EMAIL_HOST_USER: "elmonjeamarillo@gmail.com"
       EMAIL_HOST_PASSWORD: "gzrlntcjrufjnvdt"
       EMAIL_DEAFULT_FROM: "elmonjeamarillo@gmail.com"
+      MAX_FILE_SIZE_MB: 1
+      RUL_ASU_BET: "_DVWRoqmwRLj-ywo5h0eD0QqaQJeL2ZzQ5hPqQMwX3U="
+      ALLOWED_FILE_TYPES: "application/pdf,image/jpeg,image/png,image/webp"
     depends_on:
       - db
       - redis

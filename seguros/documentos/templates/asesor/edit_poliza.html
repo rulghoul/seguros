@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<h3 class="card-title">{{ titulo }} para {{ cliente }}</h3>
+
+<form action="" method="POST">
+    <div class="accordion">
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="cliente-heading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#cliente-colapse" aria-expanded="true" aria-controls="cliente-colapse">
+                    Datos del Cliente
+                </button>
+            </h2>
+            <div id="cliente-colapse" class="accordion-collapse collapse show" aria-labelledby="cliente-heading">
+                <div class="accordion-body">
+
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <strong>Nombre:</strong> {{ cliente }}
+                        </div>
+                        <div class="col-4">
+                            <strong>CURP:</strong> {{ cliente.curp }}
+                        </div>
+                        <div class="col-4">
+                            <strong>Género:</strong> {{ cliente.get_genero_display }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <strong>Lugar de Nacimiento:</strong> {{ cliente.lugar_nacimiento }}
+                        </div>
+                        <div class="col-4">
+                            <strong>Fecha de Nacimiento:</strong> {{ cliente.fecha_nacimiento }}
+                        </div>
+                        <div class="col-4">
+                            <strong>Estatus:</strong> {{ cliente.get_estatus_persona_display }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <strong>Estado:</strong> {{ cliente.asentamiento.municipio.estado }}
+                        </div>
+                        <div class="col-4">
+                            <strong>Municipio:</strong> {{ cliente.asentamiento.municipio }}
+                        </div>
+                        <div class="col-4">
+                            <strong>Asentamiento:</strong> {{ cliente.asentamiento }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-3">
+                            <strong>Código Postal:</strong> {{ cliente.asentamiento.codigo_postal }}
+                        </div>
+                        <div class="col-3">
+                            <strong>Calle:</strong> {{ cliente.calle }}
+                        </div>
+                        <div class="col-3">
+                            <strong>Número:</strong> {{ cliente.numero }}
+                        </div>
+                        <div class="col-3">
+                            <strong>Interior:</strong> {{ cliente.numero_interior }}
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <strong>Correo:</strong> {{ cliente.correo }}
+                        </div>
+                        <div class="col-6">
+                            <strong>Teléfono:</strong> {{ cliente.telefono }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="poliza-heading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#poliza-colapse" aria-expanded="true" aria-controls="poliza-colapse">
+                    Datos del Poliza
+                </button>
+            </h2>
+            <div id="poliza-colapse" class="accordion-collapse collapse" aria-labelledby="poliza-heading">
+                <div class="accordion-body">
+                    {% crispy form_poliza %}
+                </div>
+            </div>
+        </div>
+
+        {% if poliza_id %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="bene-heading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bene-colapse"
+                    aria-expanded="true" aria-controls="bene-colapse">
+                    Beneficiarios
+                </button>
+            </h2>
+            <div id="bene-colapse" class="accordion-collapse collapse" aria-labelledby="bene-heading">
+                <div class="accordion-body">
+                    {% crispy formset_beneficiario helper_beneficiario %}
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="docs-heading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#docs-colapse"
+                    aria-expanded="true" aria-controls="docs-colapse">
+                    Documentos
+                </button>
+            </h2>
+            <div id="docs-colapse" class="accordion-collapse collapse" aria-labelledby="docs-heading">
+                <div class="accordion-body">
+                    <a class="btn btn-secondary col-2" href="{% url documento_url poliza_id %}">Documentos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="siniestros-heading">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#siniestros-colapse" aria-expanded="true" aria-controls="siniestros-colapse">
+                    Siniestros
+                </button>
+            </h2>
+            <div id="siniestros-colapse" class="accordion-collapse collapse" aria-labelledby="siniestros-heading">
+                <div class="accordion-body">
+                    <a class="btn btn-secondary col-2" href="{% url siniestros_url pk=poliza_id %}">Ver Siniestros</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</form>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    data = {
+        csrfmiddlewaretoken: csrftoken
+    }
+    $(document).ready(function () {
+        // Cuando cambia el select de asentamiento
+        $('[name="asentamiento"]').change(function () {
+            var asentamientoId = $(this).val();
+            // Asegúrate de actualizar la URL a la ruta correcta de tu servidor
+            var url = '{% url informacion 123 %}'.replace('123', asentamientoId);
+
+            $.ajax({
+                url: url,
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: data,
+                success: function (data) {
+                    // Actualiza los campos con los datos recibidos
+                    $('[name="codigo_postal"]').val(data.codigo_postal);
+                    $('[name="municipio"]').val(data.municipio);
+                    $('[name="estado"]').val(data.estado);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ocurrió un error: " + error);
+                }
+            });
+        });
+
+
+        $('[name="curp').on('blur', function () {
+            var curp = $(this).val();
+            if (curp) {
+                $.ajax({
+                    url: '{% url "documentos:buscar_cliente_por_curp" %}',
+                    data: {
+                        'curp': curp,
+                        'csrfmiddlewaretoken': csrftoken,
+                    },
+                    success: function (data) {
+                        if (data.status === 'ok') {
+                            $('[name="nombre"]').val(data.data.nombre);
+                            $('[name="primer_apellido"]').val(data.data.primer_apellido);
+                            $('[name="segundo_apellido"]').val(data.data.segundo_apellido);
+                            $('[name="genero"]').val(data.data.genero);
+                            $('[name="estatus_persona"]').val(data.data.estatus_persona);
+                            $('[name="lugar_nacimiento"]').val(data.data.lugar_nacimiento);
+                            $('[name="fecha_nacimiento"]').val(data.data.fecha_nacimiento);
+                            // Direccion
+                            $('[name="asentamiento"]').val(data.data.asentamiento);
+                            $('[name="codigo_postal"]').val(data.data.codigo_postal);
+                            $('[name="municipio"]').val(data.data.municipio);
+                            $('[name="estado"]').val(data.data.estado);
+
+                            $('[name="calle"]').val(data.data.calle);
+                            $('[name="numero"]').val(data.data.numero);
+                            $('[name="numero_interior"]').val(data.data.numero_interior);
+                            //contacto
+                            $('[name="correo"]').val(data.data.correo);
+                            $('[name="telefono"]').val(data.data.telefono);
+                        } else {
+                            alert(data.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Ocurrió un error: " + error);
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+
+{% endblock %}

@@ -13,8 +13,13 @@ from . import models as modelos
 from sepomex import models as sepomex
 from collections import OrderedDict
 
+from django.utils.safestring import mark_safe
+
 from django.db import transaction
 from django.core.validators import RegexValidator
+
+from documentos.utils.encript_files import encripta_archivo, desencripta_archivo
+import os
 
 curp_validator = RegexValidator(
     regex='^[A-Z]{4}\\d{6}(H|M)[A-Z]{5}[A-Z0-9]{2}$',
@@ -51,8 +56,8 @@ class FormaPagoForm(forms.ModelForm):
 
 class DocumentosForm(forms.ModelForm):
     class Meta:
-        model = modelos.Documentos
-        fields = ('descripcion', 'activo')
+        model = modelos.TipoDocumentos
+        fields = ('tipo','descripcion', 'activo')
 
 
 class TipoMediocontactoForm(forms.ModelForm):
@@ -179,7 +184,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 Submit('submit', 'Guardar', css_class='btn btn-info'),
                 HTML("""
                         <a class="btn btn-primary" href="{% url '""" +
-                        "documentos:polizas' "
+                        "documentos:clientes' "
                         """ %}">Regresar</a>
                     """),
                 css_class='col text-center'
@@ -341,13 +346,17 @@ class PolizaForm(forms.ModelForm):
         ),
         Div(
             Div('tipo_conducto_pago', css_class='col-md-4'),
-            Div('plan', css_class='col-md-4'),
-            Div('fecha_vigencia', css_class='col-md-4'),
+            Div('plan', css_class='col-md-8'),
             css_class='row'
         ),
         Div(
-            Div('fecha_emision', css_class='col-md-4'),
+            Div('fecha_emision', css_class='col-md-6'),
+            Div('fecha_vigencia', css_class='col-md-6'),
+            css_class='row'
+        ),
+        Div(
             Div('fecha_pago', css_class='col-md-4'),
+            Div('monto', css_class='col-md-4'),
             Div('estatus', css_class='col-md-4'),
             css_class='row'
         ),
@@ -365,7 +374,7 @@ class PolizaForm(forms.ModelForm):
         model = modelos.Poliza
         fields = ['empresa', 'numero_poliza', 'forma_pago', 'asesor_poliza',
                   'tipo_conducto_pago', 'plan', 'fecha_vigencia', 'fecha_emision',
-                  'fecha_pago', 'estatus']
+                  'fecha_pago', 'monto', 'estatus']
 
         widgets = {
             'fecha_vigencia': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
@@ -386,8 +395,9 @@ class PolizaForm(forms.ModelForm):
 
 
 class MultiDocumentUploadForm(forms.Form):
-    def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, *args, **kwargs):
+    def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, modelo=None, *args, **kwargs):
         super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
+        
         for archivo in lista_archivos:
             self.fields[archivo] = forms.FileField(
                 required=False,
@@ -395,7 +405,18 @@ class MultiDocumentUploadForm(forms.Form):
             )
 
             if archivos_existentes and archivo in archivos_existentes:
-                self.fields[archivo].initial = archivos_existentes[archivo]
+                #self.fields[archivo].initial = archivos_existentes[archivo]
+                documento = archivos_existentes[archivo]
+                self.fields[archivo] = forms.FileField(
+                    required=False,
+                    label=mark_safe(f'{archivo}<div class="input-group"><span class="input-group-text">Actualmente</span><a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}">{documento.name.replace(".enc","")}</a></div>'),
+                    widget=forms.ClearableFileInput()
+                )
+            else:
+                self.fields[archivo] = forms.FileField(
+                    required=False,
+                    label=archivo, 
+                )
 
         self.helper = FormHelper()
         self.helper.form_method = 'post'
