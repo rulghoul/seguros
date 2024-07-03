@@ -192,5 +192,5 @@ LOGGING = {
 
 #Parametros de archivos
 MAX_FILE_SIZE_MB = os.environ.get('MAX_FILE_SIZE_MB', 1)
-ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY', b'Cztlve0XXxbyAxacaodnLqhLjOapvk7m2tci26GcpU4=')
+ENCRYPTION_KEY = os.environ.get('RUL_ASU_BET', b'Cztlve0XXxbyAxacaodnLqhLjOapvk7m2tci26GcpU4=')
 ALLOWED_FILE_TYPES = os.environ.get('ALLOWED_FILE_TYPES','application/pdf,image/jpeg,image/png,image/webp').split(',')

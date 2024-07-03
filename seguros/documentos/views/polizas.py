@@ -265,6 +265,7 @@ POLIZA_DESCRIPCIONES = [
 ]
 
 SINIESTRO_DESCRIPCIONES = [
+    'Identificacion del cliente',
     'Informe Médico',
     'Interpretación de Estudios',
     'Cotización de Material Extra a la Cirugía',
@@ -492,7 +493,7 @@ def download_decrypted_file(request, pk, modelo):
     elif modelo == 'DocumentosSiniestros':
         documento = get_object_or_404(mod.DocumentosSiniestros, pk=pk)
     else:
-        raise Http404("Modelo no soportado.")    
+        raise Http404("Modelo no soportado.")   
     
     try:
         print(type(documento.archivo))

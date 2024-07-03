@@ -56,8 +56,8 @@ class FormaPagoForm(forms.ModelForm):
 
 class DocumentosForm(forms.ModelForm):
     class Meta:
-        model = modelos.Documentos
-        fields = ('descripcion', 'activo')
+        model = modelos.TipoDocumentos
+        fields = ('tipo','descripcion', 'activo')
 
 
 class TipoMediocontactoForm(forms.ModelForm):
@@ -346,13 +346,17 @@ class PolizaForm(forms.ModelForm):
         ),
         Div(
             Div('tipo_conducto_pago', css_class='col-md-4'),
-            Div('plan', css_class='col-md-4'),
-            Div('fecha_vigencia', css_class='col-md-4'),
+            Div('plan', css_class='col-md-8'),
             css_class='row'
         ),
         Div(
-            Div('fecha_emision', css_class='col-md-4'),
+            Div('fecha_emision', css_class='col-md-6'),
+            Div('fecha_vigencia', css_class='col-md-6'),
+            css_class='row'
+        ),
+        Div(
             Div('fecha_pago', css_class='col-md-4'),
+            Div('monto', css_class='col-md-4'),
             Div('estatus', css_class='col-md-4'),
             css_class='row'
         ),
@@ -370,7 +374,7 @@ class PolizaForm(forms.ModelForm):
         model = modelos.Poliza
         fields = ['empresa', 'numero_poliza', 'forma_pago', 'asesor_poliza',
                   'tipo_conducto_pago', 'plan', 'fecha_vigencia', 'fecha_emision',
-                  'fecha_pago', 'estatus']
+                  'fecha_pago', 'monto', 'estatus']
 
         widgets = {
             'fecha_vigencia': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),

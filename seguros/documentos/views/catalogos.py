@@ -39,13 +39,13 @@ class FormaPagoView(BaseListView):
 
 class DocumentosView(BaseListView):
     form_class = formularios.DocumentosForm
-    model = mod.Documentos
+    model = mod.TipoDocumentos
     template_name = 'catalogos/list.html'
     redirige = 'documentos:lista_documentos'
     context_object_name = 'lista'
-    title = 'Documentos'
+    title = 'Tipo Documentos'
     encabezados = ['CLAVE', 'DESCRIPCION', 'ACTIVO']
-    campos = ['id', 'descripcion', 'activo']
+    campos = ['tipo', 'descripcion', 'activo']
 
 
 class TipoMediocontactoView(BaseListView):

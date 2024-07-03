@@ -39,7 +39,6 @@ class ClaveField(models.CharField):
 
 class EncryptedFileField(models.FileField):
 
-
     def pre_save(self, model_instance, add):
         file = getattr(model_instance, self.attname)
         if file and not file._committed:
@@ -198,6 +197,7 @@ class Poliza(models.Model):
     fecha_emision = models.DateField(blank=True, null=True, default=None)
     fecha_pago = models.DateField(blank=True, null=True, default=None)
     estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
+    monto = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, verbose_name="Importe")
 
     class Meta:
         unique_together = (("empresa", "numero_poliza"),)    
@@ -223,12 +223,22 @@ class Siniestros(models.Model):
     descripcion_siniestro = models.CharField(max_length=500, blank=True, null=True)  
     fecha_evento = models.DateField()  
     estatus = models.CharField(max_length=10, choices=STATUS_GASTOS_MEDICOS)
+
+class TipoDocumentos(models.Model):
+    tipo = models.CharField(max_length=2, null=False, blank=False, choices=[("P","POLIZA"), ("S","SINIESTRO")])
+    descripcion = models.CharField(max_length=100, blank=True, null=True)
+    activo = models.BooleanField(default=True)
+
+    def __str__(self) -> str:
+        return self.descripcion
     
+    class Meta:
+        unique_together = ["tipo", "descripcion"]
 
 class Documentos(models.Model):
     poliza = models.ForeignKey(Poliza,on_delete=models.CASCADE,blank=True, null=True)
     descripcion = models.CharField(max_length=100, blank=True, null=True)
-    archivo = models.FileField(upload_to="documento_poliza/",  blank=True, null=True)
+    archivo = EncryptedFileField(upload_to="documento_poliza/",  blank=True, null=True)
     activo = models.BooleanField(default=True)
     
     def __str__(self) -> str:
