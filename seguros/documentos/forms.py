@@ -144,6 +144,7 @@ class PersonaPrincipalForm(forms.ModelForm):
             self.fields['municipio'].initial = self.instance.asentamiento.municipio.estado
             self.fields['codigo_postal'].initial = self.instance.asentamiento.codigo_postal
         
+        self.fields['asesor_cliente'].required = False
         self.helper.layout = Layout(
             Div(
                 Div('nombre', css_class='col-md-4'),
@@ -409,7 +410,11 @@ class MultiDocumentUploadForm(forms.Form):
                 documento = archivos_existentes[archivo]
                 self.fields[archivo] = forms.FileField(
                     required=False,
-                    label=mark_safe(f'{archivo}<div class="input-group"><span class="input-group-text">Actualmente</span><a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}">{documento.name.replace(".enc","")}</a></div>'),
+                    label=mark_safe(f'''{archivo}<div class="input-group"><span class="input-group-text"></span>
+                                    {documento.name.replace(".enc","").replace("documento_poliza/","")}
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/0"><span class="fa fa-eye"></span></a>
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    </div>'''),
                     widget=forms.ClearableFileInput()
                 )
             else:

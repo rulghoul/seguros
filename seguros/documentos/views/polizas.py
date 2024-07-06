@@ -18,6 +18,9 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from documentos.utils.encript_files import desencripta_archivo, encripta_archivo
 
+import magic #Obtine el mime type del archivo
+from django.http import FileResponse #Devuelve archivos
+
 class Poliza_List(LoginRequiredMixin, ListView):
     model = mod.Poliza
     template_name = 'asesor/polizas.html'
@@ -487,7 +490,7 @@ class Siniestro_List(LoginRequiredMixin, ListView):
         return context
 
 @login_required
-def download_decrypted_file(request, pk, modelo):
+def servir_archivo_encriptado(request, pk, modelo, modo):
     if modelo == 'Documentos':
         documento = get_object_or_404(mod.Documentos, pk=pk)
     elif modelo == 'DocumentosSiniestros':
@@ -498,9 +501,23 @@ def download_decrypted_file(request, pk, modelo):
     try:
         print(type(documento.archivo))
         desencriptado = desencripta_archivo(documento.archivo)
-        response = HttpResponse(desencriptado.read(), content_type='application/octet-stream')
-        response['Content-Disposition'] = f'inline; filename="{desencriptado.name}"'
+        # Usar python-magic para detectar el tipo de contenido
+        mime = magic.Magic(mime=True)
+        content_type = mime.from_buffer(desencriptado.read(1024))
+
+        response = FileResponse(desencriptado.open(), content_type=content_type, filename=desencriptado.name, as_attachment=bool(modo))
+        #response = HttpResponse(desencriptado.read(), content_type='application/octet-stream')
+        #response['Content-Disposition'] = f'inline; filename="{desencriptado.name}"'
         return response
     except Exception as e:
         raise Http404(f"No se puede desencriptar el archivo o el archivo no existe.<br> {e}")
+    
+@login_required
+def borrar_archivo(request, pk, modelo):
+    if modelo == 'Documentos':
+        documento = get_object_or_404(mod.Documentos, pk=pk)
+    elif modelo == 'DocumentosSiniestros':
+        documento = get_object_or_404(mod.DocumentosSiniestros, pk=pk)
+    else:
+        raise Http404("Modelo no soportado.")   
     

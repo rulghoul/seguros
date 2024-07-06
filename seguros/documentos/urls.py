@@ -40,6 +40,6 @@ urlpatterns = [
     #Documentos
     path('doc_poliza/<int:pk>/', polizas.upload_documentos_poliza.as_view(), name='doc_poliza'),
     path('doc_siniestros/<int:pk>/', polizas.upload_documentos_siniestro.as_view(), name='doc_siniestros'),
-    path('documento/<int:pk>/descargar/<str:modelo>/', polizas.download_decrypted_file, name='download_decrypted_file'),
+    path('documento/<int:pk>/descargar/<str:modelo>/<int:modo>', polizas.servir_archivo_encriptado, name='download_decrypted_file'),
 
 ]
