@@ -1,6 +1,5 @@
 import logging
 
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,8 +9,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import  UpdateView, FormView, DeleteView, CreateView
 from django.views.generic import ListView
 
-from documentos import models as mod
-from documentos import forms as formularios
 from django.shortcuts import render, redirect
 from django.contrib import messages 
 from django.urls import reverse_lazy
@@ -21,6 +18,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 
 from .generic_view import BaseListView
+from documentos import models as mod
+from documentos import forms as formularios
 
 
 from documentos.utils.send_email_new_asesor import envia_correo_new_asesor as envia 
@@ -47,7 +46,7 @@ class PlanesView(BaseListView):
     campos = ['nombre', 'empresa',  'activo',]
 
 
-class PersonaPrincipalAdd(LoginRequiredMixin,CreateView):
+class PersonaPrincipalAdd(LoginRequiredMixin, CreateView):
     model = mod.PersonaPrincipal
     template_name = "catalogos/add_cliente.html"
     form_class = formularios.PersonaPrincipalForm
@@ -56,14 +55,21 @@ class PersonaPrincipalAdd(LoginRequiredMixin,CreateView):
         return reverse_lazy("documentos:cliente_update", kwargs={'pk': self.object.pk})
     
     def form_valid(self, form):
-        messages.info(self.request,"Entra en validacion")
+        #messages.info(self.request,"Entra en validacion")
         try:
             asesor_instance = mod.Asesor.objects.get(usuario=self.request.user)
-            form.instance.asesor = asesor_instance
-            messages.info(self.request,"Encontró al asesor")
+            form.instance.asesor_cliente = asesor_instance
+            #messages.info(self.request,"Encontró al asesor")
         except mod.Asesor.DoesNotExist:
             messages.info(self.request,"No encontró al asesor")
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, "Formulario inválido")
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"Error en {field}: {error}")
+        return super().form_invalid(form)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
