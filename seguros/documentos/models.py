@@ -141,7 +141,7 @@ class Planes(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
-    gastos_medicos = models.BooleanField(default=False)
+    gastosMedicos = models.BooleanField(default=False)
     activo = models.BooleanField(default=True)    
     
     def __str__(self) -> str:
@@ -196,7 +196,7 @@ class Poliza(models.Model):
     fecha_emision = models.DateField(blank=True, null=True, default=None)
     fecha_pago = models.DateField(blank=True, null=True, default=None)
     estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
-    monto = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, verbose_name="Importe")
+    monto = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     class Meta:
         unique_together = (("empresa", "numero_poliza"),)    

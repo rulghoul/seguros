@@ -1,0 +1,13 @@
+from django.core.management.base import BaseCommand
+from seguros.documentos.models import PersonaPrincipal
+from datetime import datetime
+from seguros.documentos.utils.send_felicitacion import envia_felicitacion as envia
+
+class Command(BaseCommand):
+    help = "Crea un usuario inicial"
+
+    def handle(self, *args, **options):
+        hoy = datetime.now().date()
+        festejados = PersonaPrincipal.objects.filter(activo=True, fecha_nacimiento=hoy)
+        for festejado in festejados:
+            envia(festejado)

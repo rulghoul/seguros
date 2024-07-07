@@ -3,8 +3,14 @@
 # Detener la ejecución en caso de error
 set -e
 
+# Tareas programadas
+crontab -r 
+crontab -l | { cat; echo "0 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_recordatorio"; } | crontab -
+crontab -l | { cat; echo "30 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_felicitacion"; } | crontab -
+
+
 # Ejecutar migraciones
-python manage.py makemigrations --noinput
+#python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
 #python manage.py loaddata sepomex_backup.json
@@ -15,7 +21,7 @@ python manage.py migrate --noinput
 #rm documentos.json
 
 # Recopilar archivos estáticos
-#python manage.py collectstatic --noinput --clear
+python manage.py collectstatic --noinput --clear
 
 python manage.py crear_usuario
 #Valores del tema

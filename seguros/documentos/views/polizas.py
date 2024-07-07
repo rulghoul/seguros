@@ -190,7 +190,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
 
     if pk:
         poliza = get_object_or_404(mod.Poliza, pk=pk)
-        titulo = f"Editar Poliza: {poliza.numero_poliza}"
+        titulo = f"Editar Poliza: {poliza}"
         persona_principal = poliza.persona_principal        
     else:
         poliza = mod.Poliza()
@@ -210,7 +210,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
             poliza = form_poliza.save(commit=False)  
             poliza.save()  
             messages.success(request, "Póliza guardada con éxito.")
-            return redirect('documentos:poliza_cliente_update', kwargs={"pk":poliza.pk, "cliente":cliente})
+            return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
 
         elif form_poliza.is_valid() and formset_beneficiario.is_valid():
             
@@ -230,7 +230,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
                 messages.success(request, "Se actualizo la Póliza.")                
-                return redirect('documentos:poliza_cliente_update', kwargs={"pk":poliza.pk, "cliente":cliente})
+                return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
             else:
                 messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
         else:
@@ -254,6 +254,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
         'documento_url': 'documentos:doc_poliza',
         'siniestros_url': 'documentos:siniestros',
         'poliza_id':poliza.pk,
+        'plan': poliza.plan.gastosMedicos ,
         'cliente':cliente_object,
     })
 
