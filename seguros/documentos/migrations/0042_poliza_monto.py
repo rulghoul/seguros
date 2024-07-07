@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="poliza",
             name="monto",
             field=models.DecimalField(
-                decimal_places=2, default=0.0, max_digits=10, verbose_name="Importe"
+                decimal_places=2, default=0.0, max_digits=10
             ),
         ),
     ]
