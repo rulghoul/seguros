@@ -1,0 +1,13 @@
+{% load static %}
+{% if widget.is_initial %}
+  <a href="{{ widget.value.url }}" target="_blank" class="file-icon"><i class="fa fa-eye"></i></a>
+  <a href="{{ widget.value.url }}" download class="file-icon"><i class="fa fa-download"></i></a>
+{% endif %}
+<div class="file-upload">
+  {{ widget.input_text }}: <input type="{{ widget.type }}" name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
+  {% if widget.is_initial and not widget.required %}
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
+    <label for="{{ widget.checkbox_id }}">{{ widget.checkbox_label }}</label>
+    <span class="file-icon delete-icon"><i class="fa fa-trash"></i></span>
+  {% endif %}
+</div>

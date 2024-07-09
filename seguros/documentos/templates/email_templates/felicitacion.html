@@ -1,14 +1,51 @@
 {% autoescape off %}
+{% load comprueba_tipo %}
+{% load colores_del_sitio %}
 
-Hola {{ user.first_name }} {{ user.last_name }},
+<!DOCTYPE html>
+<html lang="es">
 
-Por favor, ve al siguiente enlace para establecer tu contraseña y acceder al sistema:
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Correo Cumpleaños</title>
+</head>
 
-{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+<body>
 
-Este enlace es válido solo por un corto período de tiempo.
+    <div class="container">
+        <div class="mx-auto text-center"><img src="{% get_imagen 'agencia' %}" height="180px" /></div>
+        <div class="mx-auto text-center"><img src="{% get_imagen 'happy' %}" height="180px" /></div>
+        
+        <p class="h6">Estimado: {{ cliente }}</p>
 
-Gracias,
-Tu equipo
+        <p>En este día tan especial, queremos desearle un muy feliz cumpleaños. Que su día esté lleno de alegría,
+            felicidad y momentos inolvidables junto a sus seres queridos.</p>
 
+        <p>Es un honor para nosotros contar con su confianza y le agradecemos por ser parte de nuestra familia de
+            asegurados.</p>
+
+        <p>¡Que tenga un excelente año por delante!</p>
+        <p>Con nuestros mejores deseos,</p>
+
+        <p>{{ asesor.asesor }}</p>
+        <p>Teléfono: {{ asesor.telefono }}</p>
+
+        <p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y
+            sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
+            Bilanci y Asesores, además está destinada únicamente para el uso de la o las personas a que está dirigido,
+            por lo que se le notifica que está estrictamente
+            prohibida cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo
+            electrónico por error, debe destruirlo y notificar al remitente
+            por esta misma vía. No deberá utilizar, revelar, distribuir, imprimir o copiar este mensaje ni ninguna de
+            sus partes si usted no es el destinatario. Aviso de
+            Privacidad: <a
+                href="https://grupobilanci.com/aviso-de-privacidad">https://grupobilanci.com/aviso-de-privacidad</a></p>
+
+
+    </div>
+</body>
+
+</html>
 {% endautoescape %}

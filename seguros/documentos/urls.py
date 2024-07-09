@@ -1,7 +1,5 @@
 from django.urls import path
-from .views import asesores
-from .views import catalogos
-from .views import polizas
+from .views import asesores, catalogos, polizas, email
 
 app_name = 'documentos' 
 
@@ -41,5 +39,7 @@ urlpatterns = [
     path('doc_poliza/<int:pk>/', polizas.upload_documentos_poliza.as_view(), name='doc_poliza'),
     path('doc_siniestros/<int:pk>/', polizas.upload_documentos_siniestro.as_view(), name='doc_siniestros'),
     path('documento/<int:pk>/descargar/<str:modelo>/<int:modo>', polizas.servir_archivo_encriptado, name='download_decrypted_file'),
-
+    #prueba_correo
+    path('recordatorio/<int:pk>/<int:semana>', email.email_preview_recordatorio, name='documento_recordatorio'),
+    path('cumpleaños/<int:pk>', email.email_preview_cumpleaños, name='cumpleaños'),
 ]

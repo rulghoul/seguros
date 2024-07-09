@@ -4,9 +4,10 @@
 set -e
 
 # Tareas programadas
-crontab -r 
-crontab -l | { cat; echo "0 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_recordatorio"; } | crontab -
-crontab -l | { cat; echo "30 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_felicitacion"; } | crontab -
+crontab cronseguros.cfg
+#crontab -r 
+#crontab -l | { cat; echo "0 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_recordatorio"; } | crontab -
+#crontab -l | { cat; echo "30 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_felicitacion"; } | crontab -
 
 
 # Ejecutar migraciones

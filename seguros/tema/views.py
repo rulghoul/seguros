@@ -53,7 +53,7 @@ class list_color(ListView):
         # Add in a QuerySet of all the books
         datos = {
             'titulo': "Colores",
-            'add':"temaadd_color",
+            'add':"tema:add_color",
             'add_label':'Nuevo color',
             'update':'tema:update_color',    
             'encabezados': {"elemento":'Elemento',"color":"Color"},
@@ -103,7 +103,7 @@ class list_imagen(ListView):
         # Add in a QuerySet of all the books
         datos = {
             'titulo': "Parametros Imagenes",
-            'add':"temaadd_imagen",
+            'add':"tema:add_imagen",
             'add_label':'Nueva imagen',
             'update':'tema:update_imagen',    
             'encabezados': {"title":'Nombre',"image":"Imagen"},
