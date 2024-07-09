@@ -4,7 +4,7 @@ from datetime import datetime
 from seguros.documentos.utils.send_felicitacion import envia_felicitacion as envia
 
 class Command(BaseCommand):
-    help = "Crea un usuario inicial"
+    help = "Envia un correo de Felicitacion a los clientes activos"
 
     def handle(self, *args, **options):
         hoy = datetime.now().date()

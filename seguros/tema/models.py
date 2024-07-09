@@ -20,6 +20,8 @@ TITLE_CHOICES = [
     ('logo', 'Logo de pleca'),
     ('bigLogo', 'Logo de Login'),
     ('fondo', 'Background '), 
+    ('agencia', 'Logo de la agencia'), 
+    ('happy', 'Imagen de cumpleaños'), 
 ]
 
 class parametros_imagenes(models.Model):
