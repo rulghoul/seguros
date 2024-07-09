@@ -16,78 +16,37 @@
 
     <div class="container">
 
-        <table  class="table">
-            <tbody>
-                <tr>
-                    <td><img src="{% get_imagen 'agencia' %}" height="180px" /></td>
-                    <td valign="middle" class="text-center h2 text-muted" >G&A Agente de Seguros</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="mx-auto text-center"><img src="{% get_imagen 'agencia' %}" height="180px" /></div>
 
-        <p class="h6">Estimado(a): {{ cliente|upper }}</p>
+        <hr class="py-1">
 
-        <p class="h6">PRESENTE</p>
+        <p class="h6">Estimado/a: {{ cliente }}</p>
 
-        <p>El motivo del correo es primeramente saludarle y
-            por otro lado comentarle que dentro de <em>{{ semana }} semana(s)</em> el
-            recibo en referencia vence, por lo cual le solicitamos
-            programar el pago oportunamente para evitar cualquier contratiempo.</p>
+        <p>Esperamos que se encuentre bien</p>
 
-        <table class="table table-bordered">
-            <tbody>
-                <tr>
-                    <td class="table-secondary">Documento:</td>
-                    <td>{{ poliza }}</td>
-                </tr>
-                <tr>
-                    <td class="table-secondary">Endoso:</td>
-                    <td>{{ poliza }}</td>
-                </tr>
-                <tr>
-                    <td class="table-secondary">Compañía:</td>
-                    <td>{{ poliza.empresa }}</td>
-                </tr>
-                <tr>
-                    <td class="table-secondary">Serie:</td>
-                    <td>{{ poliza.numero_poliza }}</td>
-                </tr>
-                <tr>
-                    <td class="table-secondary">Vigencia Recibo:</td>
-                    <td>{{ poliza.fecha_emision }} a {{ poliza.fecha_vigencia }}</td>
-                </tr>
-                <tr>
-                    <td class="table-secondary">Importe:</td>
-                    <td>{{ poliza.monto|moneda_mexicana }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <p>Le recordamos que su póliza de seguro <em>{{ poliza.plan}}</em>
+            con número <em>{{ poliza.numero_poliza }}</em> 
+            está próxima a vencer el <em>{{ poliza.fecha_vigencia }}</em> 
+            .  Para garantizar la continuidad de su cobertura, le solicitamos realizar
+            el pago correspondiente antes de esta fecha por un importe de {{ poliza.monto|moneda_mexicana }}</p>
 
+        <p>Si tiene alguna pregunta o necesita asistencia, 
+            no dude en contactarnos. Estamos aquí para ayudarle.</p>
 
+        <p>Muchas gracias por su atención y preferencia.</p>
 
-        <p>Los agentes o ejecutivos no están autorizados a recibir dinero en efectivo,
-            por lo que le recordamos que el pago se debe realizar a nombre de la
-            Compañía de Seguros, con las referencias que se muestran en los recibos
-            que le fueron proporcionados al momento de la emisión de su póliza.</p>
+        <p>Saludos cordiales,</p>
+        <p>{{ asesor.asesor }}</p>
+        <p>{{ asesor.empresa }}</p>
+        <p>{{ asesor.correo_empleado }}</p>
+        <p>Teléfono: {{ asesor.telefono }}</p>
 
-        <p class="alert alert-danger" role="alert">Nota: Al no realizar el pago, su póliza quedará cancelada, es decir en caso de siniestro no estará
-            cubierto.</p>
+<p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
+    Bilanci y Asesores, además está destinada únicamente para el uso de la o las personas a que está dirigido, por lo que se le notifica que está estrictamente
+    prohibida cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo electrónico por error, debe destruirlo y notificar al remitente
+    por esta misma vía. No deberá utilizar, revelar, distribuir, imprimir o copiar este mensaje ni ninguna de sus partes si usted no es el destinatario. Aviso de
+    Privacidad: <a href="https://grupobilanci.com/aviso-de-privacidad">https://grupobilanci.com/aviso-de-privacidad</a></p>
 
-        <p>Agradecemos la atención al presente y le deseamos que tenga un excelente día.</p>
-
-
-        <p>Atentamente</p>
-
-        <p>G&A Agente de Seguros</p>
-
-        <p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y sus anexos)
-            es confidencial, restringida y puede contener información propiedad de
-            G&A Agente de Seguros, además está destinada únicamente para el uso de la o
-            las personas a que está dirigido, por lo que se le notifica que está
-            estrictamente prohibida cualquier difusión, distribución o copia del mismo.
-            Si ha recibido este mensaje de correo electrónico por error, debe destruirlo y
-            notificar al remitente por esta misma ví-a. No deberá utilizar, revelar, distribuir,
-            imprimir o copiar este mensaje ni ninguna. de sus partes si usted no es el destinatario.</p>
     </div>
 </body>
 

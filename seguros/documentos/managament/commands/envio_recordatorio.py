@@ -12,7 +12,7 @@ class Command(BaseCommand):
         hoy = datetime.now().date()
         for semana in [3,2,1]:
             fecha_pago = hoy + timedelta(weeks=semana)
-            por_expirar = Poliza.objects.filter(activo=True, fecha_pago=fecha_pago)
+            por_expirar = Poliza.objects.filter(activo=True, fecha_vigencia=fecha_pago)
             for poliza in por_expirar:
                 envia(poliza, semana)
                 logger.info(f'Recordatorio enviado para póliza {poliza} a {semana} semana(s) del vencimiento.')

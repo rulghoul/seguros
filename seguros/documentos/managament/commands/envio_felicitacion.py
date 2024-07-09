@@ -8,6 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         hoy = datetime.now().date()
+        #Solo que el mes y dia
         festejados = PersonaPrincipal.objects.filter(activo=True, fecha_nacimiento=hoy)
         for festejado in festejados:
             envia(festejado)

@@ -47,12 +47,15 @@
             {% endif %}
             <td class="text-center">
 
+              <a type="button" class="update-book btn btn-sm btn-info" data-bs-toggle="tooltip" title="Enviar Recordatorio" href="{% url update poliza.pk cliente_pk %}" >
+                <span class="fa fa-envelope"></span>
+              </a>
               <!-- Update book buttons -->
-              <a type="button" class="update-book btn btn-sm btn-info" href="{% url update poliza.pk cliente_pk %}" >
+              <a type="button" class="update-book btn btn-sm btn-info"  data-bs-toggle="tooltip" title="Enditar Poliza" href="{% url update poliza.pk cliente_pk %}" >
                 <span class="fa fa-pencil"></span>
               </a>
               <!-- Delete book buttons -->
-              <a type="button" class="delete-book btn btn-sm btn-danger" href="{% url borra poliza.pk %}">
+              <a type="button" class="delete-book btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Borrar Poliza" href="{% url borra poliza.pk %}">
                 <span class="fa fa-trash"></span>
               </a>
             </td>

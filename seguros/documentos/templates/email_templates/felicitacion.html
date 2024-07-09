@@ -15,26 +15,34 @@
 <body>
 
     <div class="container">
-        <div class="mx-auto"><img src="{% get_imagen 'agencia' %}" height="180px" /></div>
-        <p class="h6">Estimado: {{ cliente|upper }}</p>
+        <div class="mx-auto text-center"><img src="{% get_imagen 'agencia' %}" height="180px" /></div>
+        <div class="mx-auto text-center"><img src="{% get_imagen 'happy' %}" height="180px" /></div>
+        
+        <p class="h6">Estimado: {{ cliente }}</p>
 
-        <p>Para nosotros, no eres solo un cliente. Eres un amigo por el que nos preocupamos mucho.
-            Que este año se llene de éxito y prosperidad.</p>
+        <p>En este día tan especial, queremos desearle un muy feliz cumpleaños. Que su día esté lleno de alegría,
+            felicidad y momentos inolvidables junto a sus seres queridos.</p>
 
-        <img src="{% get_imagen 'happy' %}" class="img-fluid"  />
-        <p>G&A Agente de Seguros </p>
-        <div>
-            <p>{{ asesor }}</p>
-            <p>{{ asesor.usuario.email }}</p>
-            <p>Teléfono oficina: {{ telefonos }} </p>
-        </div>
-        <p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y sus anexos) es confidencial, restringida y
-            puede contener información propiedad de G&A Agente de Seguros, además está destinada únicamente para el uso
-            de la o las personas a que está dirigido, por lo que se le notifica que está estrictamente prohibida
-            cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo electrónico por
-            error, debe destruirlo y notificar al remitente por esta misma vía. No deberá utilizar, revelar, distribuir,
-            imprimir o copiar este mensaje ni ninguna de sus partes si usted no es el destinatario. Aviso de Privacidad:
-            https://gyaseguros.mx/politica-privacidad/ </p>
+        <p>Es un honor para nosotros contar con su confianza y le agradecemos por ser parte de nuestra familia de
+            asegurados.</p>
+
+        <p>¡Que tenga un excelente año por delante!</p>
+        <p>Con nuestros mejores deseos,</p>
+
+        <p>{{ asesor.asesor }}</p>
+        <p>Teléfono: {{ asesor.telefono }}</p>
+
+        <p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y
+            sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
+            Bilanci y Asesores, además está destinada únicamente para el uso de la o las personas a que está dirigido,
+            por lo que se le notifica que está estrictamente
+            prohibida cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo
+            electrónico por error, debe destruirlo y notificar al remitente
+            por esta misma vía. No deberá utilizar, revelar, distribuir, imprimir o copiar este mensaje ni ninguna de
+            sus partes si usted no es el destinatario. Aviso de
+            Privacidad: <a
+                href="https://grupobilanci.com/aviso-de-privacidad">https://grupobilanci.com/aviso-de-privacidad</a></p>
+
 
     </div>
 </body>

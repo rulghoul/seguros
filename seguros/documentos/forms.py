@@ -395,6 +395,8 @@ class PolizaForm(forms.ModelForm):
             self.fields['empresa'].queryset = modelos.EmpresaContratante.objects.none()
 
 
+from .widgets import CustomFileInput
+
 class MultiDocumentUploadForm(forms.Form):
     def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, modelo=None, *args, **kwargs):
         super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
@@ -415,7 +417,7 @@ class MultiDocumentUploadForm(forms.Form):
                                     <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/0"><span class="fa fa-eye"></span></a>
                                     <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/1"><span class="fa fa-download"></span></a>
                                     </div>'''),
-                    widget=forms.ClearableFileInput()
+                    widget=CustomFileInput()
                 )
             else:
                 self.fields[archivo] = forms.FileField(

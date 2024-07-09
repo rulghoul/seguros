@@ -12,6 +12,7 @@ def envia_recordatorio(poliza, semana):
         'cliente': poliza.cliente,        
         'poliza': poliza,
         'semana': semana,
+        'asesor': asesor_empresa,
     }
     message = render_to_string(message_template, context)
     send_mail(subject, message, None, [cliente.correo, asesor_empresa.email])

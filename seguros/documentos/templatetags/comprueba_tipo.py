@@ -23,6 +23,6 @@ def get_nombre_usuario(obj, field_name):
 
 @register.filter
 def moneda_mexicana(value):
-    return f"$ {value:,.2f}".replace(',', "'")
+    return f"$ {value:,.2f}"
 
 
