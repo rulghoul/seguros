@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+
+<h3 class="card-title">{{ titulo }}</h3>
+{{ asesor }}
+{{ asesor.correo_empleado }}
+<form action="" method="POST">
+    {% csrf_token %} {{ form }}
+    <p>¿Quieres enviar correo de recordatorio para la poliza {{ poliza }}?</p>
+    <div class="col text-center">
+        <input type="submit" name="submit" value="Enviar" class="btn btn-danger" id="submit-save">
+        <a class="btn btn-primary" href="{{ request.META.HTTP_REFERER|escape }}">Regresar</a>
+    </div>
+</form>
+
+{% endblock %}

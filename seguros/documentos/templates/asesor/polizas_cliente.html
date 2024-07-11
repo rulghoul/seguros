@@ -46,12 +46,20 @@
             <td>{{ poliza.asesor_poliza.usuario.first_name }} {{ poliza.asesor_poliza.usuario.last_name }}</td>
             {% endif %}
             <td class="text-center">
+              
+              <a type="button" class="update-book btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Cargar Documentos" href="{% url documento_url poliza.pk %}" >
+                <span class="fa fa-upload"></span>
+              </a>
 
-              <a type="button" class="update-book btn btn-sm btn-info" data-bs-toggle="tooltip" title="Enviar Recordatorio" href="{% url update poliza.pk cliente_pk %}" >
+              <a type="button" class="update-book btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Mostrar siniestros" href="{% url siniestros_url poliza.pk %}" >
+                <span class="fa fa-person-falling-burst"></span>
+              </a>
+
+              <a type="button" class="update-book btn btn-sm btn-success" data-bs-toggle="tooltip" title="Enviar Recordatorio de pago" href="{% url recordatorio_url poliza.pk %}" >
                 <span class="fa fa-envelope"></span>
               </a>
               <!-- Update book buttons -->
-              <a type="button" class="update-book btn btn-sm btn-info"  data-bs-toggle="tooltip" title="Enditar Poliza" href="{% url update poliza.pk cliente_pk %}" >
+              <a type="button" class="update-book btn btn-sm btn-info"  data-bs-toggle="tooltip" title="Editar Poliza" href="{% url update poliza.pk cliente_pk %}" >
                 <span class="fa fa-pencil"></span>
               </a>
               <!-- Delete book buttons -->

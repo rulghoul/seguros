@@ -81,7 +81,7 @@ class EmpresaContratanteForm(forms.ModelForm):
 class PlanesForm(forms.ModelForm):
     class Meta:
         model = modelos.Planes
-        fields = ('nombre', 'empresa',  'gastosMedicos','activo', )
+        fields = ('nombre', 'empresa', 'gastosMedicos','activo', )
 
 
 class MunicipioWidget(s2forms.ModelSelect2Widget):
@@ -432,9 +432,7 @@ class MultiDocumentUploadForm(forms.Form):
             *[Field(archivo) for archivo in lista_archivos],
             Submit('submit', 'Cargar'),
             HTML("""
-                    <a class="btn btn-primary" href="{% url '""" +
-                      "{0}' {1}".format(retorno,indice) +
-                      """ %}">Regresar</a>
+                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
                 """),
         )
 

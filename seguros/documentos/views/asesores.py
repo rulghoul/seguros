@@ -43,7 +43,7 @@ class PlanesView(BaseListView):
     context_object_name = 'lista'
     title = 'Planes'
     encabezados = ['NOMBRE', 'EMPRESA', 'GASTOS MEDICOS', 'ACTIVO',]
-    campos = ['nombre', 'empresa', 'gastos_medicos', 'activo',]
+    campos = ['nombre', 'empresa', 'gastosMedicos', 'activo',]
 
 
 class PersonaPrincipalAdd(LoginRequiredMixin, CreateView):

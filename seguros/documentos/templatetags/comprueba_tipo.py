@@ -25,4 +25,6 @@ def get_nombre_usuario(obj, field_name):
 def moneda_mexicana(value):
     return f"$ {value:,.2f}"
 
-
+@register.filter()
+def boolean_to_text(value):
+    return 'Verdadero' if value else 'Falso'
