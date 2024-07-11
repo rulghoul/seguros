@@ -73,6 +73,11 @@ class polizas_cliente(LoginRequiredMixin, ListView):
         context["borra"] = "documentos:poliza_delete"
         context["cliente_pk"] = cliente_pk
         context["cliente"] = cliente
+
+        context['documento_url'] = 'documentos:doc_poliza'
+        context['siniestros_url'] = 'documentos:siniestros'
+        context['recordatorio_url'] = 'documentos:recordatorio'
+
         return context
             
     
@@ -298,7 +303,7 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
         kwargs.update({
             'lista_archivos': POLIZA_DESCRIPCIONES,
             'archivos_existentes': archivos_existentes,
-            'retorno': 'documentos:poliza_update',
+            'retorno': 'documentos:poliza_cliente_update',
             'indice': self.pk,
             'modelo': "Documentos",
         })
@@ -336,7 +341,7 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context.update({
             "titulo": f"Documentos: { self.poliza }", 
-            "redirige": "documentos:update_poliza",
+            "redirige": "documentos:poliza_cliente_update",
         })
         return context
 

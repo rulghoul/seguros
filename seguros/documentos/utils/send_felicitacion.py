@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from documentos.models import AsesorEmpresa
 
 def envia_felicitacion(cliente):
-    subject = f"Estimado(a) {cliente}. Feliz cumpleaños"
+    subject = f"¡Feliz Cumpleaños, [Nombre del Cliente]!"
     message_template = "email_templates/felicitacion.html"  
     telefonos = AsesorEmpresa.objects.filter(asesor = cliente.asesor_cliente).values_list('telefono', flat=True)
     context = {

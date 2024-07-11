@@ -15,9 +15,9 @@
 <body>
 
     <div class="container">
-        <div class="mx-auto text-center"><img src="{% get_imagen 'agencia' %}" height="180px" /></div>
-        <div class="mx-auto text-center"><img src="{% get_imagen 'happy' %}" height="180px" /></div>
-        
+        <div class="mx-auto text-center"><img src="{% get_imagen_base64 'agencia' %}" height="180px" /></div>
+        <div class="mx-auto text-center"><img src="{% get_imagen_base64 'happy' %}" height="180px" /></div>
+        <br>
         <p class="h6">Estimado: {{ cliente }}</p>
 
         <p>En este día tan especial, queremos desearle un muy feliz cumpleaños. Que su día esté lleno de alegría,
@@ -29,8 +29,8 @@
         <p>¡Que tenga un excelente año por delante!</p>
         <p>Con nuestros mejores deseos,</p>
 
-        <p>{{ asesor.asesor }}</p>
-        <p>Teléfono: {{ asesor.telefono }}</p>
+        <p>{{ asesor }}</p>
+        <p>Teléfono: {{ telefonos }}</p>
 
         <p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y
             sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
