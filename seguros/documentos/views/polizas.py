@@ -195,7 +195,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
 
     if pk:
         poliza = get_object_or_404(mod.Poliza, pk=pk)
-        titulo = f"Editar Poliza: {poliza}"
+        titulo = f"Editar Poliza "
         persona_principal = poliza.persona_principal        
     else:
         poliza = mod.Poliza()
@@ -259,8 +259,8 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
         'documento_url': 'documentos:doc_poliza',
         'siniestros_url': 'documentos:siniestros',
         'poliza_id':poliza.pk,
-        'plan': poliza.plan.gastosMedicos ,
         'cliente':cliente_object,
+        'poliza': poliza,
     })
 
 # Archivos de la poliza y Siniestros
@@ -426,7 +426,7 @@ class Siniestro_Add(LoginRequiredMixin, FormView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
+        #messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
         poliza = get_object_or_404(mod.Poliza, pk=self.pk)
         context["titulo"] = f"Nuevo Siniestro para la poliza: {poliza}"
         context["redirige"] = reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
