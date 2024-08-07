@@ -195,7 +195,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
 
     if pk:
         poliza = get_object_or_404(mod.Poliza, pk=pk)
-        titulo = f"Editar Poliza: {poliza}"
+        titulo = f"Editar Poliza "
         persona_principal = poliza.persona_principal        
     else:
         poliza = mod.Poliza()
@@ -259,8 +259,8 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
         'documento_url': 'documentos:doc_poliza',
         'siniestros_url': 'documentos:siniestros',
         'poliza_id':poliza.pk,
-        'plan': poliza.plan.gastosMedicos ,
         'cliente':cliente_object,
+        'poliza': poliza,
     })
 
 # Archivos de la poliza y Siniestros
@@ -338,10 +338,19 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
         return redirect(reverse_lazy('documentos:doc_poliza', args=[self.pk]))
 
     def get_context_data(self, **kwargs):
+        # Comprueba si hay un 'origin' en la sesión, si no, obtén de GET
+        if 'origin' not in self.request.session:
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
         context = super().get_context_data(**kwargs)
         context.update({
-            "titulo": f"Documentos: { self.poliza }", 
+            "titulo": f"Documentos:",
+            "poliza":  self.poliza , 
             "redirige": "documentos:poliza_cliente_update",
+            "origen": self.request.session['origin'],
         })
         return context
 
@@ -404,7 +413,8 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         poliza = mod.Poliza.objects.get(pk=self.poliza_pk)
         context.update({
-            "titulo": f"Documentos Siniestro: {poliza}", 
+            "titulo": f"Documentos Siniestro:", 
+            "poliza": poliza,
             "redirige": f"'documentos:siniestros' { self.poliza_pk }",
         })
         return context
@@ -412,7 +422,7 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
 
 class Siniestro_Add(LoginRequiredMixin, FormView):
     form_class = formularios.SiniestroForm
-    template_name = "catalogos/add.html"
+    template_name = "poliza/add_siniestro.html"
     pk = None
 
     def get_initial(self):
@@ -426,9 +436,10 @@ class Siniestro_Add(LoginRequiredMixin, FormView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
+        #messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
         poliza = get_object_or_404(mod.Poliza, pk=self.pk)
-        context["titulo"] = f"Nuevo Siniestro para la poliza: {poliza}"
+        context["titulo"] = f"Nuevo Siniestro para la poliza:"
+        context["poliza"] = poliza
         context["redirige"] = reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
         return context
 
@@ -452,7 +463,7 @@ class Siniestro_Update(LoginRequiredMixin, UpdateView):
         initial = super().get_initial()        
         siniestro = self.get_object()
         self.poliza = siniestro.poliza
-        messages.info(self.request, f"Form valid: se intenta recuperar la poliza con el pk {self.poliza}")
+        #messages.info(self.request, f"Form valid: se intenta recuperar la poliza con el pk {self.poliza}")
 
         return initial 
     
@@ -488,6 +499,7 @@ class Siniestro_List(LoginRequiredMixin, ListView):
         poliza = get_object_or_404(mod.Poliza, pk=self.pk)
         context["titulo"] = "Siniestros"
         context["poliza"] = poliza
+        context["cliente"] = poliza.persona_principal.pk
         context["add"] = 'documentos:siniestro_add'
         context["add_label"] = "Nuevo Siniestro"
         context["update"] = "documentos:siniestro_update"
@@ -526,4 +538,17 @@ def borrar_archivo(request, pk, modelo):
         documento = get_object_or_404(mod.DocumentosSiniestros, pk=pk)
     else:
         raise Http404("Modelo no soportado.")   
+    
+    if request.method == "POST":
+        try:
+            documento.archivo.delete()  # Elimina el archivo del sistema de archivos
+            documento.delete()  # Elimina el registro de la base de datos
+            next = request.POST.get('next', '/')
+            return redirect(next)
+        except Exception as e:
+            raise Http404(f"No se pudo borrar el archivo.<br> {e}")
+            #return render(request, 'poliza/borrar_archivo.html', {'error': f"No se pudo eliminar el archivo: {e}"})
+    
+
+    return render(request, 'poliza/borrar_archivo.html', {'documento': documento, 'modelo': modelo, 'request': request })
     

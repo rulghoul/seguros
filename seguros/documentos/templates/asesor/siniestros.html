@@ -3,11 +3,11 @@
 {% load crispy_forms_tags %} 
 {% block content %}
 
-<div class="row"><h3 class="col-12">{{ titulo }}: {{ poliza }} </h3></div>
+<div class="row"><h3 class="col-12">{{ titulo }}:</h3><h5>{{ poliza }}</h5></div>
 <div class="row" style="margin-bottom: 1em; margin-top: 1em;">
     <h3 class="col-5"></h3>    
     <a class="btn btn-secondary col-2" href="{% url 'documentos:siniestro_add'  poliza.pk %}">{{ add_label }}</a>
-    <a class="btn btn-primary col-2" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+    <a class="btn btn-primary col-2" href="{% url 'documentos:polizas_cliente' cliente %}">Regresar</a>
     <input class="form-control col-4 ml-auto" id="myInput" type="text" placeholder="Buscar..">
 </div>
 

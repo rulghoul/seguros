@@ -32,8 +32,8 @@ class EmpresaContratanteView(BaseListView):
     redirige = 'documentos:lista_empresa'
     context_object_name = 'lista'
     title = 'Empresa Contratante'
-    encabezados = ['CLAVE','NOMBRE', 'LINK','LOGO', 'ACTIVO',]
-    campos = ['clave', 'nombre', 'link', 'logo_small', 'activo',]
+    encabezados = ['CLAVE','NOMBRE', 'LINK','LINK PAGO','LOGO', 'ACTIVO',]
+    campos = ['clave', 'nombre', 'link', 'link_pago', 'logo_small', 'activo',]
 
 class PlanesView(BaseListView):
     form_class = formularios.PlanesForm

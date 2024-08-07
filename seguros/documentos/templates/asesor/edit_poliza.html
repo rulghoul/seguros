@@ -4,7 +4,10 @@
 {% block content %}
 
 
-<h3 class="card-title">{{ titulo }} para {{ cliente }}</h3>
+<h3 class="card-title">{{ titulo }}</h3>
+{% if poliza_id %}
+<h5>{{ poliza }}</h5>
+{% endif %}
 <a class="btn btn-primary" href="{% url 'documentos:polizas_cliente' cliente.pk %}">Regresar</a>
 
 <form action="" method="POST">
@@ -109,6 +112,10 @@
             <div id="bene-colapse" class="accordion-collapse collapse" aria-labelledby="bene-heading">
                 <div class="accordion-body">
                     {% crispy formset_beneficiario helper_beneficiario %}
+                    <div class="col text-center">
+                        <input class="btn btn-primary btn-info" type="submit" value="Guardar">                        
+                        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>              
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,7 +132,7 @@
                 </div>
             </div>
         </div>
-        {% if plan %}
+
         <div class="accordion-item">
             <h2 class="accordion-header" id="siniestros-heading">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -139,7 +146,7 @@
                 </div>
             </div>
         </div>
-        {% endif %}
+
         {% endif %}
 
     </div>

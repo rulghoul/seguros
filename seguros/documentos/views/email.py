@@ -6,13 +6,12 @@ from django.contrib import messages
 import logging
 logger = logging.getLogger(__name__)
 
-def email_preview_recordatorio(request, pk, semana):
+def email_preview_recordatorio(request, pk):
     poliza = get_object_or_404(Poliza, pk=pk)
     cliente = poliza.persona_principal
     asesor_empresa = AsesorEmpresa.objects.get(empresa = poliza.empresa, asesor = poliza.asesor_poliza)
     context = {
         'cliente': cliente,
-        'semana': semana,
         'poliza': poliza, 
         'asesor': asesor_empresa
     }

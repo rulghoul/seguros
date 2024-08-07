@@ -75,7 +75,7 @@ class ParentescoForm(forms.ModelForm):
 class EmpresaContratanteForm(forms.ModelForm):
     class Meta:
         model = modelos.EmpresaContratante
-        fields = ('clave', 'nombre', 'link', 'logo_small', 'activo', )
+        fields = ('clave', 'nombre', 'link', 'link_pago', 'logo_small', 'activo', )
 
 
 class PlanesForm(forms.ModelForm):
@@ -279,16 +279,17 @@ class FormBeneficiario(forms.ModelForm):
     helper.form_tag = False
     helper.layout = Layout(
         Div(
-            Div('tipo_persona', css_class='col-md-3'),
+            Div('tipo_persona', css_class='col-md-2'),
+            Div('curp', css_class='col-md-2'),
             Div('nombre_completo', css_class='col-md-6'),
-            Div('porcentaje_participacion', css_class='col-md-3'),
+            Div('porcentaje_participacion', css_class='col-md-2'),
             css_class='row'
         ),
     )
 
     class Meta:
         model = modelos.Beneficiarios
-        fields = ['parentesco', 'nombre_completo', 'porcentaje_participacion',]
+        fields = ['parentesco', 'nombre_completo', 'porcentaje_participacion','curp']
 
 
 class BeneficiariosHelper(FormHelper):
@@ -299,9 +300,10 @@ class BeneficiariosHelper(FormHelper):
         self.helper.form_tag = False
         self.layout = Layout(
             Div(
-                Div('parentesco', css_class='col-md-3'),
+                Div('curp', css_class='col-md-2'),
+                Div('parentesco', css_class='col-md-2'),
                 Div('nombre_completo', css_class='col-md-6'),
-                Div('porcentaje_participacion', css_class='col-md-3'),
+                Div('porcentaje_participacion', css_class='col-md-2'),
                 css_class='row'
             ),
         )
@@ -341,24 +343,30 @@ class PolizaForm(forms.ModelForm):
     helper.layout = Layout(
         Div(
             Div('empresa', css_class='col-md-4'),
+            Div('plan', css_class='col-md-4'),
             Div('numero_poliza', css_class='col-md-4'),
-            Div('forma_pago', css_class='col-md-4'),
             css_class='row'
         ),
         Div(
             Div('tipo_conducto_pago', css_class='col-md-4'),
-            Div('plan', css_class='col-md-8'),
+            Div('forma_pago', css_class='col-md-4'),
             css_class='row'
         ),
         Div(
-            Div('fecha_emision', css_class='col-md-6'),
-            Div('fecha_vigencia', css_class='col-md-6'),
-            css_class='row'
-        ),
-        Div(
+            Div('fecha_emision', css_class='col-md-4'),
+            Div('fecha_vigencia', css_class='col-md-4'),
             Div('fecha_pago', css_class='col-md-4'),
-            Div('monto', css_class='col-md-4'),
-            Div('estatus', css_class='col-md-4'),
+            css_class='row'
+        ),
+        Div(
+            Div('monto_pago', css_class='col-md-4'),
+            Div('suma_asegurada', css_class='col-md-4'),
+            Div('unidad_pago', css_class='col-md-4'),
+            css_class='row'
+        ),
+        Div(
+            Div('estatus', css_class='col-md-6'),
+            Div('renovacion', css_class='col-md-6'),
             css_class='row'
         ),
         Div(
@@ -375,7 +383,8 @@ class PolizaForm(forms.ModelForm):
         model = modelos.Poliza
         fields = ['empresa', 'numero_poliza', 'forma_pago', 'asesor_poliza',
                   'tipo_conducto_pago', 'plan', 'fecha_vigencia', 'fecha_emision',
-                  'fecha_pago', 'monto', 'estatus']
+                  'fecha_pago', 'monto_pago', 'estatus',
+                  'suma_asegurada', 'unidad_pago', 'renovacion']
 
         widgets = {
             'fecha_vigencia': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
@@ -414,8 +423,9 @@ class MultiDocumentUploadForm(forms.Form):
                     required=False,
                     label=mark_safe(f'''{archivo}<div class="input-group"><span class="input-group-text"></span>
                                     {documento.name.replace(".enc","").replace("documento_poliza/","")}
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/0"><span class="fa fa-eye"></span></a>
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/0"><span class="fa fa-eye"></span></a>
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    <a class="form-control d-flex h-auto" href="/documentos/delete_file/{documento.instance.pk}/{modelo}"><span class="fa fa-trash"></span></a>
                                     </div>'''),
                     widget=CustomFileInput()
                 )

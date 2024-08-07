@@ -23,6 +23,10 @@ STATUS_SEGURO_VIDA = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ("EN PROCESO"
 
 STATUS_GASTOS_MEDICOS = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ('EPR','EN PROCESO')]
 
+UNIDAD_PAGO = [('UDI', 'UDIS'),('PE','PESO'),('DO','DOLAR')]
+
+PERIODO = [('M', 'MENSUAL'),('T','TRIMESTRAL'),('S','SEMESTRAL'),('A','ANUAL')]
+
 STATUS_PERSONA = [("A","ACTIVO"),("I","INACTIVO")]
 
 TIPO_PERSONA = ("CLIENTE", "BENEFICIARIO")
@@ -109,7 +113,8 @@ class EmpresaContratante(models.Model):
     clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     logo_small = models.ImageField(upload_to='empresa',blank=True, null=True)
-    link = models.URLField(max_length=200,blank=True, null=True)
+    link = models.URLField(max_length=200,blank=True, null=True, default=None)
+    link_pago = models.URLField(max_length=200,blank=True, null=True, default=None)
     activo = models.BooleanField(default=True)    
     
     def __str__(self) -> str:
@@ -165,8 +170,8 @@ class PersonaPrincipal(PersonaBase):
     #direccion
     asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE, null=True, default=None)
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
-    numero = models.CharField(max_length=5,blank=True, null=True, default=None)
-    numero_interior = models.CharField(max_length=100,blank=True, null=True, default=None)
+    numero = models.CharField(max_length=10,blank=True, null=True, default=None, verbose_name="Numero Exterior")
+    numero_interior = models.CharField(max_length=10,blank=True, null=True, default=None)
     #contacto
     correo = models.EmailField( blank=True, null=True, default="correo@empresa.com")
     telefono = models.CharField(max_length=100, blank=True, null=True, default=None)
@@ -196,7 +201,11 @@ class Poliza(models.Model):
     fecha_emision = models.DateField(blank=True, null=True, default=None)
     fecha_pago = models.DateField(blank=True, null=True, default=None)
     estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
-    monto = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    monto_pago = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    suma_asegurada = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, blank=True, null=True)
+    unidad_pago = models.CharField( max_length=10, choices=UNIDAD_PAGO, blank=True, null=True, default=None)
+    renovacion = models.BooleanField( default=False) # indeterminado comentar si existe
+    #periodo =  models.CharField( max_length=10, choices=PERIODO, blank=True, null=True, default=None)
 
     class Meta:
         unique_together = (("empresa", "numero_poliza"),)    
@@ -208,8 +217,9 @@ class Poliza(models.Model):
 class Beneficiarios(models.Model):
     numero_poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)  
     parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE,blank=True, null=True,default=None) 
-    nombre_completo = models.CharField(max_length=100)  
-    porcentaje_participacion = models.PositiveSmallIntegerField(default=0)  
+    nombre_completo = models.CharField(max_length=100)
+    porcentaje_participacion = models.PositiveSmallIntegerField(default=0)
+    curp = models.CharField(max_length=20, default=None, blank=True, null=True, verbose_name="CURP")
     
     class Meta:
         unique_together = (("numero_poliza", "parentesco"),)
