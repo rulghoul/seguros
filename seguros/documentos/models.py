@@ -25,6 +25,8 @@ STATUS_GASTOS_MEDICOS = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ('EPR','EN
 
 UNIDAD_PAGO = [('UDI', 'UDIS'),('PE','PESO'),('DO','DOLAR')]
 
+PERIODO = [('M', 'MENSUAL'),('T','TRIMESTRAL'),('S','SEMESTRAL'),('A','ANUAL')]
+
 STATUS_PERSONA = [("A","ACTIVO"),("I","INACTIVO")]
 
 TIPO_PERSONA = ("CLIENTE", "BENEFICIARIO")
@@ -168,7 +170,7 @@ class PersonaPrincipal(PersonaBase):
     #direccion
     asentamiento = models.ForeignKey(sepomex.Asentamiento, on_delete=models.CASCADE, null=True, default=None)
     calle = models.CharField(max_length=100,blank=True, null=True, default=None)
-    numero = models.CharField(max_length=10,blank=True, null=True, default=None)
+    numero = models.CharField(max_length=10,blank=True, null=True, default=None, verbose_name="Numero Exterior")
     numero_interior = models.CharField(max_length=10,blank=True, null=True, default=None)
     #contacto
     correo = models.EmailField( blank=True, null=True, default="correo@empresa.com")
@@ -203,6 +205,7 @@ class Poliza(models.Model):
     suma_asegurada = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, blank=True, null=True)
     unidad_pago = models.CharField( max_length=10, choices=UNIDAD_PAGO, blank=True, null=True, default=None)
     renovacion = models.BooleanField( default=False) # indeterminado comentar si existe
+    #periodo =  models.CharField( max_length=10, choices=PERIODO, blank=True, null=True, default=None)
 
     class Meta:
         unique_together = (("empresa", "numero_poliza"),)    
@@ -216,7 +219,7 @@ class Beneficiarios(models.Model):
     parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE,blank=True, null=True,default=None) 
     nombre_completo = models.CharField(max_length=100)
     porcentaje_participacion = models.PositiveSmallIntegerField(default=0)
-    curp = models.CharField(max_length=20, default=None, blank=True, null=True)
+    curp = models.CharField(max_length=20, default=None, blank=True, null=True, verbose_name="CURP")
     
     class Meta:
         unique_together = (("numero_poliza", "parentesco"),)

@@ -6,7 +6,7 @@
 
 <h3 class="card-title">{{ titulo }}</h3>
 {% if poliza_id %}
-<h4>{{ poliza }}</h4>
+<h5>{{ poliza }}</h5>
 {% endif %}
 <a class="btn btn-primary" href="{% url 'documentos:polizas_cliente' cliente.pk %}">Regresar</a>
 
@@ -112,6 +112,10 @@
             <div id="bene-colapse" class="accordion-collapse collapse" aria-labelledby="bene-heading">
                 <div class="accordion-body">
                     {% crispy formset_beneficiario helper_beneficiario %}
+                    <div class="col text-center">
+                        <input class="btn btn-primary btn-info" type="submit" value="Guardar">                        
+                        <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>              
+                    </div>
                 </div>
             </div>
         </div>

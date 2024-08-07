@@ -300,9 +300,10 @@ class BeneficiariosHelper(FormHelper):
         self.helper.form_tag = False
         self.layout = Layout(
             Div(
-                Div('parentesco', css_class='col-md-3'),
+                Div('curp', css_class='col-md-2'),
+                Div('parentesco', css_class='col-md-2'),
                 Div('nombre_completo', css_class='col-md-6'),
-                Div('porcentaje_participacion', css_class='col-md-3'),
+                Div('porcentaje_participacion', css_class='col-md-2'),
                 css_class='row'
             ),
         )
@@ -342,30 +343,30 @@ class PolizaForm(forms.ModelForm):
     helper.layout = Layout(
         Div(
             Div('empresa', css_class='col-md-4'),
+            Div('plan', css_class='col-md-4'),
             Div('numero_poliza', css_class='col-md-4'),
-            Div('forma_pago', css_class='col-md-4'),
             css_class='row'
         ),
         Div(
             Div('tipo_conducto_pago', css_class='col-md-4'),
-            Div('plan', css_class='col-md-8'),
+            Div('forma_pago', css_class='col-md-4'),
             css_class='row'
         ),
         Div(
-            Div('fecha_emision', css_class='col-md-6'),
-            Div('fecha_vigencia', css_class='col-md-6'),
-            css_class='row'
-        ),
-        Div(
+            Div('fecha_emision', css_class='col-md-4'),
+            Div('fecha_vigencia', css_class='col-md-4'),
             Div('fecha_pago', css_class='col-md-4'),
-            Div('monto_pago', css_class='col-md-4'),
-            Div('estatus', css_class='col-md-4'),
             css_class='row'
         ),
         Div(
+            Div('monto_pago', css_class='col-md-4'),
             Div('suma_asegurada', css_class='col-md-4'),
             Div('unidad_pago', css_class='col-md-4'),
-            Div('renovacion', css_class='col-md-4'),
+            css_class='row'
+        ),
+        Div(
+            Div('estatus', css_class='col-md-6'),
+            Div('renovacion', css_class='col-md-6'),
             css_class='row'
         ),
         Div(
@@ -422,8 +423,9 @@ class MultiDocumentUploadForm(forms.Form):
                     required=False,
                     label=mark_safe(f'''{archivo}<div class="input-group"><span class="input-group-text"></span>
                                     {documento.name.replace(".enc","").replace("documento_poliza/","")}
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/0"><span class="fa fa-eye"></span></a>
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/documento/{documento.instance.pk}/descargar/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/0"><span class="fa fa-eye"></span></a>
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    <a class="form-control d-flex h-auto" href="/documentos/delete_file/{documento.instance.pk}/{modelo}"><span class="fa fa-trash"></span></a>
                                     </div>'''),
                     widget=CustomFileInput()
                 )

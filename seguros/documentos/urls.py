@@ -38,7 +38,8 @@ urlpatterns = [
     #Documentos
     path('doc_poliza/<int:pk>/', polizas.upload_documentos_poliza.as_view(), name='doc_poliza'),
     path('doc_siniestros/<int:pk>/', polizas.upload_documentos_siniestro.as_view(), name='doc_siniestros'),
-    path('documento/<int:pk>/descargar/<str:modelo>/<int:modo>', polizas.servir_archivo_encriptado, name='download_decrypted_file'),
+    path('descargar/<int:pk>/<str:modelo>/<int:modo>', polizas.servir_archivo_encriptado, name='download_decrypted_file'),
+    path('delete_file/<int:pk>/<str:modelo>', polizas.borrar_archivo, name='delete_file'),
     #prueba_correo
     path('prueba_recordatorio/<int:pk>', email.email_preview_recordatorio, name='prueba_recordatorio'),
     path('cumpleaños/<int:pk>', email.email_preview_cumpleaños, name='cumpleaños'),
