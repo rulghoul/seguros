@@ -435,11 +435,11 @@ class MultiDocumentUploadForm(forms.Form):
                 documento = archivos_existentes[archivo]
                 self.fields[archivo] = forms.FileField(
                     required=False,
-                    label=mark_safe(f'''{archivo}<div class="input-group"><span class="input-group-text"></span>
-                                    {documento.name.replace(".enc","").replace("documento_poliza/","")}
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/0"><span class="fa fa-eye"></span></a>
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/1"><span class="fa fa-download"></span></a>
-                                    <a class="form-control d-flex h-auto" href="/documentos/delete_file/{documento.instance.pk}/{modelo}"><span class="fa fa-trash"></span></a>
+                    label=mark_safe(f'''{archivo}<div>
+                                    {documento.name.replace(".enc","").replace("documento_poliza/","").replace("documento_siniestro/","")}
+                                    <a type="button" class="btn btn-sm btn-info" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/0"><span class="fa fa-eye"></span></a>
+                                    <a type="button" class="btn btn-sm btn-success" target="_blank" href="/documentos/descargar/{documento.instance.pk}/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    <a type="button" class="btn btn-sm btn-danger" href="/documentos/delete_file/{documento.instance.pk}/{modelo}"><span class="fa fa-trash"></span></a>
                                     </div>'''),
                     widget=CustomFileInput()
                 )
@@ -453,11 +453,11 @@ class MultiDocumentUploadForm(forms.Form):
         for nombre, archivo in archivos_adicionales.items():
             self.fields[nombre] = forms.FileField(
                 required=False,
-                label=mark_safe(f'''{nombre}<div class="input-group"><span class="input-group-text"></span>
+                label=mark_safe(f'''{nombre}<div >
                                     {archivo.name.replace(".enc","").replace("documento_poliza/","")}
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{archivo.instance.pk}/modelo/0"><span class="fa fa-eye"></span></a>
-                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{archivo.instance.pk}/modelo/1"><span class="fa fa-download"></span></a>
-                                    <a class="form-control d-flex h-auto" href="/documentos/delete_file/{archivo.instance.pk}/modelo"><span class="fa fa-trash"></span></a>
+                                    <a type="button" class="btn btn-sm btn-info" target="_blank" href="/documentos/descargar/{archivo.instance.pk}/{modelo}/0"><span class="fa fa-eye"></span></a>
+                                    <a type="button" class="btn btn-sm btn-success" target="_blank" href="/documentos/descargar/{archivo.instance.pk}/{modelo}/1"><span class="fa fa-download"></span></a>
+                                    <a type="button" class="btn btn-sm btn-danger" href="/documentos/delete_file/{archivo.instance.pk}/{modelo}"><span class="fa fa-trash"></span></a>
                                     </div>'''),
                 widget=CustomFileInput()
             )
