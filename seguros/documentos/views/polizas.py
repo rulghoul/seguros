@@ -509,9 +509,10 @@ class Siniestro_Update(LoginRequiredMixin, UpdateView):
     poliza = None   
 
     def get_initial(self):
-        initial = super().get_initial()        
+        initial = super().get_initial()     
         siniestro = self.get_object()
         self.poliza = siniestro.poliza
+        self.pk = siniestro.poliza.pk 
         #messages.info(self.request, f"Form valid: se intenta recuperar la poliza con el pk {self.poliza}")
 
         return initial 
@@ -521,7 +522,7 @@ class Siniestro_Update(LoginRequiredMixin, UpdateView):
         return get_object_or_404(mod.Siniestros, pk=siniestro_id)
 
     def get_success_url(self):
-        return reverse_lazy('documentos:siniestros', kwargs={"pk": 3})
+        return reverse_lazy('documentos:siniestros', kwargs={"pk": self.pk})
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
