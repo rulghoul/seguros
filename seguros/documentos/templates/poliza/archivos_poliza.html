@@ -8,6 +8,10 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% crispy form %}
+            <input class="btn btn-primary btn-primary" type="submit" value="Cargar">
+            <a href="{{ origin }}" class="btn btn-secondary">
+                Regresar
+            </a>
         </form>
 
 

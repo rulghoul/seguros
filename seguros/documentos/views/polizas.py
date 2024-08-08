@@ -63,6 +63,11 @@ class polizas_cliente(LoginRequiredMixin, ListView):
 
             
     def get_context_data(self, **kwargs):
+            #Borra las variables de origen de documentos y siniestros
+        if 'origin' in self.request.session:
+            del self.request.session['origin']
+        if 'siniestros_origen' in self.request.session:
+            del self.request.session['siniestros_origen']
         cliente_pk =  self.kwargs.get('pk')
         cliente = mod.PersonaPrincipal.objects.get(pk=cliente_pk)
         context = super().get_context_data(**kwargs)
@@ -192,6 +197,12 @@ def edit_poliza(request, pk=None):
 @transaction.atomic
 def edit_poliza_cliente(request, cliente = None, pk=None):
     cliente_object = get_object_or_404(mod.PersonaPrincipal, pk=cliente)
+
+    #Borra las variables de origen de documentos y siniestros
+    if 'origin' in request.session:
+        del request.session['origin']
+    if 'siniestros_origen' in request.session:
+        del request.session['siniestros_origen']
 
     if pk:
         poliza = get_object_or_404(mod.Poliza, pk=pk)
@@ -345,12 +356,20 @@ class upload_documentos_poliza(LoginRequiredMixin, FormView):
                 self.request.session['origin'] = origin
             else:
                 self.request.session['origin'] = reverse('documentos:clientes')
+        elif self.request.session['origin'] == reverse('documentos:clientes'):
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+
+
         context = super().get_context_data(**kwargs)
         context.update({
             "titulo": f"Documentos:",
             "poliza":  self.poliza , 
             "redirige": "documentos:poliza_cliente_update",
-            "origen": self.request.session['origin'],
+            "origin": self.request.session['origin'],
         })
         return context
 
@@ -411,10 +430,25 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if 'origin' not in self.request.session:
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+        elif self.request.session['origin'] == reverse('documentos:clientes'):
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+
         poliza = mod.Poliza.objects.get(pk=self.poliza_pk)
         context.update({
             "titulo": f"Documentos Siniestro:", 
             "poliza": poliza,
+            "origin": self.request.session['origin'],
             "redirige": f"'documentos:siniestros' { self.poliza_pk }",
         })
         return context
@@ -437,9 +471,24 @@ class Siniestro_Add(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         #messages.info(self.request, f"Se intenta recuperar la poliza con el pk {self.pk}")
+
+        if 'origin' not in self.request.session:
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+        elif self.request.session['origin'] == reverse('documentos:clientes'):
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+
         poliza = get_object_or_404(mod.Poliza, pk=self.pk)
         context["titulo"] = f"Nuevo Siniestro para la poliza:"
         context["poliza"] = poliza
+        context["origin"] = self.request.session['origin']
         context["redirige"] = reverse_lazy('documentos:list_siniestros', kwargs={"pk": self.pk})
         return context
 
@@ -476,7 +525,22 @@ class Siniestro_Update(LoginRequiredMixin, UpdateView):
         
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if 'origin' not in self.request.session:
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+        elif self.request.session['origin'] == reverse('documentos:clientes'):
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['origin'] = origin
+            else:
+                self.request.session['origin'] = reverse('documentos:clientes')
+
         context["titulo"] = "Actualiza Siniestro"
+        context["origin"] = self.request.session['origin']
         context["redirige"] = "documentos:siniestros"
         return context
 
@@ -496,10 +560,28 @@ class Siniestro_List(LoginRequiredMixin, ListView):
             
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        #Borra las variables de origen de documentos y siniestros
+        if 'origin' in self.request.session:
+            del self.request.session['origin']
+
+        if 'siniestros_origen' not in self.request.session:
+            origin = self.request.GET.get('origin')
+            if origin:
+                self.request.session['siniestros_origen'] = origin
+            else:
+                self.request.session['siniestros_origen'] = reverse('documentos:clientes')
+        elif self.request.session['siniestros_origen'] == reverse('documentos:clientes'):
+            origin = self.request.GET.get('siniestros_origen')
+            if origin:
+                self.request.session['siniestros_origen'] = origin
+            else:
+                self.request.session['siniestros_origen'] = reverse('documentos:clientes')
+
         poliza = get_object_or_404(mod.Poliza, pk=self.pk)
         context["titulo"] = "Siniestros"
         context["poliza"] = poliza
         context["cliente"] = poliza.persona_principal.pk
+        context["origin"] = self.request.session['siniestros_origen']
         context["add"] = 'documentos:siniestro_add'
         context["add_label"] = "Nuevo Siniestro"
         context["update"] = "documentos:siniestro_update"

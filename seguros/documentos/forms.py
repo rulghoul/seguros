@@ -436,14 +436,11 @@ class MultiDocumentUploadForm(forms.Form):
                 )
 
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.form_method = 'post'
         self.helper.form_enctype = 'multipart/form-data'
         self.helper.layout = Layout(
             *[Field(archivo) for archivo in lista_archivos],
-            Submit('submit', 'Cargar'),
-            HTML("""
-                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
-                """),
         )
 
 
