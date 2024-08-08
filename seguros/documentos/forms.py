@@ -153,7 +153,7 @@ class PersonaPrincipalForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('curp', css_class='col-md-6'),
+                Div('curp', css_class='col-md-6 curp'),
                 Div('genero', css_class='col-md-3'),
                 Div('estatus_persona', css_class='col-md-3'),
                 css_class='row'
@@ -275,17 +275,30 @@ AsesorEmpresaFormset = inlineformset_factory(
 
 
 class FormBeneficiario(forms.ModelForm):
+    curp = forms.CharField( max_length=18, required=False)
     helper = FormHelper()
     helper.form_tag = False
     helper.layout = Layout(
         Div(
             Div('tipo_persona', css_class='col-md-2'),
-            Div('curp', css_class='col-md-2'),
+            Div('curp', css_class='col-md-2 curp'),
             Div('nombre_completo', css_class='col-md-6'),
             Div('porcentaje_participacion', css_class='col-md-2'),
             css_class='row'
         ),
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        curp = cleaned_data.get('curp')
+
+        if curp:  # Only validate if curp is provided
+            try:
+                curp_validator(curp)
+            except forms.ValidationError as e:
+                self.add_error('curp', e)
+
+        return cleaned_data
 
     class Meta:
         model = modelos.Beneficiarios
@@ -350,6 +363,7 @@ class PolizaForm(forms.ModelForm):
         Div(
             Div('tipo_conducto_pago', css_class='col-md-4'),
             Div('forma_pago', css_class='col-md-4'),
+            Div('periodo', css_class='col-md-4'),
             css_class='row'
         ),
         Div(
@@ -384,7 +398,7 @@ class PolizaForm(forms.ModelForm):
         fields = ['empresa', 'numero_poliza', 'forma_pago', 'asesor_poliza',
                   'tipo_conducto_pago', 'plan', 'fecha_vigencia', 'fecha_emision',
                   'fecha_pago', 'monto_pago', 'estatus',
-                  'suma_asegurada', 'unidad_pago', 'renovacion']
+                  'suma_asegurada', 'unidad_pago', 'renovacion', 'periodo']
 
         widgets = {
             'fecha_vigencia': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
@@ -407,7 +421,7 @@ class PolizaForm(forms.ModelForm):
 from .widgets import CustomFileInput
 
 class MultiDocumentUploadForm(forms.Form):
-    def __init__(self, lista_archivos, archivos_existentes=None, retorno=None, indice=None, modelo=None, *args, **kwargs):
+    def __init__(self, lista_archivos, archivos_existentes=None, modelo=None, archivos_adicionales=None, *args, **kwargs):
         super(MultiDocumentUploadForm, self).__init__(*args, **kwargs)
         
         for archivo in lista_archivos:
@@ -435,12 +449,34 @@ class MultiDocumentUploadForm(forms.Form):
                     label=archivo, 
                 )
 
+        # Campos para archivos adicionales existentes
+        for nombre, archivo in archivos_adicionales.items():
+            self.fields[nombre] = forms.FileField(
+                required=False,
+                label=mark_safe(f'''{nombre}<div class="input-group"><span class="input-group-text"></span>
+                                    {archivo.name.replace(".enc","").replace("documento_poliza/","")}
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{archivo.instance.pk}/modelo/0"><span class="fa fa-eye"></span></a>
+                                    <a class="form-control d-flex h-auto" target="_blank" href="/documentos/descargar/{archivo.instance.pk}/modelo/1"><span class="fa fa-download"></span></a>
+                                    <a class="form-control d-flex h-auto" href="/documentos/delete_file/{archivo.instance.pk}/modelo"><span class="fa fa-trash"></span></a>
+                                    </div>'''),
+                widget=CustomFileInput()
+            )
+
+         # Campos adicionales para nuevos archivos
+        for i in range(len(archivos_adicionales) + 1, 6):
+            self.fields[f'documento_adicional_{i}'] = forms.FileField(
+                required=False,
+                label=mark_safe(f'Documento Adicional {i}<input class="form-control documentName" type="text" name="id_documento_adicional_{i}">')
+            )
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_method = 'post'
         self.helper.form_enctype = 'multipart/form-data'
         self.helper.layout = Layout(
             *[Field(archivo) for archivo in lista_archivos],
+            *[Field(archivo) for archivo in archivos_adicionales],
+            *[Field(f'documento_adicional_{i}') for i in range(len(archivos_adicionales) + 1, 6)],
         )
 
 

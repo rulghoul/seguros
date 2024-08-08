@@ -1,0 +1,9 @@
+<script>
+    $(document).ready(function() {
+        $('.documentName').on('input', function() {
+            var fileInputId = $(this).attr('name');
+            var newName = $(this).val();
+            $('#' + fileInputId).attr('name', newName);
+        });
+    });
+</script>

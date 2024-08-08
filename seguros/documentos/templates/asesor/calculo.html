@@ -1,0 +1,144 @@
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    data = {
+        csrfmiddlewaretoken: csrftoken
+    }
+    $(document).ready(function () {
+
+        const $periodo = $('#id_periodo');
+        const $sumaAsegurada = $('#id_suma_asegurada');
+        const $montoPago = $('#id_monto_pago');
+        const $fechaemision = $('#id_fecha_emision');
+        const $fechaPago = $('#id_fecha_pago');
+        // Cuando cambia el select de asentamiento
+        $('[name="asentamiento"]').change(function () {
+            var asentamientoId = $(this).val();
+            // Asegúrate de actualizar la URL a la ruta correcta de tu servidor
+            var url = '{% url informacion 123 %}'.replace('123', asentamientoId);
+
+            $.ajax({
+                url: url,
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: data,
+                success: function (data) {
+                    // Actualiza los campos con los datos recibidos
+                    $('[name="codigo_postal"]').val(data.codigo_postal);
+                    $('[name="municipio"]').val(data.municipio);
+                    $('[name="estado"]').val(data.estado);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ocurrió un error: " + error);
+                }
+            });
+        });
+
+        //Funciones de Fecha
+
+        function convertirCadenaAFecha(cadenaFecha) {
+            // Dividir la cadena por el separador "-"
+            const partes = cadenaFecha.split('-');
+            
+            const anio = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10) - 1; // Restar 1 porque los meses en JavaScript son indexados desde 0 (enero es 0)
+            const dia = parseInt(partes[2], 10);
+
+            // Crear y devolver el objeto Date
+            //alert('se convierte la fecha emision ' + cadenaFecha + ' en Date' + new Date(anio, mes, dia));
+            return new Date(anio, mes, dia);
+        }
+
+        function convertirFechaACadena(fecha) {
+            const dia = ('0' + fecha.getDate()).slice(-2); // Obtener día y asegurar que tenga dos dígitos
+            const mes = ('0' + (fecha.getMonth() + 1)).slice(-2); // Obtener mes y asegurar que tenga dos dígitos (sumar 1 porque los meses en JavaScript son indexados desde 0)
+            const anio = fecha.getFullYear(); // Obtener año
+            //alert('transformacion nueva '+ `${dia}/${mes}/${anio}` + 'original' + fecha);
+            // Formatear como dd/mm/yyyy
+            return `${anio}-${mes}-${dia}`;
+        }
+
+
+        // Función para calcular el monto a pagar
+        function calcularMontoPago() {
+            const suma = parseFloat($sumaAsegurada.val()) || 0;
+            let factor = 1;
+
+            switch ($periodo.val()) {
+                case 'M': // Mensual
+                    factor = 12;
+                    break;
+                case 'T': // Trimestral
+                    factor = 4;
+                    break;
+                case 'S': // Semestral
+                    factor = 2;
+                    break;
+                case 'A': // Anual
+                    factor = 1;
+                    break;
+            }
+
+            const nuevoMonto = suma / factor;
+            $montoPago.val(nuevoMonto.toFixed(2));
+        }
+
+        // Función para actualizar la fecha de pago
+        function actualizarFechaPago() {
+            let fechaActual = convertirCadenaAFecha($fechaemision.val());;
+            let mesesAAgregar = 0;
+
+            switch ($periodo.val()) {
+                case 'M': // Mensual
+                    mesesAAgregar = 1;
+                    break;
+                case 'T': // Trimestral
+                    mesesAAgregar = 3;
+                    break;
+                case 'S': // Semestral
+                    mesesAAgregar = 6;
+                    break;
+                case 'A': // Anual
+                    mesesAAgregar = 12;
+                    break;
+            }
+            //alert('fecha inicial: ' +fechaActual)
+            fechaActual.setMonth(fechaActual.getMonth() + mesesAAgregar);
+            //alert('fecha nueva: ' +fechaActual)            
+
+            const fechaPagoStr = convertirFechaACadena(fechaActual);
+            $fechaPago.val(fechaPagoStr);
+        }
+
+        // Event listeners para calcular el monto y actualizar la fecha cuando cambia el periodo
+        $periodo.on('change', function () {
+            calcularMontoPago();
+            actualizarFechaPago();
+        });
+
+        $fechaemision.on('change', function () {
+            actualizarFechaPago();
+        });
+
+        // También se puede recalcular al cambiar la suma asegurada
+        $sumaAsegurada.on('blur', calcularMontoPago);
+    });
+
+</script>
