@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from documentos.models import AsesorEmpresa
 
+
 def envia_felicitacion(cliente):
     subject = f"¡Feliz Cumpleaños, [Nombre del Cliente]!"
     message_template = "email_templates/felicitacion.html"  

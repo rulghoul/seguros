@@ -10,40 +10,40 @@
     <title>Correo Cumpleaños</title>
 </head>
 
-{% include 'email_templates/estilo.html' %}
+<body style="font-family: Arial, sans-serif; line-height: 1.5; margin: 0; padding: 0; background-color: #f8f9fa;">
 
-<body>
-
-    <div class="container">
-        <div class="mx-auto text-center"><img src="{% get_imagen_base64 'agencia' %}" height="180px" /></div>
-        <div class="mx-auto text-center"><img src="{% get_imagen_base64 'happy' %}" height="180px" /></div>
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; border-radius: 8px;">
+        <div style="text-align: center;">
+            <img src="{% get_imagen_base64 'agencia' %}" alt="Agencia" style="max-width: 100%; height: 180px;" />
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="{% get_imagen_base64 'happy' %}" alt="Feliz Cumpleaños" style="max-width: 100%; height: 180px;" />
+        </div>
         <br>
-        <p class="h6">Estimado: {{ cliente }}</p>
+        <p style="font-size: 16px; margin-bottom: 10px;">Estimado: {{ cliente }}</p>
 
-        <p>En este día tan especial, queremos desearle un muy feliz cumpleaños. Que su día esté lleno de alegría,
+        <p style="margin-bottom: 15px;">En este día tan especial, queremos desearle un muy feliz cumpleaños. Que su día esté lleno de alegría,
             felicidad y momentos inolvidables junto a sus seres queridos.</p>
 
-        <p>Es un honor para nosotros contar con su confianza y le agradecemos por ser parte de nuestra familia de
+        <p style="margin-bottom: 15px;">Es un honor para nosotros contar con su confianza y le agradecemos por ser parte de nuestra familia de
             asegurados.</p>
 
-        <p>¡Que tenga un excelente año por delante!</p>
-        <p>Con nuestros mejores deseos,</p>
+        <p style="margin-bottom: 15px;">¡Que tenga un excelente año por delante!</p>
+        <p style="margin-bottom: 15px;">Con nuestros mejores deseos,</p>
 
-        <p>{{ asesor }}</p>
-        <p>Teléfono: {{ telefonos }}</p>
+        <p style="margin-bottom: 10px;">{{ asesor }}</p>
+        <p style="margin-bottom: 20px;">Teléfono: {{ telefonos }}</p>
 
-        <p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y
-            sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
+        <p style="background-color: #343a40; color: #ffffff; padding: 10px; border-radius: 5px; word-wrap: break-word; font-size: 14px;">
+            La información contenida en este mensaje de correo electrónico (y sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
             Bilanci y Asesores, además está destinada únicamente para el uso de la o las personas a que está dirigido,
             por lo que se le notifica que está estrictamente
             prohibida cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo
             electrónico por error, debe destruirlo y notificar al remitente
             por esta misma vía. No deberá utilizar, revelar, distribuir, imprimir o copiar este mensaje ni ninguna de
             sus partes si usted no es el destinatario. Aviso de
-            Privacidad: <a
-                href="https://grupobilanci.com/aviso-de-privacidad">https://grupobilanci.com/aviso-de-privacidad</a></p>
-
-
+            Privacidad: <a href="https://grupobilanci.com/aviso-de-privacidad" style="color: #ffffff;">https://grupobilanci.com/aviso-de-privacidad</a>
+        </p>
     </div>
 </body>
 

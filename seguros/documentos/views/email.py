@@ -35,10 +35,9 @@ def email_recordatorio(request, pk):
         "cliente": poliza.persona_principal.pk,
         "tilulo": f"Enviar recordatorio para la poliza {poliza}",
     }
-    messages.info(request, "No fue el contexto")
+    
     if request.method == "POST":
-        try:
-            messages.info(request, "Se esta por enviar el correo")
+        try:            
             envia_recordatorio(poliza=poliza, request=request)
             messages.info(request, "Se envio el correo de recordatorio")
             #logger.info(f"Correo de recordatorio enviado para la póliza {poliza.pk}")
