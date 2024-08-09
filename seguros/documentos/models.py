@@ -21,7 +21,7 @@ STATUS_PLAN = [('TERMINADO'),]
 
 STATUS_SEGURO_VIDA = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ("EN PROCESO"), ("CANCELADO")]
 
-STATUS_GASTOS_MEDICOS = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ('EPR','EN PROCESO')]
+STATUS_GASTOS_MEDICOS = [('PGD','PAGADO'),('PEN','PEDIENTE DE PAGO'), ('EPR','EN PROCESO'), ('CAN', 'CANCELADO')]
 
 UNIDAD_PAGO = [('UDI', 'UDIS'),('PE','PESO'),('DO','DOLAR')]
 
@@ -200,6 +200,7 @@ class Poliza(models.Model):
     fecha_emision = models.DateField(blank=True, null=True, default=None)
     fecha_pago = models.DateField(blank=True, null=True, default=None)
     estatus = models.CharField( max_length=10, choices=STATUS_GASTOS_MEDICOS)  ## Hay catalogo de estatus de polizas?
+    #activo = models.BooleanField(default=True)
     monto_pago = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     suma_asegurada = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, blank=True, null=True)
     unidad_pago = models.CharField( max_length=10, choices=UNIDAD_PAGO, blank=True, null=True, default=None)
