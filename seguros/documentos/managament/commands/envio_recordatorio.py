@@ -12,12 +12,12 @@ class Command(BaseCommand):
         hoy = datetime.now().date()
         for semana in [3,2,1]:
             limite = hoy + timedelta(weeks=semana)
-            por_expirar = Poliza.objects.filter(activo=True, fecha_pago=limite).exclude(estatus ="PGD")
+            por_expirar = Poliza.objects.filter(activo=True, fecha_pago=limite).exclude(estatus__in = ['CAN', "PGD"])
             for poliza in por_expirar:
                 envia(poliza)
                 logger.info(f'Recordatorio enviado para póliza {poliza} a {semana} semana(s) del vencimiento.')
             
-        expirados = Poliza.objects.filter(activo=True, fecha_pago__gt=limite).exclude(estatus ="PGD")
+        expirados = Poliza.objects.filter(activo=True, fecha_pago__gt=hoy).exclude(estatus__in = ['CAN', "PGD"])
 
         for expirado in expirados:
             envia(expirado)
