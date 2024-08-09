@@ -11,10 +11,16 @@ class Command(BaseCommand):
         logger = logging.getLogger(__name__)
         hoy = datetime.now().date()
         for semana in [3,2,1]:
-            fecha_pago = hoy + timedelta(weeks=semana)
-            por_expirar = Poliza.objects.filter(activo=True, fecha_vigencia=fecha_pago).exclude(estatus ="PGD")
+            limite = hoy + timedelta(weeks=semana)
+            por_expirar = Poliza.objects.filter(activo=True, fecha_pago=limite).exclude(estatus ="PGD")
             for poliza in por_expirar:
                 envia(poliza)
                 logger.info(f'Recordatorio enviado para póliza {poliza} a {semana} semana(s) del vencimiento.')
+            
+        expirados = Poliza.objects.filter(activo=True, fecha_pago__gt=limite).exclude(estatus ="PGD")
+
+        for expirado in expirados:
+            envia(expirado)
+            logger.info(f'Recordatorio enviado para póliza {poliza} a {semana} semana(s) del vencimiento.')
         
         self.stdout.write(self.style.SUCCESS(f'{hoy.isocalendar}: Recordatorios de pago enviados con éxito'))
