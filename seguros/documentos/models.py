@@ -143,7 +143,6 @@ class Asesor(models.Model):
     
 
 class Planes(models.Model):
-    clave = ClaveField()
     nombre = models.CharField(max_length=100, blank=True, null=True)
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)
     gastosMedicos = models.BooleanField(default=False)
