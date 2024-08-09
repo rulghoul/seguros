@@ -47,11 +47,11 @@
             {% endif %}
             <td class="text-center">
               
-              <a type="button" class="update-book btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Cargar Documentos" href="{% url documento_url poliza.pk %}" >
+              <a type="button" class="update-book btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Cargar Documentos" href="{% url documento_url poliza.pk %}?origin={{ request.path }}" >
                 <span class="fa fa-upload"></span>
               </a>
 
-              <a type="button" class="update-book btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Mostrar siniestros" href="{% url siniestros_url poliza.pk %}" >
+              <a type="button" class="update-book btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Mostrar siniestros" href="{% url siniestros_url poliza.pk %}?origin={{ request.path }}" >
                 <span class="fa fa-person-falling-burst"></span>
               </a>
 

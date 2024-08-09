@@ -128,7 +128,7 @@
             </h2>
             <div id="docs-colapse" class="accordion-collapse collapse" aria-labelledby="docs-heading">
                 <div class="accordion-body">
-                    <a class="btn btn-secondary col-2" href="{% url documento_url poliza_id %}">Documentos</a>
+                    <a class="btn btn-secondary col-2" href="{% url documento_url poliza_id %}?origin={{ request.path }}">Documentos</a>
                 </div>
             </div>
         </div>
@@ -142,7 +142,7 @@
             </h2>
             <div id="siniestros-colapse" class="accordion-collapse collapse" aria-labelledby="siniestros-heading">
                 <div class="accordion-body">
-                    <a class="btn btn-secondary col-2" href="{% url siniestros_url pk=poliza_id %}">Ver Siniestros</a>
+                    <a class="btn btn-secondary col-2" href="{% url siniestros_url pk=poliza_id %}?origin={{ request.path }}">Ver Siniestros</a>
                 </div>
             </div>
         </div>
@@ -152,96 +152,7 @@
     </div>
 </form>
 
-<script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+{% include 'asesor/calculo.html' %}
 
-    const csrftoken = getCookie('csrftoken');
-
-    data = {
-        csrfmiddlewaretoken: csrftoken
-    }
-    $(document).ready(function () {
-        // Cuando cambia el select de asentamiento
-        $('[name="asentamiento"]').change(function () {
-            var asentamientoId = $(this).val();
-            // Asegúrate de actualizar la URL a la ruta correcta de tu servidor
-            var url = '{% url informacion 123 %}'.replace('123', asentamientoId);
-
-            $.ajax({
-                url: url,
-                xhrFields: {
-                    withCredentials: true
-                },
-                data: data,
-                success: function (data) {
-                    // Actualiza los campos con los datos recibidos
-                    $('[name="codigo_postal"]').val(data.codigo_postal);
-                    $('[name="municipio"]').val(data.municipio);
-                    $('[name="estado"]').val(data.estado);
-                },
-                error: function (xhr, status, error) {
-                    console.error("Ocurrió un error: " + error);
-                }
-            });
-        });
-
-
-        $('[name="curp').on('blur', function () {
-            var curp = $(this).val();
-            if (curp) {
-                $.ajax({
-                    url: '{% url "documentos:buscar_cliente_por_curp" %}',
-                    data: {
-                        'curp': curp,
-                        'csrfmiddlewaretoken': csrftoken,
-                    },
-                    success: function (data) {
-                        if (data.status === 'ok') {
-                            $('[name="nombre"]').val(data.data.nombre);
-                            $('[name="primer_apellido"]').val(data.data.primer_apellido);
-                            $('[name="segundo_apellido"]').val(data.data.segundo_apellido);
-                            $('[name="genero"]').val(data.data.genero);
-                            $('[name="estatus_persona"]').val(data.data.estatus_persona);
-                            $('[name="lugar_nacimiento"]').val(data.data.lugar_nacimiento);
-                            $('[name="fecha_nacimiento"]').val(data.data.fecha_nacimiento);
-                            // Direccion
-                            $('[name="asentamiento"]').val(data.data.asentamiento);
-                            $('[name="codigo_postal"]').val(data.data.codigo_postal);
-                            $('[name="municipio"]').val(data.data.municipio);
-                            $('[name="estado"]').val(data.data.estado);
-
-                            $('[name="calle"]').val(data.data.calle);
-                            $('[name="numero"]').val(data.data.numero);
-                            $('[name="numero_interior"]').val(data.data.numero_interior);
-                            //contacto
-                            $('[name="correo"]').val(data.data.correo);
-                            $('[name="telefono"]').val(data.data.telefono);
-                        } else {
-                            alert(data.message);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Ocurrió un error: " + error);
-                    }
-                });
-            }
-        });
-    });
-
-</script>
 
 {% endblock %}

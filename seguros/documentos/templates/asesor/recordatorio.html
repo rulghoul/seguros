@@ -12,7 +12,7 @@
     <p>¿Quieres enviar correo de recordatorio para la poliza {{ poliza }}?</p>
     <div class="col text-center">
         <input type="submit" name="submit" value="Enviar" class="btn btn-danger" id="submit-save">
-        <a class="btn btn-primary" href="{{ request.META.HTTP_REFERER|escape }}">Regresar</a>
+        <a class="btn btn-primary" href="{% url 'documentos:polizas_cliente' cliente %}">Regresar</a>
     </div>
 </form>
 

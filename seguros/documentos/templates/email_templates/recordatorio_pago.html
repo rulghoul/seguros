@@ -6,48 +6,48 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta charset="UTF-8">    
     <title>Correo Recordatorio</title>
 </head>
 
-<body>
+<body style="font-family: Arial, sans-serif; line-height: 1.5; margin: 0; padding: 0; background-color: #f8f9fa;">
+    {% include 'email_templates/estilo.html' %}
+    <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #ffffff; border-radius: 8px;">
+        <div style="text-align: center;">
+            <img src="{{ imagen_url }}" alt="Logo" style="max-width: 100%; height: 180px;" />
+        </div>
 
-    <div class="container">
+        <hr style="border: 0; border-top: 1px solid #dee2e6; margin: 20px 0;">
 
-        <div class="mx-auto text-center"><img src="{% get_imagen_base64 'agencia' %}" height="180px" /></div>
+        <p style="font-size: 16px; margin-bottom: 10px;">Estimado/a: {{ cliente }}</p>
 
-        <hr class="py-1">
+        <p style="margin-bottom: 15px;">Esperamos que se encuentre bien</p>
 
-        <p class="h6">Estimado/a: {{ cliente }}</p>
-
-        <p>Esperamos que se encuentre bien</p>
-
-        <p>Le recordamos que su póliza de seguro <em>{{ poliza.plan}}</em>
+        <p style="margin-bottom: 15px;">Le recordamos que su póliza de seguro <em>{{ poliza.plan}}</em>
             con número <em>{{ poliza.numero_poliza }}</em> 
-            está próxima a vencer el <em>{{ poliza.fecha_vigencia }}</em> 
-            .  Para garantizar la continuidad de su cobertura, le solicitamos realizar
-            el pago correspondiente antes de esta fecha por un importe de {{ poliza.monto|moneda_mexicana }}</p>
+            está próxima a vencer el <em>{{ poliza.fecha_vigencia }}</em>. Para garantizar la continuidad de su cobertura, le solicitamos realizar
+            el pago correspondiente antes de esta fecha por un importe de {{ poliza.monto_pago|moneda_mexicana }}</p>
 
-        <p>Si tiene alguna pregunta o necesita asistencia, 
+        <p style="margin-bottom: 15px;">Si tiene alguna pregunta o necesita asistencia, 
             no dude en contactarnos. Estamos aquí para ayudarle.</p>
 
-        <p>Muchas gracias por su atención y preferencia.</p>
+        <p style="margin-bottom: 15px;">Muchas gracias por su atención y preferencia.</p>
 
-        <p>Saludos cordiales,</p>
-        <p>{{ asesor.asesor }}</p>
-        <p>{{ asesor.empresa }}</p>
-        <p>{{ asesor.correo_empleado }}</p>
-        <p>Teléfono: {{ asesor.telefono }}</p>
+        <p style="margin-bottom: 15px;">Saludos cordiales,</p>
+        <p style="margin-bottom: 10px;">{{ asesor.asesor }}</p>
+        <p style="margin-bottom: 10px;">{{ asesor.empresa }}</p>
+        <p style="margin-bottom: 10px;">{{ asesor.correo_empleado }}</p>
+        <p style="margin-bottom: 20px;">Teléfono: {{ asesor.telefono }}</p>
 
-<p class="bg-dark text-white break-word p-2">La información contenida en este mensaje de correo electrónico (y sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
-    Bilanci y Asesores, además está destinada únicamente para el uso de la o las personas a que está dirigido, por lo que se le notifica que está estrictamente
-    prohibida cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo electrónico por error, debe destruirlo y notificar al remitente
-    por esta misma vía. No deberá utilizar, revelar, distribuir, imprimir o copiar este mensaje ni ninguna de sus partes si usted no es el destinatario. Aviso de
-    Privacidad: <a href="https://grupobilanci.com/aviso-de-privacidad">https://grupobilanci.com/aviso-de-privacidad</a></p>
+        <p style="background-color: #343a40; color: #ffffff; padding: 10px; border-radius: 5px; word-wrap: break-word; font-size: 14px;">
+            La información contenida en este mensaje de correo electrónico (y sus anexos) es confidencial, restringida y puede contener información propiedad de Grupo
+            Bilanci y Asesores, además está destinada únicamente para el uso de la o las personas a que está dirigido, por lo que se le notifica que está estrictamente
+            prohibida cualquier difusión, distribución o copia del mismo. Si ha recibido este mensaje de correo electrónico por error, debe destruirlo y notificar al remitente
+            por esta misma vía. No deberá utilizar, revelar, distribuir, imprimir o copiar este mensaje ni ninguna de sus partes si usted no es el destinatario. Aviso de
+            Privacidad: <a href="https://grupobilanci.com/aviso-de-privacidad" style="color: #ffffff;">https://grupobilanci.com/aviso-de-privacidad</a>
+        </p>
 
-    <p>Si usted ya realizo el pago haga caso omiso de este correo</p>
+        <p style="margin-top: 20px;">Si usted ya realizo el pago haga caso omiso de este correo</p>
     </div>
 </body>
 

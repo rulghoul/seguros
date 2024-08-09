@@ -205,7 +205,7 @@ class Poliza(models.Model):
     suma_asegurada = models.DecimalField(max_digits=10, decimal_places=2, default=0.0, blank=True, null=True)
     unidad_pago = models.CharField( max_length=10, choices=UNIDAD_PAGO, blank=True, null=True, default=None)
     renovacion = models.BooleanField( default=False) # indeterminado comentar si existe
-    #periodo =  models.CharField( max_length=10, choices=PERIODO, blank=True, null=True, default=None)
+    periodo =  models.CharField( max_length=10, choices=PERIODO, blank=True, null=True, default=None)
 
     class Meta:
         unique_together = (("empresa", "numero_poliza"),)    
