@@ -392,7 +392,7 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
         documentos = mod.DocumentosSiniestros.objects.filter(siniestro_id=self.pk)
 
         for documento in documentos:
-            if documento.descripcion in POLIZA_DESCRIPCIONES:
+            if documento.descripcion in SINIESTRO_DESCRIPCIONES:
                 archivos_existentes[documento.descripcion] = documento.archivo                
             else:
                 archivos_adicionales[documento.descripcion] = documento.archivo
