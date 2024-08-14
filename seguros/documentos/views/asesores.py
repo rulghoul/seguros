@@ -193,25 +193,31 @@ def crear_o_editar_asesor(request, pk=None):
     if pk:
         asesor = mod.Asesor.objects.get(pk=pk)
         user = asesor.usuario
+        titulo = "Editar Asesor"
     else:
         asesor = mod.Asesor()
         user = User()
-
-    helper = formularios.AsesorEmpresaFormSetHelper
+        titulo = "Nuevo Asesor"
+    
+    helper = formularios.AsesorEmpresaFormSetHelper 
     formset = formularios.AsesorEmpresaFormset(request.POST or None, instance=asesor)
     
-    if request.method == 'POST':
+
+    if request.method == 'POST':    
         user_form = formularios.UserForm(request.POST, instance=user)
         if user_form.is_valid():
-            created_user = user_form.save()
-            asesor.usuario = created_user
-            asesor.save()                        
+            if pk:
+                user_form.save()
+            else:
+                created_user = user_form.save()
+                asesor.usuario = created_user
+                asesor.save()
+                envia(request, user)
             if formset.is_valid():
                 formset.save()
-                envia(request, created_user)
-                return redirect('home') 
+                return redirect('documentos:asesor_list') 
                 
-    else:
+    elif request.method == 'GET':
         user_form = formularios.UserForm(instance=user)
         formset = formularios.AsesorEmpresaFormset(instance=asesor)
     
@@ -219,8 +225,10 @@ def crear_o_editar_asesor(request, pk=None):
         'user_form': user_form,
         'formset': formset,
         'helper': helper,
-        'titulo': 'Nuevo Asesor'
+        'titulo': titulo
     })
+
+
 
 class borrar_asesor(LoginRequiredMixin, DeleteView):
     model = mod.Asesor

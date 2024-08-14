@@ -45,11 +45,28 @@ class Poliza_List(LoginRequiredMixin, ListView):
         context["update"] = "documentos:poliza_update"
         context["borra"] = "documentos:poliza_update"
         return context
-            
-class polizas_cliente(LoginRequiredMixin, ListView):
+
+import django_tables2 as tables
+from django_tables2 import SingleTableView
+
+class PolizaTable(tables.Table):
+    class Meta:
+        model = mod.Poliza
+        sequence = ("persona_principal", 
+                    "persona_principal", 
+                    "empresa", 
+                    "plan", 
+                    "numero_poliza", "forma_pago", "fecha_pago", 
+                    "fecha_emision", "estatus" )
+        exclude = ("asesor_poliza", )
+        #attrs = {"class": "table table-striped table-sm"}    
+        
+
+class polizas_cliente(LoginRequiredMixin, SingleTableView):
     model = mod.Poliza
     template_name = 'asesor/polizas_cliente.html'
     context_object_name = 'polizas'
+    table_class = PolizaTable
 
     def get_queryset(self):
         cliente_pk =  self.kwargs.get('pk')
@@ -406,32 +423,28 @@ class upload_documentos_siniestro(LoginRequiredMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        messages.info(self.request, self.request.FILES.getlist)
-        archivos_invalidos = False
-        for descripcion in SINIESTRO_DESCRIPCIONES:
-            files = self.request.FILES.getlist(descripcion)
-            
-            for file in files:
-
-                # Validar tipo de archivo
-                if file.content_type not in settings.ALLOWED_FILE_TYPES:
-                    messages.error(self.request, f"El archivo {file.name} no es de un tipo permitido.")
-                    archivos_invalidos = True
-                    continue
+        #messages.info(self.request, self.request.FILES.getlist)
+        #archivos_invalidos = False
+        for descripcion, file in self.request.FILES.items():
+            # Validar tipo de archivo
+            if file.content_type not in settings.ALLOWED_FILE_TYPES:
+                messages.error(self.request, f"El archivo {file.name} no es de un tipo permitido.")
+                archivos_invalidos = True
+                continue
                 
-                # Validar tamaño de archivo
-                if file.size > int(settings.MAX_FILE_SIZE_MB) * 1024 * 1024:
-                    messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {settings.MAX_FILE_SIZE_MB} MB.")
-                    archivos_invalidos = True
-                    continue
+            # Validar tamaño de archivo
+            if file.size > int(settings.MAX_FILE_SIZE_MB) * 1024 * 1024:
+                messages.error(self.request, f"El archivo {file.name} supera el tamaño máximo permitido de {settings.MAX_FILE_SIZE_MB} MB.")
+                archivos_invalidos = True
+                continue
 
-                obj, created = mod.DocumentosSiniestros.objects.update_or_create(
-                    siniestro_id=self.pk,
-                    descripcion=descripcion,                            
-                    defaults={'activo': True, 'archivo': file}
+            obj, created = mod.DocumentosSiniestros.objects.update_or_create(
+                siniestro_id=self.pk,
+                descripcion=descripcion,                            
+                defaults={'activo': True, 'archivo': file}
                 )
-                if created:
-                    messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
+            if created:
+                messages.info(self.request, f"Se cargó {descripcion} para la póliza.")
         
 
         return redirect(reverse_lazy('documentos:doc_siniestros', args=[self.pk]))
