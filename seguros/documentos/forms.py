@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django_select2 import forms as s2forms
 from django.shortcuts import render, redirect, reverse
 from django.forms import inlineformset_factory, BaseFormSet, formset_factory
@@ -223,9 +224,9 @@ class UserForm(forms.ModelForm):
             css_class='row'
         ),
         Div(
-            Submit('submit', 'Agregar', css_class='btn btn-info'),
+            Submit('submit', 'Guardar', css_class='btn btn-info'),
             HTML("""
-                    <a class="btn btn-primary" href="{{request.META.HTTP_REFERER|escape}}">Regresar</a>
+                    <a class="btn btn-primary" href="{% url 'documentos:asesor_list' %}">Regresar</a>
                 """),
             css_class='col text-center'
         ),
@@ -463,7 +464,7 @@ class MultiDocumentUploadForm(forms.Form):
             )
 
          # Campos adicionales para nuevos archivos
-        for i in range(len(archivos_adicionales) + 1, 6):
+        for i in range(len(archivos_adicionales) + 1, settings.MAXIMOS_ADICIONALES +1):
             self.fields[f'documento_adicional_{i}'] = forms.FileField(
                 required=False,
                 label=mark_safe(f'Documento Adicional {i}<input class="form-control documentName" type="text" name="id_documento_adicional_{i}">')

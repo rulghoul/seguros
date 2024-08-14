@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'colorfield',
     'django_ckeditor_5',
     'django_select2',
+    'django_tables2',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +77,8 @@ TEMPLATES = [
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 SELECT2_BOOTSTRAP = True
-
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5-responsive.html"
+MAXIMOS_ADICIONALES = 5
 WSGI_APPLICATION = "seguros.wsgi.application"
 
 
