@@ -124,10 +124,11 @@ CACHES = {
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://default:a10a03eb865b16a0d018@seguros_redis:6379") + "/2",
+        "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://default:a10a03eb865b16a0d018@seguros_redis:6379") + "/2",        
+        "TIMEOUT": 60 * 60 * 60,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        },
     }
 }
 
