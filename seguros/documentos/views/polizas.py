@@ -9,7 +9,6 @@ from django.db import transaction
 from documentos import models as mod
 from documentos import forms as formularios
 
-
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -20,6 +19,11 @@ from documentos.utils.encript_files import desencripta_archivo, encripta_archivo
 
 import magic #Obtine el mime type del archivo
 from django.http import FileResponse #Devuelve archivos
+#filtros y tablas
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
+from . import filters_tables as tables
+
 
 class Poliza_List(LoginRequiredMixin, ListView):
     model = mod.Poliza
@@ -46,32 +50,18 @@ class Poliza_List(LoginRequiredMixin, ListView):
         context["borra"] = "documentos:poliza_update"
         return context
 
-import django_tables2 as tables
-from django_tables2 import SingleTableView
 
-class PolizaTable(tables.Table):
-    class Meta:
-        model = mod.Poliza
-        sequence = ("persona_principal", 
-                    "persona_principal", 
-                    "empresa", 
-                    "plan", 
-                    "numero_poliza", "forma_pago", "fecha_pago", 
-                    "fecha_emision", "estatus" )
-        exclude = ("asesor_poliza", )
-        #attrs = {"class": "table table-striped table-sm"}    
-        
-
-class polizas_cliente(LoginRequiredMixin, SingleTableView):
+class polizas_cliente(LoginRequiredMixin, SingleTableMixin, FilterView):
     model = mod.Poliza
     template_name = 'asesor/polizas_cliente.html'
     context_object_name = 'polizas'
-    table_class = PolizaTable
+    table_class = tables.PolizaTable
+    filterset_class = tables.PolizaFilter
 
     def get_queryset(self):
         cliente_pk =  self.kwargs.get('pk')
         try:       
-            return mod.Poliza.objects.filter(persona_principal=cliente_pk)
+            return mod.Poliza.objects.filter(persona_principal=cliente_pk).prefetch_related('persona_principal')
         except: 
             return mod.Poliza.objects.none()
             
@@ -152,16 +142,8 @@ def edit_poliza(request, pk=None):
         form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)        
         form_persona_principal = formularios.PersonaPrincipalForm(request.POST or None, instance=poliza.persona_principal)                        
 
-        if form_poliza.is_valid() and form_persona_principal.is_valid():
-
-            persona_principal = form_persona_principal.save()  # Guarda la persona principal
-            poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
-            poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
-            poliza.save()  
-            messages.success(request, "Póliza guardada con éxito.")
-            return redirect('documentos:poliza_update', pk=poliza.pk)
-
-        elif form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
+        # Valida si el formulario principal y los beneficiarios son correctos
+        if form_poliza.is_valid() and form_persona_principal.is_valid() and formset_beneficiario.is_valid():
             
             try:
                 total_porcentaje = 0
@@ -179,10 +161,21 @@ def edit_poliza(request, pk=None):
                 poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
-                messages.success(request, "Se actualizo la Póliza.")                
+                messages.success(request, "Se actualizo la Póliza con beneficiarios.")                
                 return redirect('documentos:poliza_update', pk=poliza.pk)  # Redirige a una lista o alguna URL definida
             else:
                 messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
+        
+        # Si solo el formulario principal es correcto, pero no el de beneficiarios
+        if form_poliza.is_valid() and form_persona_principal.is_valid():
+
+            persona_principal = form_persona_principal.save()  # Guarda la persona principal
+            poliza = form_poliza.save(commit=False)  # Prepara la póliza para guardar
+            poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
+            poliza.save()  
+            messages.success(request, "Póliza guardada con éxito. Sin beneficiarios")
+            return redirect('documentos:poliza_update', pk=poliza.pk)
+        # si fallan los dos formularios
         else:
             if not form_poliza.is_valid():
                 messages.error(request, "Hubo un problema con el formulario de la póliza: " + ", ".join([f"{field}: {error}" for field, error in form_poliza.errors.items()]))
@@ -239,13 +232,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
         #messages.success(request, "Se entro al post")
         form_poliza = formularios.PolizaForm(request.POST or None, instance=poliza)
 
-        if form_poliza.is_valid():            
-            poliza = form_poliza.save(commit=False)  
-            poliza.save()  
-            messages.success(request, "Póliza guardada con éxito.")
-            #return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
-
-        elif form_poliza.is_valid() and formset_beneficiario.is_valid():
+        if form_poliza.is_valid() and formset_beneficiario.is_valid():
             
             try:
                 total_porcentaje = 0
@@ -262,10 +249,20 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
                 poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
-                messages.success(request, "Póliza guardada con éxito.")                
+                messages.success(request, "Póliza y Beneficiarios guarddos con éxito.")                
                 return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
-            else:
+            else:           
+                poliza = form_poliza.save(commit=False)  
+                poliza.save()  
                 messages.error(request, "La suma de los porcentajes de participación de los beneficiarios debe ser exactamente 100%.")  
+        
+        if form_poliza.is_valid():            
+            poliza = form_poliza.save(commit=False)  
+            poliza.save()  
+            messages.success(request, "Póliza guardada con éxito. No se guardo informacion de los beneficiarios")
+            #return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
+
+        
         else:
             if not form_poliza.is_valid():
                 messages.error(request, "Hubo un problema con el formulario de la póliza: " + ", ".join([f"{field}: {error}" for field, error in form_poliza.errors.items()]))            

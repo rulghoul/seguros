@@ -1,0 +1,17 @@
+
+    <a type="button" class="update-book btn btn-sm btn-secondary" data-bs-toggle="tooltip" title="Cargar Documentos" href="{% url documento_url record.pk %}?origin={{ request.path }}">
+        <span class="fa fa-upload"></span>
+    </a>
+    <a type="button" class="update-book btn btn-sm btn-warning" data-bs-toggle="tooltip" title="Mostrar siniestros" href="{% url siniestros_url record.pk %}?origin={{ request.path }}">
+        <span class="fa fa-person-falling-burst"></span>
+    </a>
+    <a type="button" class="update-book btn btn-sm btn-success" data-bs-toggle="tooltip" title="Enviar Recordatorio de pago" href="{% url recordatorio_url record.pk %}">
+        <span class="fa fa-envelope"></span>
+    </a>
+    <a type="button" class="update-book btn btn-sm btn-info" data-bs-toggle="tooltip" title="Editar Poliza" href="{% url update record.pk cliente_pk %}">
+        <span class="fa fa-pencil"></span>
+    </a>
+    <a type="button" class="delete-book btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Borrar Poliza" href="{% url borra record.pk %}">
+        <span class="fa fa-trash"></span>
+    </a>
+

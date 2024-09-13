@@ -14,6 +14,9 @@ from . import forms as formularios
 from . import models as mod
 from . import xml_import as xml
 
+import django_tables2 as tables
+from django_filters import FilterSet
+
 @staff_member_required
 def upload_xml(request):
     
