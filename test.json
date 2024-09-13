@@ -264,3 +264,28 @@
   "messageStatus": "Pago en proceso",
   "trackingKey": "1234628"
 }
+{
+  {
+    "paramName": "urlaeftelefono",
+    "paramValue": "http://pago-oxxo-aef-service-v1-stable.plataforma.svc.cluster.local"
+  },
+  {
+    "paramName": "urlsms",
+    "paramValue": "http://coa-ms-sms-service-v1-stable.coa.svc.cluster.local"
+  },
+  {
+    "paramName": "urlpersona",
+    "paramValue": "http://10.1.44.61:8182" #el valor que tenga el componente en tijuana
+  },
+  {
+    "paramName": "urlcontrato",
+    "paramValue": "http://10.1.44.166:8080" #el valor que tenga el componente en tijuana
+  },
+  {
+    "paramName": "urlcontratofecha",
+    "paramValue": "http://contratos-findep-service-v1-stable.plataforma.svc.cluster.local"
+  }
+}
+
+
+ReferenceResponse(headerResponse=HeaderResponse(mensaje=SUCCESS, estatus=true, uid=498e794a-d029-49e5-86d3-2b4b7d3233b8, code=200), payload=Payload(mensaje=Se encontraron 1 contratos relacionados a la referencia 0001930002757627, origenReferencia=ORISIF, tipoReferencia=null, tipoPago=null, idPersona=000728195945, listContratos=[Contrato(id=2186298, noContrato=000002757627, noPersona=000728195945, empresa=000100000004, monto=781.0, referenciaOXXO=530002757627311215014999990000, referenciaOPENPAY=0001930002757627, referenciaSTP=646024102620200382, referenciaHSBC=null, referenciaBBVA=null, referenciaBNTE=null, garantiaOXXO=null, garantiaOPENPAY=null, fechaOperacion=2024-03-26, fechaValor=2024-03-26, fechaCreacion=2024-03-26T13:53:42.141902, fechaUltActualizacion=2024-05-17T10:32:31.752, origen=ORISIF, bonifica=null, tipoReferencia=null, tipoPago=null, sucursal=0, codigoTransaccion=null, status=ACTIVA)]))

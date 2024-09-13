@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'django_select2',
     'django_tables2',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

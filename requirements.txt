@@ -34,3 +34,4 @@ gunicorn==21.2.0
 cryptography==42.0.8
 python-magic==0.4.27
 django-tables2==2.7.0
+django-filter==24.3
