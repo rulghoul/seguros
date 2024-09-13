@@ -249,7 +249,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
                 poliza.persona_principal = persona_principal  # Vincula la persona principal a la póliza
                 poliza.save()  # Guarda la póliza
                 formset_beneficiario.save()
-                messages.success(request, "Póliza guardada con éxito.")                
+                messages.success(request, "Póliza y Beneficiarios guarddos con éxito.")                
                 return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
             else:           
                 poliza = form_poliza.save(commit=False)  
@@ -259,7 +259,7 @@ def edit_poliza_cliente(request, cliente = None, pk=None):
         if form_poliza.is_valid():            
             poliza = form_poliza.save(commit=False)  
             poliza.save()  
-            messages.success(request, "Póliza guardada con éxito. Sin Beneficiario")
+            messages.success(request, "Póliza guardada con éxito. No se guardo informacion de los beneficiarios")
             #return redirect('documentos:poliza_cliente_update', pk=poliza.pk, cliente=cliente)
 
         
