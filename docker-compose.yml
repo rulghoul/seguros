@@ -7,8 +7,6 @@ services:
       POSTGRES_USER: seguros
       POSTGRES_PASSWORD: T3@tbycCM2Unz
       POSTGRES_DB: seguros
-    ports:
-      - "6432:5432"
 
   redis:
     image: redis
@@ -26,8 +24,8 @@ services:
       SEGUROS_SUPERUSER_USERNAME: "organizame.admin"
       DEBUG: 1
       SECRET_KEY: k$^m!=dp7ah&0_(9&0!b(47thue*@2x)u=883w3)1*pt8ae(i=
-      SEGUROS_ALLOWED_HOSTS: localhost
-      SEGUROS_CSRF_TRUSTED_ORIGINS: "http://localhost:1337,http://127.0.0.1:1337"
+      SEGUROS_ALLOWED_HOSTS: seguros.rulo-desarrollo.cfd
+      SEGUROS_CSRF_TRUSTED_ORIGINS: "http://seguros.rulo-desarrollo.cfd,https://seguros.rulo-desarrollo.cfd"
       SEGUROS_SQL_ENGINE: django.db.backends.postgresql
       SEGUROS_SQL_DATABASE: seguros
       SEGUROS_SQL_USER: seguros
@@ -44,16 +42,12 @@ services:
     depends_on:
       - db
       - redis
-    ports:
-      - "8000:8000"
 
   nginx:    
     build: ./nginx
     volumes:
       - static:/web/static
       - media:/web/media
-    ports:
-      - "443:443"
     depends_on:
       - django
     networks:
