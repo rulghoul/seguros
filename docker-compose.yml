@@ -9,11 +9,15 @@ services:
       POSTGRES_DB: seguros
     ports:
       - "6432:5432"
+    networks:
+      - proxy
 
   redis:
     image: redis
     volumes:
       - redis_data:/data
+    networks:
+      - proxy
 
   django:
     build: .
@@ -46,6 +50,8 @@ services:
       - redis
     ports:
       - "8000:8000"
+    networks:
+      - proxy
 
   nginx:    
     build: ./nginx
@@ -76,7 +82,5 @@ volumes:
 networks:
   proxy:
     external: true 
-  default:
-    name: seguros-network
 
 
