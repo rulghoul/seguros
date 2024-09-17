@@ -53,9 +53,18 @@ services:
       - static:/web/static
       - media:/web/media
     ports:
-      - "1337:80"
+      - "443:443"
     depends_on:
       - django
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.seguros.rule=Host(`seguros.rulo-desarrollo.cfd`)"
+      - "traefik.http.routers.seguros.entrypoints=websecure"
+      - "traefik.http.routers.seguros.tls.certresolver=myresolver"
+
 
 
 volumes:
@@ -65,6 +74,9 @@ volumes:
   media:
 
 networks:
+  proxy:
+    external: true 
   default:
     name: seguros-network
+
 
