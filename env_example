@@ -1,0 +1,31 @@
+# PostgreSQL settings
+POSTGRES_USER=seguros
+POSTGRES_PASSWORD=n6C2.zxSYX9L
+POSTGRES_DB=seguros
+SEGUROS_SQL_PORT=5432
+
+# Django superuser credentials
+SEGUROS_SUPERUSER_PASSWORD=contraseñita
+SEGUROS_SUPERUSER_EMAIL=vivadagon@gmail.com
+SEGUROS_SUPERUSER_USERNAME=organizame.admin
+
+# Django settings
+DEBUG=True  # or False in production
+SECRET_KEY='IAfsGflHR7pAOoDchHKViT52HIiSiOkf1WgD3gq9-PM='
+SEGUROS_ALLOWED_HOSTS=seguros.rulo-desarrollo.cfd,localhost
+SEGUROS_CSRF_TRUSTED_ORIGINS=https://seguros.rulo-desarrollo.cfd
+
+
+# Email settings
+EMAIL_HOST_USER=coreo@gmail.com
+EMAIL_HOST_PASSWORD=contraseñita
+EMAIL_DEAFULT_FROM=correo@gmail.com
+
+# Other custom settings
+MAX_FILE_SIZE_MB=1
+RUL_ASU_BET="+r7yx(=f$9@lk7_p+#vxr)8-#48h1x^^!)e+jo1)!$bch!m87s"
+ALLOWED_FILE_TYPES=.jpg,.png,.pdf
+
+# TRAEFIC
+NGINX_HOST=seguros.raul-desarrollo.cfd
+SERVICE_NAME=seguros

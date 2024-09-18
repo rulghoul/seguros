@@ -4,11 +4,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: seguros
-      POSTGRES_PASSWORD: T3@tbycCM2Unz
-      POSTGRES_DB: seguros
-    ports:
-      - "6432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
 
   redis:
     image: redis
@@ -21,42 +19,46 @@ services:
       - static:/seguros/seguros/seguros/static
       - media:/seguros/seguros/seguros/media
     environment:
-      SEGUROS_SUPERUSER_PASSWORD: "contraseñita"
-      SEGUROS_SUPERUSER_EMAIL: "example@example.com"
-      SEGUROS_SUPERUSER_USERNAME: "organizame.admin"
-      DEBUG: 1
-      SECRET_KEY: k$^m!=dp7ah&0_(9&0!b(47thue*@2x)u=883w3)1*pt8ae(i=
-      SEGUROS_ALLOWED_HOSTS: localhost
-      SEGUROS_CSRF_TRUSTED_ORIGINS: "http://localhost:1337,http://127.0.0.1:1337"
+      SEGUROS_SUPERUSER_PASSWORD: ${SEGUROS_SUPERUSER_PASSWORD}
+      SEGUROS_SUPERUSER_EMAIL: ${SEGUROS_SUPERUSER_EMAIL}
+      SEGUROS_SUPERUSER_USERNAME: ${SEGUROS_SUPERUSER_USERNAME}
+      DEBUG: ${DEBUG}
+      SECRET_KEY: ${SECRET_KEY}
+      SEGUROS_ALLOWED_HOSTS: ${SEGUROS_ALLOWED_HOSTS}
+      SEGUROS_CSRF_TRUSTED_ORIGINS: ${SEGUROS_CSRF_TRUSTED_ORIGINS}
       SEGUROS_SQL_ENGINE: django.db.backends.postgresql
-      SEGUROS_SQL_DATABASE: seguros
-      SEGUROS_SQL_USER: seguros
-      SEGUROS_SQL_PASSWORD: T3@tbycCM2Unz
+      SEGUROS_SQL_DATABASE: ${POSTGRES_DB}
+      SEGUROS_SQL_USER: ${POSTGRES_USER}
+      SEGUROS_SQL_PASSWORD: ${POSTGRES_PASSWORD}
       SEGUROS_SQL_HOST: db
-      SEGUROS_SQL_PORT: 5432
+      SEGUROS_SQL_PORT: ${SEGUROS_SQL_PORT}
       SEGUROS_REDIS: "redis://redis:6379"
-      EMAIL_HOST_USER: "elmonjeamarillo@gmail.com"
-      EMAIL_HOST_PASSWORD: "gzrlntcjrufjnvdt"
-      EMAIL_DEAFULT_FROM: "elmonjeamarillo@gmail.com"
-      MAX_FILE_SIZE_MB: 1
-      RUL_ASU_BET: "_DVWRoqmwRLj-ywo5h0eD0QqaQJeL2ZzQ5hPqQMwX3U="
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      EMAIL_DEAFULT_FROM: ${EMAIL_DEAFULT_FROM}
+      MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB}
+      RUL_ASU_BET: ${RUL_ASU_BET}
       ALLOWED_FILE_TYPES: "application/pdf,image/jpeg,image/png,image/webp"
     depends_on:
       - db
       - redis
-    ports:
-      - "8000:8000"
 
-  nginx:    
+  nginx:
     build: ./nginx
     volumes:
       - static:/web/static
       - media:/web/media
-    ports:
-      - "1337:80"
     depends_on:
       - django
-
+    networks:
+      - default
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.seguros.rule=Host(`${NGINX_HOST}`)"
+      - "traefik.http.routers.seguros.entrypoints=websecure"
+      - "traefik.http.routers.seguros.tls.certresolver=letsencrypt"
+      - "traefik.http.services.seguros.loadbalancer.server.port=80"
 
 volumes:
   postgres_data:
@@ -66,5 +68,5 @@ volumes:
 
 networks:
   default:
-    name: seguros-network
-
+  traefik-public:
+    external: true
