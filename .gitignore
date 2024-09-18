@@ -13,7 +13,7 @@ media
 *.bak 
 
 # Variables Entorno # 
-.env.*
+.env
 
 
 # If you are using PyCharm # 
