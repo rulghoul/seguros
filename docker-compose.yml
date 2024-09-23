@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: seguros
       POSTGRES_PASSWORD: T3@tbycCM2Unz
       POSTGRES_DB: seguros
-
+      
   redis:
     image: redis
     volumes:
@@ -58,7 +58,7 @@ services:
       - "traefik.http.routers.seguros.rule=Host(`seguros.rulo-desarrollo.cfd`)"
       - "traefik.http.routers.seguros.entrypoints=websecure"
       - "traefik.http.routers.seguros.tls.certresolver=myresolver"
-
+      - "traefik.http.services.seguros.loadbalancer.server.port=80"
 
 
 volumes:
