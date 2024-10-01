@@ -7,7 +7,9 @@ class Command(BaseCommand):
     help = 'Load initial data using loaddata if not already loaded.'
 
     def handle(self, *args, **kwargs):
-        json_file_path = os.path.join('/seguros', 'sepomex_backup.json')  # Ruta al archivo JSON
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_file_path = os.path.join(current_dir, '..', '..', '..', 'sepomex_backup.json')  # Ruta al archivo JSON
+        print(json_file_path)
 
         # Verificar si los datos ya se han cargado
         if not (Estado.objects.exists() or Municipio.objects.exists() or 
@@ -19,4 +21,8 @@ class Command(BaseCommand):
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f'An error occurred while loading data: {e}'))
         else:
+            if os.path.exists(json_file_path):
+                self.stdout.write(self.style.SUCCESS(f"Existe el archivo {json_file_path}"))
+            else:
+                self.stdout.write(self.style.ERROR(f"No existe el archivo {json_file_path}"))
             self.stdout.write(self.style.WARNING('Data already loaded. Skipping.'))
