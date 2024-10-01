@@ -1,5 +1,5 @@
 services:
-  db:
+  postgresql:
     image: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -30,7 +30,7 @@ services:
       SEGUROS_SQL_DATABASE: ${POSTGRES_DB}
       SEGUROS_SQL_USER: ${POSTGRES_USER}
       SEGUROS_SQL_PASSWORD: ${POSTGRES_PASSWORD}
-      SEGUROS_SQL_HOST: db
+      SEGUROS_SQL_HOST: postgresql
       SEGUROS_SQL_PORT: ${SEGUROS_SQL_PORT}
       SEGUROS_REDIS: "redis://redis:6379"
       EMAIL_HOST_USER: ${EMAIL_HOST_USER}
@@ -38,9 +38,9 @@ services:
       EMAIL_DEAFULT_FROM: ${EMAIL_DEAFULT_FROM}
       MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB}
       RUL_ASU_BET: ${RUL_ASU_BET}
-      ALLOWED_FILE_TYPES: "application/pdf,image/jpeg,image/png,image/webp"
+      ALLOWED_FILE_TYPES: ${ALLOWED_FILE_TYPES}
     depends_on:
-      - db
+      - postgresql
       - redis
 
   nginx:
@@ -52,13 +52,13 @@ services:
       - django
     networks:
       - default
-      - traefik-public
+      - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.seguros.rule=Host(`${NGINX_HOST}`)"
-      - "traefik.http.routers.seguros.entrypoints=websecure"
-      - "traefik.http.routers.seguros.tls.certresolver=letsencrypt"
-      - "traefik.http.services.seguros.loadbalancer.server.port=80"
+      - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${NGINX_HOST}`)"
+      - "traefik.http.routers.${SERVICE_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.${SERVICE_NAME}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=80"
 
 volumes:
   postgres_data:
@@ -68,5 +68,5 @@ volumes:
 
 networks:
   default:
-  traefik-public:
+  proxy:
     external: true

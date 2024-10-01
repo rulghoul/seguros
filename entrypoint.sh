@@ -24,7 +24,10 @@ python manage.py migrate --noinput
 # Recopilar archivos estáticos
 python manage.py collectstatic --noinput --clear
 
+#Crea el usuario para la administracion del sistema
 python manage.py crear_usuario
+#Carga los valores de sepomex si aun no se ha realizado
+python manage.py sepomex_inicial
 #Valores del tema
 python manage.py carga_tema_base
 

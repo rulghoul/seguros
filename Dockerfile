@@ -6,7 +6,7 @@
 FROM python:3.12-slim as builder
 
 # Definir el directorio de trabajo
-ENV APP_HOME=/seguros/seguros
+ENV APP_HOME=/seguros
 WORKDIR $APP_HOME
 
 # Instalar dependencias del sistema necesarias para la construcción
@@ -30,7 +30,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt
 FROM python:3.12-slim
 
 # Definir directorio de trabajo
-ENV APP_HOME=/seguros/seguros
+ENV APP_HOME=/seguros
 WORKDIR $APP_HOME
 
 # Instalar cron y copiar las dependencias desde el builder
