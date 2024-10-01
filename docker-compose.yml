@@ -16,8 +16,8 @@ services:
   django:
     build: .
     volumes:
-      - static:/seguros/seguros/seguros/static
-      - media:/seguros/seguros/seguros/media
+      - static:/seguros/seguros/static
+      - media:/seguros/seguros/media
     environment:
       SEGUROS_SUPERUSER_PASSWORD: ${SEGUROS_SUPERUSER_PASSWORD}
       SEGUROS_SUPERUSER_EMAIL: ${SEGUROS_SUPERUSER_EMAIL}

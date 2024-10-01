@@ -8,7 +8,7 @@ media
 /seguros/seguros/static
 /seguros/seguros/media
 /documentacion/build
-
+secure.env
 # Backup files # 
 *.bak 
 

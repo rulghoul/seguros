@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Load initial data using loaddata if not already loaded.'
 
     def handle(self, *args, **kwargs):
-        json_file_path = os.path.join('/seguros/seguros/', 'sepomex_backup.json')  # Ruta al archivo JSON
+        json_file_path = os.path.join('/seguros', 'sepomex_backup.json')  # Ruta al archivo JSON
 
         # Verificar si los datos ya se han cargado
         if not (Estado.objects.exists() or Municipio.objects.exists() or 
