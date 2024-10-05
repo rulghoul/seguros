@@ -5,12 +5,13 @@ from django.views.generic import ListView
 
 from django.http import HttpResponse
 from django.template import loader
+from django.contrib import messages 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetDoneView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-
-from tema.models import parametros_colores, parametros_imagenes
+from tema.models import parametros_colores, parametros_imagenes, Subscription
 # Create your views here.
 
 ####### Parametros de colores #########
@@ -118,6 +119,17 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         super().form_valid(form)
+        user = self.request.user
+        try:
+            subscription = Subscription.objects.get(user=user)
+            if not subscription.is_active():
+                messages.error(self.request, "Tu suscripción ha expirado. Favor de realizar el pago.")
+                return redirect('subscription_payment')
+        except Subscription.DoesNotExist:
+            messages.error(self.request, "No tienes una suscripción activa. Favor de suscribirte.")
+            return redirect('subscription_payment')
+        
+        
         return redirect('home')
 
 

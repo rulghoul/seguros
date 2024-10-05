@@ -29,3 +29,4 @@ ALLOWED_FILE_TYPES=.jpg,.png,.pdf
 # TRAEFIC
 NGINX_HOST=seguros.raul-desarrollo.cfd
 SERVICE_NAME=seguros
+REPLICAS=1

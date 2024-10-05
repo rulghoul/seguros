@@ -88,8 +88,6 @@ class FormaPago(models.Model): #("CLIENTE", "BENEFICIARIO")
         return self.descripcion
 
 
-
-
 class TipoMediocontacto(models.Model):
     descripcion = models.CharField(max_length=20, unique=True)
     activo = models.BooleanField(default=True)
@@ -151,7 +149,8 @@ class Planes(models.Model):
     def __str__(self) -> str:
         return self.nombre
 
-class PersonaBase(models.Model):
+
+class PersonaPrincipal(models.Model):  
     curp = models.CharField(max_length=20)
     nombre = models.CharField(max_length=80)  # Asegúrate de que el max_length sea suficiente para ambos casos
     primer_apellido = models.CharField(max_length=120)
@@ -159,10 +158,6 @@ class PersonaBase(models.Model):
     genero = models.CharField(max_length=1, choices=OPCIONES_GENERO)
     estatus_persona = models.CharField(max_length=10, choices=STATUS_PERSONA) ## Hay catalogo de estatus de personas?    
 
-    class Meta:
-        abstract = True
-
-class PersonaPrincipal(PersonaBase):  
     asesor_cliente = models.ForeignKey(Asesor, on_delete=models.CASCADE)
     lugar_nacimiento = models.CharField( max_length=50, blank=True, null=True)  
     fecha_nacimiento = models.DateField()   
@@ -182,11 +177,7 @@ class PersonaPrincipal(PersonaBase):
         unique_together = (("asesor_cliente", "curp"),) 
     
 
-class PersonaRelacionada(PersonaBase):
-    #Nombre, parentesco, porcentaje
-    parentesco = models.ForeignKey(Parentesco, on_delete=models.CASCADE)
-    persona_principal = models.ForeignKey(PersonaPrincipal, on_delete=models.CASCADE) 
-    
+   
 
 class Poliza(models.Model):
     empresa = models.ForeignKey(EmpresaContratante, on_delete=models.CASCADE)

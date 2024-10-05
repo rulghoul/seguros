@@ -14,7 +14,7 @@ services:
       - redis_data:/data
 
   django:
-    build: .
+    image: seguros:lasted
     volumes:
       - static:/seguros/seguros/static
       - media:/seguros/seguros/media
@@ -38,7 +38,11 @@ services:
       EMAIL_DEAFULT_FROM: ${EMAIL_DEAFULT_FROM}
       MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB}
       RUL_ASU_BET: ${RUL_ASU_BET}
-      ALLOWED_FILE_TYPES: ${ALLOWED_FILE_TYPES}
+      ALLOWED_FILE_TYPES: ${ALLOWED_FILE_TYPES}    
+    deploy:
+      mode: replicated
+      replicas: ${REPLICAS:1}
+    restart: unless-stopped
     depends_on:
       - postgresql
       - redis

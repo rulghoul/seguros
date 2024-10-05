@@ -1,6 +1,9 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
 from colorfield.fields import ColorField
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
 
 COLOR_CHOICES = [
     ('pleca', 'Color de pleca'),
@@ -30,3 +33,33 @@ class parametros_imagenes(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Subscription(models.Model):
+    MENSUAL = 'M'
+    TRIMISTRAL = 'Q'
+    SEMESTRAL = 'S'
+    ANUAL = "A"
+    SUBSCRIPTION_CHOICES = [
+        (MENSUAL, 'Mensual'),
+        (TRIMISTRAL, 'Trimestral'),
+        (SEMESTRAL, 'Semestral'),
+        (ANUAL, 'Anual'),
+    ]
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subscription_type = models.CharField(max_length=1, choices=SUBSCRIPTION_CHOICES)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.end_date:
+            if self.subscription_type == self.MONTHLY:
+                self.end_date = self.start_date + timedelta(days=30)
+            elif self.subscription_type == self.QUARTERLY:
+                self.end_date = self.start_date + timedelta(days=90)
+            elif self.subscription_type == self.SEMIANNUAL:
+                self.end_date = self.start_date + timedelta(days=180)
+        super().save(*args, **kwargs)
+
+    def is_active(self):
+        return timezone.now() <= self.end_date
