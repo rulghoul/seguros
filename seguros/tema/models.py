@@ -36,30 +36,60 @@ class parametros_imagenes(models.Model):
     
 class Subscription(models.Model):
     MENSUAL = 'M'
-    TRIMISTRAL = 'Q'
+    TRIMESTRAL = 'Q'
     SEMESTRAL = 'S'
     ANUAL = "A"
     SUBSCRIPTION_CHOICES = [
         (MENSUAL, 'Mensual'),
-        (TRIMISTRAL, 'Trimestral'),
+        (TRIMESTRAL, 'Trimestral'),
         (SEMESTRAL, 'Semestral'),
         (ANUAL, 'Anual'),
     ]
+    periodos = {
+        MENSUAL: 30,
+        TRIMESTRAL: 90,
+        SEMESTRAL: 182,
+        ANUAL: 365,
+    }
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     subscription_type = models.CharField(max_length=1, choices=SUBSCRIPTION_CHOICES)
-    start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField()
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
 
     def save(self, *args, **kwargs):
         if not self.end_date:
-            if self.subscription_type == self.MONTHLY:
+            if self.subscription_type == self.MENSUAL:
                 self.end_date = self.start_date + timedelta(days=30)
-            elif self.subscription_type == self.QUARTERLY:
+            elif self.subscription_type == self.TRIMESTRAL:
                 self.end_date = self.start_date + timedelta(days=90)
-            elif self.subscription_type == self.SEMIANNUAL:
-                self.end_date = self.start_date + timedelta(days=180)
+            elif self.subscription_type == self.SEMESTRAL:
+                self.end_date = self.start_date + timedelta(days=182)
+            elif self.subscription_type == self.ANUAL:
+                self.end_date = self.start_date + timedelta(days=365)
+        else:
+            if self.subscription_type == self.MENSUAL:
+                self.end_date = self.end_date + timedelta(days=30)
+            elif self.subscription_type == self.TRIMESTRAL:
+                self.end_date = self.end_date + timedelta(days=90)
+            elif self.subscription_type == self.SEMESTRAL:
+                self.end_date = self.end_date + timedelta(days=182)
+            elif self.subscription_type == self.ANUAL:
+                self.end_date = self.end_date + timedelta(days=365)
         super().save(*args, **kwargs)
 
     def is_active(self):
-        return timezone.now() <= self.end_date
+        return timezone.now().date() <= self.end_date
+    
+    def is_ending(self):
+        diferencia = self.end_date - timezone.now().date()
+        dias_diferencia = diferencia.days
+
+        total_dias = self.periodos.get(self.subscription_type, 0)
+        umbral = total_dias / 10  # Calcula el 10% del periodo total
+
+        # Asegúrate de que dias_diferencia no sea negativo
+        if dias_diferencia <= 0:
+            return True
+
+        return dias_diferencia >= umbral

@@ -3,7 +3,7 @@
 ###########
 
 # Usar imagen base oficial de Python para la fase de construcción
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 
 # Definir el directorio de trabajo
 ENV APP_HOME=/seguros
@@ -53,4 +53,4 @@ COPY entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
 # Configurar el script de entrada como punto de entrada
-ENTRYPOINT ["bash", "entrypoint.sh"]
+#ENTRYPOINT ["bash", "entrypoint.sh"]

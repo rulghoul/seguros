@@ -54,8 +54,16 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         asesor_data = validated_data.pop('asesor')
-        asesor = AsesorSerializer.create(AsesorSerializer(), validated_data=asesor_data)
+        # Crear o actualizar el asesor y usuario asociado
+        asesor = AsesorSerializer.create(AsesorSerializer(context=self.context), validated_data=asesor_data)
+        user = asesor.usuario
 
-        # Crear la suscripción vinculada al asesor
-        subscription = Subscription.objects.create(asesor=asesor.usuario, **validated_data)
+        # Obtener o crear la suscripción vinculada al usuario
+        subscription, created = Subscription.objects.get_or_create(user=user, defaults=validated_data)
+
+        if not created:
+            # Si la suscripción ya existe, actualiza el tipo y la fecha de finalización
+            subscription.subscription_type = validated_data.get('subscription_type', subscription.subscription_type)
+            subscription.save()
+
         return subscription

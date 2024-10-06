@@ -6,7 +6,7 @@ from django.views.generic import ListView
 from django.http import HttpResponse
 from django.template import loader
 from django.contrib import messages 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetDoneView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -123,14 +123,16 @@ class CustomLoginView(LoginView):
         try:
             subscription = Subscription.objects.get(user=user)
             if not subscription.is_active():
-                messages.error(self.request, "Tu suscripción ha expirado. Favor de realizar el pago.")
-                return redirect('subscription_payment')
+                messages.error(self.request, "Tu suscripción ha expirado. Favor de realizar el pago.")                
+            else:
+                if subscription.is_ending():
+                    messages.warning(self.request, "Tu suscripción esta por expirar. Favor de realizar el pago para renovarla.")
         except Subscription.DoesNotExist:
             messages.error(self.request, "No tienes una suscripción activa. Favor de suscribirte.")
-            return redirect('subscription_payment')
+            logout(self.request)
+            #cancelar el login        
         
-        
-        return redirect('home')
+        return redirect('home')    
 
 
 class CustomLogoutView(LogoutView):
