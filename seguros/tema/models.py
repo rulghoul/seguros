@@ -39,12 +39,14 @@ class Subscription(models.Model):
     TRIMESTRAL = 'Q'
     SEMESTRAL = 'S'
     ANUAL = "A"
+
     SUBSCRIPTION_CHOICES = [
         (MENSUAL, 'Mensual'),
         (TRIMESTRAL, 'Trimestral'),
         (SEMESTRAL, 'Semestral'),
         (ANUAL, 'Anual'),
     ]
+
     periodos = {
         MENSUAL: 30,
         TRIMESTRAL: 90,
@@ -66,7 +68,7 @@ class Subscription(models.Model):
             elif self.subscription_type == self.SEMESTRAL:
                 self.end_date = self.start_date + timedelta(days=182)
             elif self.subscription_type == self.ANUAL:
-                self.end_date = self.start_date + timedelta(days=365)
+                self.end_date = self.start_date + timedelta(years=1)
         else:
             if self.subscription_type == self.MENSUAL:
                 self.end_date = self.end_date + timedelta(days=30)
@@ -81,15 +83,34 @@ class Subscription(models.Model):
     def is_active(self):
         return timezone.now().date() <= self.end_date
     
-    def is_ending(self):
+    def get_dias(self):
         diferencia = self.end_date - timezone.now().date()
-        dias_diferencia = diferencia.days
-
-        total_dias = self.periodos.get(self.subscription_type, 0)
-        umbral = total_dias / 10  # Calcula el 10% del periodo total
-
+        return diferencia.days
+    
+    def is_ending(self):
+        dias_diferencia = self.get_dias()
+        
+        if self.subscription_type == self.MENSUAL:
+            umbral = 7
+        elif self.subscription_type == self.TRIMESTRAL:
+            umbral = 14
+        else:
+            umbral = 21
         # Asegúrate de que dias_diferencia no sea negativo
         if dias_diferencia <= 0:
             return True
 
         return dias_diferencia >= umbral
+    
+    def is_blocking(self):
+
+        dias_diferencia = self.get_dias()
+
+        if self.subscription_type == self.MENSUAL:
+            umbral = -7
+        elif self.subscription_type == self.TRIMESTRAL:
+            umbral = -14
+        else:
+            umbral = -21
+
+        return dias_diferencia < umbral

@@ -126,7 +126,11 @@ class CustomLoginView(LoginView):
                 messages.error(self.request, "Tu suscripción ha expirado. Favor de realizar el pago.")                
             else:
                 if subscription.is_ending():
-                    messages.warning(self.request, "Tu suscripción esta por expirar. Favor de realizar el pago para renovarla.")
+                    if subscription.is_blocking():                        
+                        messages.warning(self.request, "No tienes una suscripción activa. Favor de contactar con los administradores para recuperar tu cuenta y/o datos.")
+                    else: 
+                        messages.warning(self.request, "Tu suscripción esta por expirar. Favor de realizar el pago para renovarla.")
+
         except Subscription.DoesNotExist:
             messages.error(self.request, "No tienes una suscripción activa. Favor de suscribirte.")
             logout(self.request)
