@@ -59,8 +59,6 @@ services:
     networks:
       - default
       - proxy
-    ports:
-      - 1337:80
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${NGINX_HOST}`)"
