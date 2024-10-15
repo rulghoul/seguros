@@ -63,7 +63,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${NGINX_HOST}`)"
       - "traefik.http.routers.${SERVICE_NAME}.entrypoints=websecure"
-      - "traefik.http.routers.${SERVICE_NAME}.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.${SERVICE_NAME}.tls.certresolver=myresolver"
       - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=80"
 
 volumes:
