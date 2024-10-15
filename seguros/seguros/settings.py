@@ -116,20 +116,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+instance_prefix = os.environ.get("SERVICE_NAME", "seguro")
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://default:a10a03eb865b16a0d018@seguros_redis:6379") + "/1",
+        "TIMEOUT": 60 * 60,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "KEY_PREFIX": f"{instance_prefix}_default",
+            "IGNORE_EXCEPTIONS": True,
         }
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": os.environ.get("SEGUROS_REDIS", "redis://default:a10a03eb865b16a0d018@seguros_redis:6379") + "/2",        
-        "TIMEOUT": 60 * 60 * 60,
+        "TIMEOUT": 60 * 60 * 8,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "KEY_PREFIX": f"{instance_prefix}_select2",
+            "IGNORE_EXCEPTIONS": True,
         },
     }
 }

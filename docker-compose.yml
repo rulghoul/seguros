@@ -1,5 +1,6 @@
 services:
   postgresql:
+    container_name: "${SERVICE_NAME}_postgresql"
     image: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -7,13 +8,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-
-  redis:
-    image: redis
-    volumes:
-      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - default
 
   django:
+    container_name: "${SERVICE_NAME}_django"
     image: seguros:lasted
     entrypoint: ["bash", "entrypoint.sh"]
     volumes:
@@ -31,7 +31,7 @@ services:
       SEGUROS_SQL_DATABASE: ${POSTGRES_DB}
       SEGUROS_SQL_USER: ${POSTGRES_USER}
       SEGUROS_SQL_PASSWORD: ${POSTGRES_PASSWORD}
-      SEGUROS_SQL_HOST: postgresql
+      SEGUROS_SQL_HOST: "${SERVICE_NAME}_postgresql"
       SEGUROS_SQL_PORT: ${SEGUROS_SQL_PORT}
       SEGUROS_REDIS: "redis://redis:6379"
       EMAIL_HOST_USER: ${EMAIL_HOST_USER}
@@ -45,12 +45,19 @@ services:
     depends_on:
       - postgresql
       - redis
+    networks:
+      - default
+      - proxy
 
   nginx:
+    container_name: "${SERVICE_NAME}_nginx"
     build: ./nginx
+    ports:
+      - 1337:80
     volumes:
       - static:/web/static
       - media:/web/media
+    restart: unless-stopped
     depends_on:
       - django
     networks:
