@@ -14,12 +14,8 @@ crontab cronseguros.cfg
 #python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
-#python manage.py loaddata sepomex_backup.json
-#rm sepomex_backup.json
-
-
-#python manage.py loaddata documentos.json
-#rm documentos.json
+python manage.py loaddata documentos.json
+rm documentos.json
 
 # Recopilar archivos estáticos
 python manage.py collectstatic --noinput --clear
@@ -27,7 +23,9 @@ python manage.py collectstatic --noinput --clear
 #Crea el usuario para la administracion del sistema
 python manage.py crear_usuario
 #Carga los valores de sepomex si aun no se ha realizado
+echo "Cargando valores de sepomex"
 python manage.py sepomex_inicial
+rm sepomex_backup.json
 #Valores del tema
 python manage.py carga_tema_base
 
