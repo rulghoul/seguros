@@ -20,6 +20,7 @@ from django.http import JsonResponse
 from .generic_view import BaseListView
 from documentos import models as mod
 from documentos import forms as formularios
+from tema import models as susc
 
 
 from documentos.utils.send_email_new_asesor import envia_correo_new_asesor as envia 
@@ -204,7 +205,7 @@ def crear_o_editar_asesor(request, pk=None):
     
 
     if request.method == 'POST':    
-        user_form = formularios.UserForm(request.POST, instance=user)
+        user_form = formularios.UserFormSuscripcion(request.POST, instance=user)
         if user_form.is_valid():
             if pk:
                 user_form.save()
@@ -213,12 +214,19 @@ def crear_o_editar_asesor(request, pk=None):
                 asesor.usuario = created_user
                 asesor.save()
                 envia(request, user)
+                suscripcion_value = user_form.cleaned_data.get('suscripcion')
+
+            # Crear la suscripción inicial con el valor seleccionado
+                if suscripcion_value:
+                    suscrip = susc.Subscription(user=user, subscription_type=suscripcion_value)
+                    suscrip.save()
+
             if formset.is_valid():
                 formset.save()
                 return redirect('documentos:asesor_list') 
                 
     elif request.method == 'GET':
-        user_form = formularios.UserForm(instance=user)
+        user_form = formularios.UserFormSuscripcion(instance=user)
         formset = formularios.AsesorEmpresaFormset(instance=asesor)
     
     return render(request, 'catalogos/add_asesor.html', {

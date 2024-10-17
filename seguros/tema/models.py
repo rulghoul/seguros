@@ -2,6 +2,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 from colorfield.fields import ColorField
 from datetime import timedelta
+
 from django.utils import timezone
 from django.conf import settings
 
@@ -60,6 +61,8 @@ class Subscription(models.Model):
     end_date = models.DateField()
 
     def save(self, *args, **kwargs):
+        if not self.start_date:
+            self.start_date = timezone.now().date()
         if not self.end_date:
             if self.subscription_type == self.MENSUAL:
                 self.end_date = self.start_date + timedelta(days=30)
@@ -68,7 +71,7 @@ class Subscription(models.Model):
             elif self.subscription_type == self.SEMESTRAL:
                 self.end_date = self.start_date + timedelta(days=182)
             elif self.subscription_type == self.ANUAL:
-                self.end_date = self.start_date + timedelta(years=1)
+                self.end_date = self.start_date + timedelta(days=365)
         else:
             if self.subscription_type == self.MENSUAL:
                 self.end_date = self.end_date + timedelta(days=30)

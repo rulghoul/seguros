@@ -237,6 +237,46 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'email', 'first_name', 'last_name']
 
 
+class UserFormSuscripcion(forms.ModelForm):
+    SUBSCRIPTION_CHOICES = [
+        ('M', 'Mensual'),
+        ('T', 'Trimestral'),
+        ('S', 'Semestral'),
+        ('A', 'Anual'),
+    ]
+    suscripcion = forms.ChoiceField(
+        required=False,
+        widget=forms.Select,
+        choices=SUBSCRIPTION_CHOICES,
+    )
+    helper = FormHelper()
+    helper.form_tag = False
+    helper.layout = Layout(
+        Div(
+            Div('first_name', css_class='col-md-4'),
+            Div('last_name', css_class='col-md-6'),
+            Div('suscripcion', css_class='col-md-2'),
+            css_class='row'
+        ),
+        Div(
+            Div('username', css_class='col-md-4'),
+            Div('email', css_class='col-md-8'),
+            css_class='row'
+        ),
+        Div(
+            Submit('submit', 'Guardar', css_class='btn btn-info'),
+            HTML("""
+                    <a class="btn btn-primary" href="{% url 'documentos:asesor_list' %}">Regresar</a>
+                """),
+            css_class='col text-center'
+        ),
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+
+
 class AsesorEmpresaForm(forms.ModelForm):
     class Meta:
         model = modelos.AsesorEmpresa

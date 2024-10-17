@@ -8,11 +8,14 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['username', 'email']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        user = User.objects.get(username=validated_data['username'])
+        if not user:
+            user = User.objects.create_user(**validated_data)
+            request = self.context.get('request')
+            envia(request, user)
         return user
 
 class AsesorEmpresaSerializer(serializers.ModelSerializer):
@@ -26,22 +29,27 @@ class AsesorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asesor
-        fields = ['usuario', 'vigencia', 'empresas']
+        fields = ['usuario', 'empresas']
 
     def create(self, validated_data):
         user_data = validated_data.pop('usuario')
         empresa_data = validated_data.pop('asesorempresa_set')
-        user, created = User.objects.get_or_create(email=user_data['email'], defaults=user_data)
+        user = User.objects.get(username=user_data['username'])
+        if not user:
+            user = User.objects.create_user(username=user_data['username'], email=user_data['email'], password=None)
+            created = True
 
         # Crear Asesor
-        asesor = Asesor.objects.create(usuario=user, **validated_data)
+        asesor = Asesor.objects.create(usuario=self.usuario, **validated_data)
 
         if created:
             request = self.context.get('request')
             envia(request, user)
         # Crear AsesorEmpresa
         for empresa in empresa_data:
-            AsesorEmpresa.objects.create(asesor=asesor, **empresa)
+            empresa_object = EmpresaContratante.objects.get(nombre=empresa['empresa'])
+            if empresa_object:
+                AsesorEmpresa.objects.create(asesor=asesor, empresa=empresa_object, correo_empleado=empresa['correo_empleado'], codigo_empleado=empresa['codigo_empleado'], telefono=empresa['telefono'] )
         
         return asesor
 
@@ -50,7 +58,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
-        fields = ['asesor', 'subscription_type', 'start_date', 'end_date']
+        fields = ['asesor', 'subscription_type', 'start_date']
 
     def create(self, validated_data):
         asesor_data = validated_data.pop('asesor')
@@ -59,7 +67,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         user = asesor.usuario
 
         # Obtener o crear la suscripción vinculada al usuario
-        subscription, created = Subscription.objects.get_or_create(user=user, defaults=validated_data)
+        subscription, created = Subscription.objects.get_or_create(user=user, subscription_type=validated_data['subscription_type'], start_date=validated_data['end_date'] )
 
         if not created:
             # Si la suscripción ya existe, actualiza el tipo y la fecha de finalización

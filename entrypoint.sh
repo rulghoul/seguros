@@ -1,25 +1,20 @@
 #!/bin/sh
-
 # Detener la ejecución en caso de error
 set -e
 
 # Tareas programadas
 crontab cronseguros.cfg
-#crontab -r 
-#crontab -l | { cat; echo "0 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_recordatorio"; } | crontab -
-#crontab -l | { cat; echo "30 6 * * * /usr/local/bin/python /seguros/seguros/manage.py envio_felicitacion"; } | crontab -
-
 
 # Ejecutar migraciones
-#python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
 if [ ! -f /seguros/documentos.json ]; then
-python manage.py loaddata documentos.json
-rm documentos.json
+    python manage.py loaddata documentos.json
+    rm documentos.json
+fi
 
 # Recopilar archivos estáticos
-python manage.py collectstatic --noinput --link
+python manage.py collectstatic --noinput
 
 #Crea el usuario para la administracion del sistema
 python manage.py crear_usuario
@@ -34,4 +29,3 @@ python manage.py carga_tema_base
 
 # Opción con Gunicorn (asegúrate de tener gunicorn en tu requirements.txt)
 gunicorn --workers ${DJANGO_WORKERS:-2} -t 240 seguros.wsgi:application --bind 0.0.0.0:8000 --log-level debug --log-file - --access-logfile - --error-logfile -
-

@@ -44,7 +44,6 @@ services:
     command: bash -c "entrypoint-sh"
     depends_on:
       - postgresql
-      - redis
     networks:
       - default
       - proxy
