@@ -43,7 +43,7 @@ class CreaAsesorView(viewsets.ViewSet):
     def list(self, request):
         # Obtener todos los perfiles y suscripciones
         asesores = doc_models.Asesor.objects.all()
-        suscripciones = tema_models.Suscripcion.objects.all()
+        suscripciones = tema_models.Subscription.objects.all()
 
         # Combinar los datos en una lista de diccionarios
         data = [
@@ -61,20 +61,20 @@ class CreaAsesorView(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         # Obtener el Perfil por el ID
         try:
-            perfil = Perfil.objects.get(pk=pk)
-        except Perfil.DoesNotExist:
+            perfil = doc_models.Asesor.objects.get(pk=pk)
+        except doc_models.Asesor.DoesNotExist:
             return Response({"detail": "Perfil no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
         # Obtener la Suscripción asociada al usuario del Perfil
-        suscripcion = Suscripcion.objects.filter(usuario=perfil.usuario).first()
+        suscripcion = tema_models.Subscription.objects.filter(usuario=perfil.usuario).first()
 
         # Serializar el objeto combinado
-        serializer = PerfilSuscripcionSerializer({'perfil': perfil, 'suscripcion': suscripcion})
+        serializer = serializers.CreaAsesorSerializer({'perfil': perfil, 'suscripcion': suscripcion})
         return Response(serializer.data)
 
     def create(self, request):
         # Crear un nuevo Perfil y Suscripción
-        serializer = PerfilSuscripcionSerializer(data=request.data)
+        serializer = serializers.CreaAsesorSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -83,14 +83,14 @@ class CreaAsesorView(viewsets.ViewSet):
     def update(self, request, pk=None):
         # Actualizar el Perfil y la Suscripción
         try:
-            perfil = Perfil.objects.get(pk=pk)
-        except Perfil.DoesNotExist:
+            perfil = doc_models.Asesor.objects.get(pk=pk)
+        except doc_models.Asesor.DoesNotExist:
             return Response({"detail": "Perfil no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
-        suscripcion = Suscripcion.objects.filter(usuario=perfil.usuario).first()
+        suscripcion = tema_models.Subscription.objects.filter(usuario=perfil.usuario).first()
 
         # Serializar los datos combinados y actualizar
-        serializer = PerfilSuscripcionSerializer(
+        serializer = serializers.CreaAsesorSerializer(
             instance={'perfil': perfil, 'suscripcion': suscripcion},
             data=request.data
         )
@@ -103,8 +103,8 @@ class CreaAsesorView(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         # Eliminar el Perfil y la Suscripción asociada
         try:
-            perfil = Perfil.objects.get(pk=pk)
-            suscripcion = Suscripcion.objects.filter(usuario=perfil.usuario).first()
+            perfil = doc_models.Asesor.objects.get(pk=pk)
+            suscripcion = tema_models.Subscription.objects.filter(usuario=perfil.usuario).first()
 
             # Eliminar ambos objetos
             perfil.delete()
@@ -112,5 +112,5 @@ class CreaAsesorView(viewsets.ViewSet):
                 suscripcion.delete()
 
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Perfil.DoesNotExist:
+        except doc_models.Asesor.DoesNotExist:
             return Response({"detail": "Perfil no encontrado."}, status=status.HTTP_404_NOT_FOUND)

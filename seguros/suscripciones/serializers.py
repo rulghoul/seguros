@@ -64,9 +64,16 @@ class EmpresaSerializer(serializers.ModelSerializer):
 
 
 class AsesorEmpresaSerializer(serializers.ModelSerializer):
+    # Use a SlugRelatedField to accept the company's 'clave' when creating or updating
+    empresa = serializers.SlugRelatedField(
+        slug_field='clave',
+        queryset=doc_models.EmpresaContratante.objects.all(),
+        write_only=True
+    )
+    empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)    
     class Meta:
         model = doc_models.AsesorEmpresa
-        fields = ['empresa', 'correo_empleado', 'codigo_empleado', 'telefono']
+        fields = ['empresa','empresa_nombre', 'correo_empleado', 'codigo_empleado', 'telefono']
 
 class AsesorSerializer(serializers.ModelSerializer):
     usuario = UserSerializer()
@@ -75,6 +82,35 @@ class AsesorSerializer(serializers.ModelSerializer):
     class Meta:
         model = doc_models.Asesor
         fields = ['usuario', 'empresas']
+
+    def create(self, validated_data):
+        usuario_data = validated_data.pop('usuario')
+        empresas_data = validated_data.pop('asesorempresa_set')
+        # Create User instance
+        user_serializer = UserSerializer(data=usuario_data)
+        user_serializer.is_valid(raise_exception=True)
+        user = user_serializer.save()
+
+        # Create Asesor instance linked to User
+        asesor = doc_models.Asesor.objects.create(usuario=user)
+
+        # Create AsesorEmpresa instances
+        for empresa_data in empresas_data:
+            empresa_nombre = empresa_data.pop('empresa_nombre')
+
+            # Handle existing or new EmpresaContratante
+            empresa = doc_models.EmpresaContratante.objects.get(
+                nombre=empresa_nombre.get('empresa_nombre')
+            )
+
+            # Create AsesorEmpresa instance
+            doc_models.AsesorEmpresa.objects.create(
+                asesor=asesor,
+                empresa=empresa,
+                **empresa_data
+            )
+
+        return asesor
 
 class ClienteSerializer(serializers.ModelSerializer):
     asesor_cliente = AsesorSerializer()

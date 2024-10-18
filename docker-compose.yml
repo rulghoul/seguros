@@ -1,7 +1,9 @@
 services:
   postgresql:
     container_name: "${SERVICE_NAME}_postgresql"
-    image: postgres
+    image: postgres    
+    env_file:
+      - local.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -12,9 +14,21 @@ services:
     networks:
       - default
 
+  redis:
+    container_name: "redis"
+    image: redis
+    env_file:
+      - local.env
+    volumes:
+      - redis_data:/data
+    networks:
+      - default
+
   django:
     container_name: "${SERVICE_NAME}_django"
     image: seguros:lasted
+    env_file:
+      - local.env
     entrypoint: ["bash", "entrypoint.sh"]
     volumes:
       - static:/seguros/seguros/static
@@ -46,13 +60,12 @@ services:
       - postgresql
     networks:
       - default
-      - proxy
 
   nginx:
     container_name: "${SERVICE_NAME}_nginx"
     build: ./nginx
     ports:
-      - 1337:80
+      - 1337:80 #Cambiar el primer numero por el puerto correspondiente
     volumes:
       - static:/web/static
       - media:/web/media
@@ -61,7 +74,6 @@ services:
       - django
     networks:
       - default
-      - proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${SERVICE_NAME}.rule=Host(`${NGINX_HOST}`)"
@@ -77,5 +89,3 @@ volumes:
 
 networks:
   default:
-  proxy:
-    external: true

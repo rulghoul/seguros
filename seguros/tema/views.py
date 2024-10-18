@@ -10,7 +10,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetDoneView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.admin.views.decorators import staff_member_required
 
 
 from tema.models import parametros_colores, parametros_imagenes, Subscription
