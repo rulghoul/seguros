@@ -54,6 +54,7 @@
         </li>
       </ul>
     </li>
+    {% if user.is_staff %}
     <li>
         <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle"><i class="fa-solid fa-gear text-white"></i> <span class="ms-1 d-none d-sm-inline text-white">Sepomex</span></a>
         <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
@@ -82,6 +83,8 @@
         </li>
       </ul>
     </li>
+
+    {% endif %}
   </ul>
 </div>
 

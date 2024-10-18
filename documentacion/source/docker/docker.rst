@@ -28,15 +28,15 @@ procedemos a usar GitBash en la carpeta donde deseamos descargar nuestro proyect
 
     git clone https://github.com/rulghoul/seguros.git
 
-Se descargara la rama main, para cambiarnos a la rama dev o nueva debemos ejecutar el siguiente codigo
+Se descargara la rama main, para cambiarnos a la rama feature/traefik o feature/local debemos ejecutar el siguiente codigo
 
 .. code-block:: bash
 
-    git checkout nueva
+    git checkout feature/traefik
 
 .. code-block:: bash
 
-    git checkout dev
+    git checkout feature/local
 
 La rama *nueva* es donde se realizan los cambios principales, una vez probados 
 normalmente se suben a la rama *dev* que es la rama principal de desarrollo donde todo funciona 
@@ -132,5 +132,5 @@ Crea o actualiza las imagenes y ejecuta las imagenes de Docker
 
 .. code-block:: bash
 
-    docker-compose up -d --build
+    docker build . -t seguros:lasted && docker-compose down --remove-orphans && docker-compose up -d
 

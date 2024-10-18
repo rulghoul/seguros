@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import LoginView, LogoutView, PasswordResetDoneView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
+
 
 from tema.models import parametros_colores, parametros_imagenes, Subscription
 # Create your views here.
@@ -29,6 +31,7 @@ class add_color(CreateView):
         context['titulo'] = "Nuevo Color"
         context['regresa'] = 'temalist_color'
         return context
+
 
 class update_color(UpdateView):
     model = parametros_colores
@@ -80,6 +83,7 @@ class add_imagen(CreateView):
         context['regresa'] = 'list_imagen'
         return context
 
+ 
 class update_imagen(UpdateView):
     model = parametros_imagenes
     fields = ['title', 'image',]
@@ -153,6 +157,7 @@ def home_view(request):
                'colores': colores,
                'user':request.user,}
     return HttpResponse(template.render(context, request))
+
 
 def base_view(request):
     colores = parametros_colores.objects.all().order_by('elemento').values()

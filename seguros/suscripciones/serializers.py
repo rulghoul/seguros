@@ -1,14 +1,47 @@
 # serializers.py
-from documentos.models import Asesor, AsesorEmpresa, EmpresaContratante
-from documentos.utils.send_email_new_asesor import envia_correo_new_asesor as envia
+from documentos import models as doc_models
 from tema.models import Subscription
+from sepomex import models as sepo_models 
 from django.contrib.auth.models import User
+from documentos.utils.send_email_new_asesor import envia_correo_new_asesor as envia
 from rest_framework import serializers
+from rest_framework import viewsets
+
+## SEPOMEX
+
+class EstadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = sepo_models.Estado
+        fields = ['nombre', ]
+
+class MunicipioSerializer(serializers.ModelSerializer):
+    estado = EstadoSerializer()
+    class Meta:
+        model = sepo_models.Municipio
+        fields = ['estado', 'nombre', ]
+
+class TipoAsentamientoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = sepo_models.TipoAsentamiento
+        fields = ['nombre', ]
+
+class AsentamientoSerializer(serializers.ModelSerializer):
+    municipio = MunicipioSerializer()
+    tipo_asentamiento = TipoAsentamientoSerializer()
+    class Meta:
+        model = sepo_models.Asentamiento
+        fields = ['municipio', 'tipo_asentamiento', 'codigo_postal', 'nombre']
+
+
+
+## TERMINA SEPOMEX
+
+## Empieza Documentos 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['first_name', 'last_name', 'username', 'email']
 
     def create(self, validated_data):
         user = User.objects.get(username=validated_data['username'])
@@ -18,9 +51,21 @@ class UserSerializer(serializers.ModelSerializer):
             envia(request, user)
         return user
 
+class PlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = doc_models.Asesor
+        fields = ['nombre', 'empresa', 'gastosMedicos', 'activo']
+
+class EmpresaSerializer(serializers.ModelSerializer):
+    planes = serializers.PrimaryKeyRelatedField(many=True, read_only=True, source='planes_set')
+    class Meta:
+        model = doc_models.EmpresaContratante
+        fields = ['clave', 'nombre', 'link', 'link_pago', 'activo', 'planes', ]
+
+
 class AsesorEmpresaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AsesorEmpresa
+        model = doc_models.AsesorEmpresa
         fields = ['empresa', 'correo_empleado', 'codigo_empleado', 'telefono']
 
 class AsesorSerializer(serializers.ModelSerializer):
@@ -28,50 +73,72 @@ class AsesorSerializer(serializers.ModelSerializer):
     empresas = AsesorEmpresaSerializer(many=True, source='asesorempresa_set')
 
     class Meta:
-        model = Asesor
+        model = doc_models.Asesor
         fields = ['usuario', 'empresas']
 
-    def create(self, validated_data):
-        user_data = validated_data.pop('usuario')
-        empresa_data = validated_data.pop('asesorempresa_set')
-        user = User.objects.get(username=user_data['username'])
-        if not user:
-            user = User.objects.create_user(username=user_data['username'], email=user_data['email'], password=None)
-            created = True
+class ClienteSerializer(serializers.ModelSerializer):
+    asesor_cliente = AsesorSerializer()
+    asentamiento = AsentamientoSerializer()
+    class Meta:
+        model = doc_models.PersonaPrincipal
+        fields = ['curp','nombre','primer_apellido','segundo_apellido','genero','estatus_persona',
+                  'asesor_cliente','lugar_nacimiento','fecha_nacimiento',
+                  'asentamiento','calle','numero','numero_interior',
+                  'correo','telefono',]
 
-        # Crear Asesor
-        asesor = Asesor.objects.create(usuario=self.usuario, **validated_data)
 
-        if created:
-            request = self.context.get('request')
-            envia(request, user)
-        # Crear AsesorEmpresa
-        for empresa in empresa_data:
-            empresa_object = EmpresaContratante.objects.get(nombre=empresa['empresa'])
-            if empresa_object:
-                AsesorEmpresa.objects.create(asesor=asesor, empresa=empresa_object, correo_empleado=empresa['correo_empleado'], codigo_empleado=empresa['codigo_empleado'], telefono=empresa['telefono'] )
-        
-        return asesor
+class PolizaSerializer(serializers.ModelSerializer):
+    empresa = EmpresaSerializer()
+    asesor_poliza = AsesorSerializer()
+    class Meta:
+        model = doc_models.Poliza
+        fields = ['empresa', 'asesor_poliza', 'numero_poliza', 'persona_principal', 'forma_pago',
+                  'tipo_conducto_pago', 'plan', 'fecha_vigencia', 'fecha_emision', 'fecha_pago',
+                   'estatus',  'monto_pago', 'suma_asegurada', 'unidad_pago', 'renovacion', 'periodo' ]
+
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    asesor = AsesorSerializer()
-
+    user = UserSerializer()    
     class Meta:
         model = Subscription
-        fields = ['asesor', 'subscription_type', 'start_date']
+        fields = ['user', 'subscription_type', 'start_date', 'end_date'] 
+
+
+
+class CreaAsesorSerializer(serializers.Serializer):
+    asesor = AsesorSerializer()
+    suscripcion = SubscriptionSerializer()
 
     def create(self, validated_data):
-        asesor_data = validated_data.pop('asesor')
-        # Crear o actualizar el asesor y usuario asociado
-        asesor = AsesorSerializer.create(AsesorSerializer(context=self.context), validated_data=asesor_data)
-        user = asesor.usuario
+        # Extraer datos para cada modelo
+        asesor_data = validated_data.get('asesor')
+        suscripcion_data = validated_data.get('suscripcion')
 
-        # Obtener o crear la suscripción vinculada al usuario
-        subscription, created = Subscription.objects.get_or_create(user=user, subscription_type=validated_data['subscription_type'], start_date=validated_data['end_date'] )
+        # Crear el objeto Perfil
+        asesor = doc_models.Asesor.objects.create(**asesor_data)
 
-        if not created:
-            # Si la suscripción ya existe, actualiza el tipo y la fecha de finalización
-            subscription.subscription_type = validated_data.get('subscription_type', subscription.subscription_type)
-            subscription.save()
+        # Crear el objeto Suscripcion
+        suscripcion = Subscription.objects.create(**suscripcion_data)
 
-        return subscription
+        # Retornar la combinación de ambos
+        return {
+            'perfil': asesor,
+            'suscripcion': suscripcion
+        }
+
+    def update(self, instance, validated_data):
+        # Actualizar datos del Perfil
+        asesor_data = validated_data.get('asesor')
+        suscripcion_data = validated_data.get('suscripcion')
+
+        # Actualizar Perfil
+        doc_models.Asesor.objects.filter(pk=instance['perfil'].pk).update(**asesor_data)
+
+        # Actualizar Suscripcion
+        Subscription.objects.filter(pk=instance['suscripcion'].pk).update(**suscripcion_data)
+
+        # Recargar las instancias actualizadas
+        instance['asesor'].refresh_from_db()
+        instance['suscripcion'].refresh_from_db()
+
+        return instance
