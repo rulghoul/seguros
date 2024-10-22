@@ -213,7 +213,7 @@ def crear_o_editar_asesor(request, pk=None):
                 created_user = user_form.save()
                 asesor.usuario = created_user
                 asesor.save()
-                envia(request, user)
+                envia(user, request)
                 suscripcion_value = user_form.cleaned_data.get('suscripcion')
 
             # Crear la suscripción inicial con el valor seleccionado

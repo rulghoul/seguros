@@ -19,7 +19,7 @@ class Command(BaseCommand):
             password = os.getenv('SEGUROS_SUPERUSER_PASSWORD', 'admin')
             self.stdout.write(f'Creando la cuenta para {username} ({email})')
             try:
-                usuario = User.objects.create_superuser(username=username, email=email, password=password)
+                usuario = User.objects.create_superuser(username=username, email=email, password=password, first_name= "Organmizame", last_name = "Admin")
                 suscrip = Subscription(user=usuario,subscription_type='A')
                 suscrip.save()
                 self.stdout.write(f"Se creo el usuario administrador {username}")

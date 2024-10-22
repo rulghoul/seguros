@@ -6,6 +6,9 @@ from . import serializers
 from tema import models as tema_models
 from documentos import models as doc_models
 from sepomex import models as sepo_models
+from django.contrib.auth.models import User
+import json
+from django.db import transaction
 
 class SubscriptionAPIView(APIView):
     def post(self, request):
@@ -19,6 +22,7 @@ class SuscripcionViewSet(viewsets.ModelViewSet):
     queryset = tema_models.Subscription.objects.all()
     serializer_class =  serializers.SubscriptionSerializer
 
+@transaction.atomic
 class AsesoresViewSet(viewsets.ModelViewSet):
     queryset = doc_models.Asesor.objects.all()
     serializer_class = serializers.AsesorSerializer
@@ -39,78 +43,81 @@ class AsentamientosViewSet(viewsets.ModelViewSet):
     queryset = sepo_models.Asentamiento.objects.all()
     serializer_class = serializers.AsentamientoSerializer
 
+class UsuariosViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+
+
 class CreaAsesorView(viewsets.ViewSet):
+    @transaction.atomic
     def list(self, request):
         # Obtener todos los perfiles y suscripciones
         asesores = doc_models.Asesor.objects.all()
-        suscripciones = tema_models.Subscription.objects.all()
+        #suscripciones = tema_models.Subscription.objects.all()
 
         # Combinar los datos en una lista de diccionarios
-        data = [
-            {
-                'asesor': asesor,
-                'suscripcion': suscripciones.filter(usuario=asesores.usuario).first()
-            }
-            for asesor in asesores
-        ]
+        data = []
+        for asesor in asesores:
+            try:
+                susc = tema_models.Subscription.objects.get(user=asesor.usuario)
+            except tema_models.Subscription.DoesNotExist:
+                susc = None
+            data.append({'asesor': asesor,'suscripcion': susc})
 
         # Serializar los datos combinados
-        serializer = serializers.CreaAsesorSerializer(data, many=True)
+        serializer = serializers.CreaAsesorSuscripcionSerializer(data, many=True)
+
         return Response(serializer.data)
 
+    @transaction.atomic
     def retrieve(self, request, pk=None):
-        # Obtener el Perfil por el ID
         try:
-            perfil = doc_models.Asesor.objects.get(pk=pk)
+            asesor = doc_models.Asesor.objects.get(pk=pk)
+            try:
+                suscripcion = tema_models.Subscription.objects.get(user=asesor.usuario)
+            except tema_models.Subscription.DoesNotExist:
+                suscripcion = None
+            data = {'asesor': asesor, 'suscripcion': suscripcion}
+            serializer = serializers.CreaAsesorSuscripcionSerializer(data)
+            return Response(serializer.data)
         except doc_models.Asesor.DoesNotExist:
-            return Response({"detail": "Perfil no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Asesor no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Obtener la Suscripción asociada al usuario del Perfil
-        suscripcion = tema_models.Subscription.objects.filter(usuario=perfil.usuario).first()
-
-        # Serializar el objeto combinado
-        serializer = serializers.CreaAsesorSerializer({'perfil': perfil, 'suscripcion': suscripcion})
-        return Response(serializer.data)
-
+    @transaction.atomic
     def create(self, request):
-        # Crear un nuevo Perfil y Suscripción
-        serializer = serializers.CreaAsesorSerializer(data=request.data)
+        serializer = serializers.CreaAsesorSuscripcionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @transaction.atomic
     def update(self, request, pk=None):
-        # Actualizar el Perfil y la Suscripción
         try:
-            perfil = doc_models.Asesor.objects.get(pk=pk)
+            asesor = doc_models.Asesor.objects.get(pk=pk)
+            try:
+                suscripcion = tema_models.Subscription.objects.get(user=asesor.usuario)
+            except tema_models.Subscription.DoesNotExist:
+                suscripcion = None
+            instance = {'asesor': asesor, 'suscripcion': suscripcion}
+            serializer = serializers.CreaAsesorSuscripcionSerializer(instance, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except doc_models.Asesor.DoesNotExist:
-            return Response({"detail": "Perfil no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Asesor no encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
-        suscripcion = tema_models.Subscription.objects.filter(usuario=perfil.usuario).first()
-
-        # Serializar los datos combinados y actualizar
-        serializer = serializers.CreaAsesorSerializer(
-            instance={'perfil': perfil, 'suscripcion': suscripcion},
-            data=request.data
-        )
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    @transaction.atomic
     def destroy(self, request, pk=None):
-        # Eliminar el Perfil y la Suscripción asociada
         try:
-            perfil = doc_models.Asesor.objects.get(pk=pk)
-            suscripcion = tema_models.Subscription.objects.filter(usuario=perfil.usuario).first()
-
-            # Eliminar ambos objetos
-            perfil.delete()
+            asesor = doc_models.Asesor.objects.get(pk=pk)
+            suscripcion = tema_models.Subscription.objects.filter(user=asesor.usuario).first()
+            asesor.usuario.delete()  # Esto eliminará al usuario y, en cascada, al asesor si está configurado
             if suscripcion:
                 suscripcion.delete()
-
             return Response(status=status.HTTP_204_NO_CONTENT)
         except doc_models.Asesor.DoesNotExist:
-            return Response({"detail": "Perfil no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Asesor no encontrado."}, status=status.HTTP_404_NOT_FOUND)

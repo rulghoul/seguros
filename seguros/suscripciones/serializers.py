@@ -43,12 +43,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['first_name', 'last_name', 'username', 'email']
 
-    def create(self, validated_data):
-        user = User.objects.get(username=validated_data['username'])
-        if not user:
-            user = User.objects.create_user(**validated_data)
-            request = self.context.get('request')
-            envia(request, user)
+    def save(self):
+        user, created = User.objects.get_or_create(
+            username=self.validated_data['username'],
+            defaults=self.validated_data
+        )
+        if created:
+            envia(user)
         return user
 
 class PlanSerializer(serializers.ModelSerializer):
@@ -64,16 +65,10 @@ class EmpresaSerializer(serializers.ModelSerializer):
 
 
 class AsesorEmpresaSerializer(serializers.ModelSerializer):
-    # Use a SlugRelatedField to accept the company's 'clave' when creating or updating
-    empresa = serializers.SlugRelatedField(
-        slug_field='clave',
-        queryset=doc_models.EmpresaContratante.objects.all(),
-        write_only=True
-    )
-    empresa_nombre = serializers.CharField(source='empresa.nombre', read_only=True)    
+    empresa_nombre = serializers.CharField(source='empresa.nombre')    
     class Meta:
         model = doc_models.AsesorEmpresa
-        fields = ['empresa','empresa_nombre', 'correo_empleado', 'codigo_empleado', 'telefono']
+        fields = ['empresa_nombre', 'correo_empleado', 'codigo_empleado', 'telefono']
 
 class AsesorSerializer(serializers.ModelSerializer):
     usuario = UserSerializer()
@@ -96,11 +91,11 @@ class AsesorSerializer(serializers.ModelSerializer):
 
         # Create AsesorEmpresa instances
         for empresa_data in empresas_data:
-            empresa_nombre = empresa_data.pop('empresa_nombre')
+            empresa = empresa_data.pop('empresa')
 
             # Handle existing or new EmpresaContratante
             empresa = doc_models.EmpresaContratante.objects.get(
-                nombre=empresa_nombre.get('empresa_nombre')
+                nombre=empresa.get('nombre')
             )
 
             # Create AsesorEmpresa instance
@@ -158,7 +153,7 @@ class CreaAsesorSerializer(serializers.Serializer):
 
         # Retornar la combinación de ambos
         return {
-            'perfil': asesor,
+            'asesor': asesor,
             'suscripcion': suscripcion
         }
 

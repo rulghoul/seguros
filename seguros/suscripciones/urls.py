@@ -12,6 +12,7 @@ router = routers.DefaultRouter()
 # define the router path and viewset to be used 
 router.register(r'subscripciones', views.SuscripcionViewSet) 
 router.register(r'asesores', views.AsesoresViewSet) 
+router.register(r'usuarios', views.UsuariosViewSet) 
 router.register(r'empresas', views.EmpresaViewSet) 
 router.register(r'polizas', views.PolizasViewSet) 
 router.register(r'clientes', views.ClientesViewSet)

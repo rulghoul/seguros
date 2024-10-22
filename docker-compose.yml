@@ -2,6 +2,8 @@ services:
   postgresql:
     container_name: "${SERVICE_NAME}_postgresql"
     image: postgres    
+    ports:
+      - 5432:5432 #Cambiar el primer numero por el puerto correspondiente
     env_file:
       - local.env
     volumes:
@@ -17,10 +19,9 @@ services:
   redis:
     container_name: "redis"
     image: redis
-    env_file:
-      - local.env
     volumes:
       - redis_data:/data
+    restart: unless-stopped
     networks:
       - default
 
